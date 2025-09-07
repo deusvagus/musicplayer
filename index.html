@@ -112,6 +112,7 @@
       --border-color: rgba(255, 255, 255, 0.15);
       --shadow-color: rgba(0, 0, 0, 0.4);
       --primary-accent: #9fa8da;
+      --text-on-accent: #121212;
     }
     .light-theme {
       --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -127,10 +128,12 @@
       --border-color: rgba(0, 0, 0, 0.1);
       --shadow-color: rgba(0, 0, 0, 0.1);
       --primary-accent: #5c6bc0;
+      --text-on-accent: #ffffff;
     }
 
     /* --- BASE & LAYOUT --- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: var(--font-family);
       background: var(--bg-gradient);
@@ -233,6 +236,12 @@
     .table-of-contents { flex: 1; overflow-y: auto; }
     .table-of-contents a { display: block; padding: 0.5rem; text-decoration: none; color: var(--text-secondary); border-radius: 5px; transition: all 0.2s ease; font-size: 0.95rem;}
     .table-of-contents a:hover { background: var(--border-color); color: var(--text-primary); }
+    /* **NEW**: Style for the active TOC link */
+    .table-of-contents a.active-toc-link {
+        background: var(--primary-accent);
+        color: var(--text-on-accent);
+        font-weight: 600;
+    }
     
     /* --- MAIN CONTENT & CARDS --- */
     .album-section { margin-bottom: 2rem; }
@@ -244,13 +253,20 @@
     .music-icon i { color: #fff; font-size: 1.4rem; }
     .track-info { min-width: 0; }
     .track-info h3 {
-      font-size: 1.1rem; /* Adjusted font size slightly */
-      white-space: normal; /* Allow title to wrap */
+      font-size: 1.1rem;
+      white-space: normal;
       overflow: hidden;
       text-overflow: ellipsis;
       line-height: 1.4;
+      margin-bottom: 0.2rem; /* Add some space between lines */
     }
-    .track-info p { font-size: 0.9rem; color: var(--text-secondary); display: none; } /* Hide subtitle p */
+    .track-info p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      display: block; /* Make subtitle visible */
+      line-height: 1.2;
+      white-space: normal;
+    }
     .music-card.no-id { opacity: 0.8; }
     .music-card.no-id .music-icon { background: var(--text-secondary); }
     .music-card.no-id:hover { transform: translateY(-5px); background: var(--bg-card-hover); box-shadow: 0 10px 30px var(--shadow-color); }
@@ -290,7 +306,7 @@
     /* --- SKELETON LOADER --- */
     @keyframes shimmer { 100% { transform: translateX(100%); } }
     #skeleton-loader .skeleton-summary { width: 40%; height: 3rem; margin-bottom: 1.5rem; background: var(--bg-card); border-radius: 8px; }
-    #skeleton-loader .skeleton-card { background: var(--bg-card); border-radius: 12px; height: 80px; position: relative; overflow: hidden; }
+    #skeleton-loader .skeleton-card { background: var(--bg-card); border-radius: 12px; height: 90px; position: relative; overflow: hidden; } /* Adjusted height for two lines */
     #skeleton-loader .skeleton-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, var(--border-color), transparent); animation: shimmer 1.5s infinite; }
 
     .hidden { display: none !important; }
@@ -382,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
     sortToggle.addEventListener('click', toggleAlbumSort);
     
     // --- DETAILS SIDEBAR & PLAYER ---
-    function showDetails(track, albumId) { // Pass albumId for reliable lookup
+    function showDetails(track, albumId) {
         let detailsListHtml = 'No details available.';
         if (track.details) {
             detailsListHtml = Object.entries(track.details)
@@ -402,11 +418,11 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="player-container">${playerHtml}</div>
         `;
 
-        // --- FIXED: Use reliable albumId to find and scroll TOC link ---
         if (albumId) {
             const tocLink = toc.querySelector(`a[href="#${albumId}"]`);
             if (tocLink) {
-                tocLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // We don't need to scroll here anymore if the scroll spy is active, 
+                // but clicking should still work. The browser handles the scroll.
             }
         }
         
@@ -571,14 +587,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const idFilePromises = idManifest.albums.map(filename =>
                 fetch(`IDs/${filename}`).then(res => res.text())
             );
+            
+            const normalizeTitle = (title) => {
+                if (!title) return '';
+                return title.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]/g, '');
+            };
+
             const idFiles = await Promise.allSettled(idFilePromises);
             idFiles.forEach(result => {
                 if (result.status === 'fulfilled') {
                     result.value.trim().split('\n').forEach(line => {
                         const parts = line.split('\t');
                         if (parts.length >= 2) {
-                          const normalizedTrackName = parts[1].toLowerCase().replace(/！/g, '!').replace(/，/g, ',').replace(/[.,!'’]/g, '').replace(/\s+/g, ' ').trim();
-                          idMap.set(normalizedTrackName, parts[0].trim());
+                          const normalizedTrackName = normalizeTitle(parts[1]);
+                          if (normalizedTrackName) {
+                            idMap.set(normalizedTrackName, parts[0].trim());
+                          }
                         }
                     });
                 }
@@ -604,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .map(albumData => {
                     const tracks = albumData.tracks.map(trackDetail => {
                         const fullTitle = trackDetail.track;
-                        const normalizedFullTitle = fullTitle.toLowerCase().replace(/！/g, '!').replace(/，/g, ',').replace(/[.,!'’]/g, '').replace(/\s+/g, ' ').trim();
+                        const normalizedFullTitle = normalizeTitle(fullTitle);
                         Object.keys(trackDetail).forEach(key => fieldKeys.add(key));
                         return {
                             id: idMap.get(normalizedFullTitle) || null,
@@ -620,6 +644,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setupClearButtons();
             setupQuickSearchButtons();
             setupResizers();
+            setupScrollSpy(); // **NEW**: Initialize the scroll spy
 
         } catch (error) {
             albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;
@@ -631,13 +656,27 @@ document.addEventListener('DOMContentLoaded', function() {
     function createTrackCard(track, albumId) {
         const card = document.createElement('div');
         card.className = 'music-card';
+
+        let chineseTitle = '';
+        let englishTitle = '';
+        const fullTitle = track.fullTitle.trim();
+
+        const titleRegex = /^([\u4e00-\u9fa5].*?)\s+([a-zA-Z].*)$/;
+        const match = fullTitle.match(titleRegex);
         
-        // --- FIXED: Display full title, do not split ---
+        if (match && match[1] && match[2]) {
+            chineseTitle = match[1].trim();
+            englishTitle = match[2].trim();
+        } else {
+            chineseTitle = fullTitle;
+            englishTitle = '';
+        }
+        
         card.innerHTML = `
             <div class="music-icon"><i class="fas ${track.id ? 'fa-play' : 'fa-file-alt'}"></i></div>
             <div class="track-info">
-                <h3>${track.fullTitle}</h3>
-                <p>&nbsp;</p>
+                <h3>${chineseTitle}</h3>
+                <p>${englishTitle}&nbsp;</p>
             </div>`;
         
         if (track.details) card.dataset.details = JSON.stringify(track.details);
@@ -672,13 +711,54 @@ document.addEventListener('DOMContentLoaded', function() {
             const musicGrid = document.createElement('div');
             musicGrid.className = 'music-grid';
             album.tracks.forEach(track => {
-                musicGrid.appendChild(createTrackCard(track, albumId)); // Pass albumId to card
+                musicGrid.appendChild(createTrackCard(track, albumId));
             });
             
             albumSection.appendChild(summary);
             albumSection.appendChild(musicGrid);
             albumContainer.appendChild(albumSection);
         });
+    }
+
+    // **NEW**: Scroll Spy functionality
+    function setupScrollSpy() {
+        const sections = document.querySelectorAll('.album-section');
+        if (sections.length === 0) return;
+
+        const observerCallback = (entries) => {
+            // Use a data attribute to track the visibility of each link's section
+            entries.forEach(entry => {
+                const link = toc.querySelector(`a[href="#${entry.target.id}"]`);
+                if (link) {
+                    link.dataset.visible = entry.isIntersecting;
+                }
+            });
+
+            // After updating all visibilities, find the *first* visible link and highlight it
+            const allTocLinks = toc.querySelectorAll('a');
+            let firstVisibleLink = null;
+
+            allTocLinks.forEach(link => {
+                link.classList.remove('active-toc-link');
+                // Find the first link in the list that is marked as visible
+                if (link.dataset.visible === 'true' && !firstVisibleLink) {
+                    firstVisibleLink = link;
+                }
+            });
+
+            // If a visible link was found, add the active class
+            if (firstVisibleLink) {
+                firstVisibleLink.classList.add('active-toc-link');
+            }
+        };
+
+        const observer = new IntersectionObserver(observerCallback, {
+            root: albumContainer, // The scrollable element
+            threshold: 0.1, // Trigger when 10% of the section is visible
+            rootMargin: '0px 0px -50% 0px' // Consider intersection in the top half of the container
+        });
+
+        sections.forEach(section => observer.observe(section));
     }
     
     // --- FILTERING LOGIC ---
