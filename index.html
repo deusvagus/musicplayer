@@ -14,6 +14,9 @@
         <h1 class="header-title">音樂播放器</h1>
         <p class="header-subtitle">網易雲內嵌測試</p>
       </div>
+      <button id="themeToggle" class="theme-toggle" aria-label="切換主題">
+        <i class="fas fa-sun"></i>
+      </button>
       <div class="header-bg"></div>
     </header>
 
@@ -22,6 +25,12 @@
         <div class="sidebar-sticky">
           <h2>專輯目錄</h2>
           
+          <div class="controls-section">
+            <button id="sortToggle" class="sidebar-button">
+              <i class="fas fa-sort"></i> 切換專輯排序
+            </button>
+          </div>
+          
           <div class="search-section">
             <input type="search" id="searchInput" placeholder="搜尋曲目、ID 或專輯...">
           </div>
@@ -29,7 +38,13 @@
           <div class="advanced-search-section">
             <h4>進階搜尋</h4>
             <input type="search" id="searchField" placeholder="搜尋欄位 (如: 作曲)">
-            <input type="search" id="searchValue" placeholder="搜尋內容...">
+            <input type="search" id="searchValue" placeholder="搜尋內容 (AND/OR)">
+            <div class="shortcuts">
+              <button id="shortcutArrangement" class="shortcut-button">快捷輸入: 編曲</button>
+              <select id="shortcutPersonnel" class="shortcut-select">
+                <option value="">— 快捷選擇人員 —</option>
+              </select>
+            </div>
           </div>
 
           <nav id="toc" class="table-of-contents"></nav>
@@ -47,144 +62,160 @@
 
   <style>
     :root {
+      /* Dark Theme (Default) */
       --primary-color-start: #667eea;
       --primary-color-end: #764ba2;
+      --body-bg: linear-gradient(135deg, #232526 0%, #414345 100%);
+      --card-bg: rgba(45, 48, 53, 0.85);
+      --text-color: #e0e0e0;
+      --text-color-light: #9e9e9e;
+      --header-bg: rgba(0,0,0,0.2);
+      --sidebar-bg: rgba(0,0,0,0.15);
+      --input-bg: rgba(0,0,0,0.3);
+      --input-border: rgba(255,255,255,0.2);
+      --toc-hover-bg: rgba(255,255,255,0.1);
+      --shadow-color: rgba(0,0,0,0.4);
+      --details-border: rgba(255,255,255,0.1);
+      --details-strong-color: #9fa8da;
+      --button-bg: rgba(255,255,255,0.1);
+      --button-hover-bg: rgba(255,255,255,0.2);
+    }
+
+    body.light-theme {
+      /* Light Theme */
+      --body-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       --card-bg: rgba(255,255,255,0.95);
       --text-color: #333;
-      --sidebar-width: 320px;
+      --text-color-light: #666;
+      --header-bg: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      --sidebar-bg: rgba(255,255,255,0.1);
+      --input-bg: rgba(255,255,255,0.2);
+      --input-border: rgba(255,255,255,0.3);
+      --toc-hover-bg: rgba(255,255,255,0.2);
+      --shadow-color: rgba(0,0,0,0.1);
+      --details-border: rgba(0,0,0,0.1);
+      --details-strong-color: var(--primary-color-end);
+      --button-bg: rgba(0,0,0,0.05);
+      --button-hover-bg: rgba(0,0,0,0.1);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, var(--primary-color-start) 0%, var(--primary-color-end) 100%);
+      background: var(--body-bg);
       min-height: 100vh;
       color: var(--text-color);
       line-height: 1.6;
+      transition: background 0.4s ease, color 0.4s ease;
     }
 
-    .page-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    /* Header Styles */
+    .page-container { display: flex; flex-direction: column; min-height: 100vh; }
+    
     .header {
       position: relative;
       padding: 2rem;
       text-align: center;
       color: white;
-      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      background: var(--header-bg);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
+    .theme-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+    .theme-toggle:hover { background: rgba(255,255,255,0.2); }
     .header-icon { font-size: 2.5rem; margin-bottom: 0.5rem; animation: pulse 2s ease-in-out infinite; }
     .header-title { font-size: 2.2rem; }
     .header-subtitle { font-size: 1.1rem; opacity: 0.9; }
 
-    /* App Body Layout */
-    .app-body {
-      display: flex;
-      flex: 1;
-      max-width: 1600px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .sidebar {
-      width: var(--sidebar-width);
-      padding: 2rem;
-      flex-shrink: 0;
-    }
+    .app-body { display: flex; flex: 1; max-width: 1600px; margin: 0 auto; width: 100%; }
+    .sidebar { width: 320px; padding: 2rem; flex-shrink: 0; }
     .sidebar-sticky {
       position: sticky;
       top: 2rem;
-      background: rgba(255,255,255,0.1);
+      background: var(--sidebar-bg);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       padding: 1.5rem;
       color: white;
     }
-    .sidebar h2 { margin-bottom: 1.5rem; font-weight: 600; }
+    .sidebar h2 { margin-bottom: 1rem; font-weight: 600; }
+    .controls-section { margin-bottom: 1.5rem; }
+    .sidebar-button {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--button-bg);
+      border: 1px solid var(--input-border);
+      color: white;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sidebar-button:hover { background: var(--button-hover-bg); }
     
-    .search-section, .advanced-search-section {
-        margin-bottom: 1.5rem;
-    }
-    .advanced-search-section h4 {
-        margin-bottom: 0.75rem;
-        font-weight: 500;
-    }
+    .search-section, .advanced-search-section { margin-bottom: 1.5rem; }
+    .advanced-search-section h4 { margin-bottom: 0.75rem; font-weight: 500; }
 
     #searchInput, #searchField, #searchValue {
       width: 100%;
       padding: 0.75rem 1rem;
-      border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.2);
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
       border-radius: 8px;
       color: white;
       font-size: 1rem;
     }
     #searchField { margin-bottom: 0.5rem; }
     #searchInput::placeholder, #searchField::placeholder, #searchValue::placeholder { color: rgba(255,255,255,0.7); }
+    
+    .shortcuts { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .shortcut-button, .shortcut-select {
+        padding: 0.5rem;
+        background: var(--button-bg);
+        border: 1px solid var(--input-border);
+        color: white;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        text-align: left;
+        cursor: pointer;
+        width: 100%;
+    }
+    .shortcut-select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.7rem center; background-size: 1em; }
+    .shortcut-select option { background: #333; color: white; }
 
-    .table-of-contents {
-      list-style: none;
-      max-height: 55vh;
-      overflow-y: auto;
-    }
-    .table-of-contents a {
-      display: block;
-      padding: 0.5rem;
-      color: rgba(255,255,255,0.85);
-      text-decoration: none;
-      border-radius: 5px;
-      transition: all 0.2s ease;
-    }
-    .table-of-contents a:hover {
-      background: rgba(255,255,255,0.2);
-      color: white;
-    }
+    .table-of-contents { list-style: none; max-height: 45vh; overflow-y: auto; }
+    .table-of-contents a { display: block; padding: 0.5rem; color: rgba(255,255,255,0.85); text-decoration: none; border-radius: 5px; transition: all 0.2s ease; }
+    .table-of-contents a:hover { background: var(--toc-hover-bg); color: white; }
 
-    .main-content {
-      flex: 1;
-      padding: 2rem;
-      min-width: 0;
-    }
-
-    /* Album Section */
+    .main-content { flex: 1; padding: 2rem; min-width: 0; }
     .album-section { margin-bottom: 2rem; }
-    .album-summary {
-      font-size: 1.8rem;
-      font-weight: 600;
-      padding: 1rem;
-      cursor: pointer;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(5px);
-      color: white;
-      border-radius: 15px;
-      transition: background 0.3s ease;
-    }
-    .album-summary:hover { background: rgba(255,255,255,0.3); }
+    .album-summary { font-size: 1.8rem; font-weight: 600; padding: 1rem; cursor: pointer; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); color: white; border-radius: 15px; transition: background 0.3s ease; }
+    .album-summary:hover { background: rgba(255,255,255,0.2); }
     .album-section[open] > .album-summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-    .music-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem;
-      background: rgba(255,255,255,0.4);
-      border-bottom-left-radius: 15px;
-      border-bottom-right-radius: 15px;
-    }
+    .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; padding: 2rem; background: rgba(255,255,255,0.05); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
 
-    /* Music Card Styles */
     .music-card {
       background: var(--card-bg);
       border-radius: 20px;
       padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px var(--shadow-color);
+      border: 1px solid var(--input-border);
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
@@ -195,46 +226,26 @@
     .music-icon i { font-size: 1.5rem; color: #fff; }
     .track-info { min-width: 0; }
     .track-info h3 { font-size: 1.3rem; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-    .track-id { color: #666; font-size: 0.9rem; }
+    .track-id { color: var(--text-color-light); font-size: 0.9rem; }
     .track-title-en { color: #888; font-size: 0.85rem; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
     
-    .card-body { border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1rem; }
-    .click-to-load { text-align: center; padding: 1.5rem; color: #666; background: rgba(0,0,0,0.05); border-radius: 10px; border: 2px dashed rgba(0,0,0,0.1); cursor: pointer; }
+    .card-body { border-top: 1px solid var(--details-border); padding-top: 1rem; }
+    .click-to-load { text-align: center; padding: 1.5rem; color: var(--text-color-light); background: rgba(0,0,0,0.2); border-radius: 10px; border: 2px dashed var(--input-border); cursor: pointer; }
+    body.light-theme .click-to-load { background: rgba(0,0,0,0.05); }
     .loading { text-align: center; padding: 2rem; color: var(--primary-color-start); }
     .loading i { font-size: 2rem; animation: spin 1s linear infinite; }
     .player-wrapper { border-radius: 10px; overflow: hidden; margin-top: 1rem; }
-
-    .details-toggle {
-        display: inline-block;
-        margin-top: 1rem;
-        padding: 0.4rem 0.8rem;
-        background: rgba(0,0,0,0.05);
-        color: #555;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: background 0.2s;
-    }
-    .details-toggle:hover { background: rgba(0,0,0,0.1); }
-    .track-details {
-        display: none;
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(0,0,0,0.1);
-        font-size: 0.9rem;
-    }
+    .details-toggle { display: inline-block; margin-top: 1rem; padding: 0.4rem 0.8rem; background: var(--button-bg); color: var(--text-color); border-radius: 5px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+    .details-toggle:hover { background: var(--button-hover-bg); }
+    .track-details { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--details-border); font-size: 0.9rem; max-height: 150px; overflow-y: auto; }
     .track-details p { margin-bottom: 0.5rem; }
-    .track-details strong { color: var(--primary-color-end); }
+    .track-details strong { color: var(--details-strong-color); }
     .hidden { display: none !important; }
 
-    /* Footer */
     .footer { text-align: center; padding: 2rem; color: #fff; background: rgba(0,0,0,0.1); }
-
-    /* Animations */
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Responsive */
     @media (max-width: 1024px) {
       .app-body { flex-direction: column; }
       .sidebar { width: 100%; padding-bottom: 0; }
@@ -244,25 +255,20 @@
   </style>
 
 <script>
-    // --- UTILITY FUNCTIONS ---
+    // --- UTILITY FUNCTIONS --- (createMusicCard, loadPlayer, toggleDetails are unchanged from previous version)
 
     function createMusicCard(music) {
         const card = document.createElement('div');
         card.className = 'music-card';
         card.dataset.id = music.id;
-        
-        // 用於一般搜尋的數據
         card.dataset.searchText = `${music.title} ${music.subtitle || ''} ${music.id}`.toLowerCase();
-        
-        // 用於進階搜尋的數據
         if (music.details) {
             card.dataset.details = JSON.stringify(music.details);
         }
-
         let detailsHtml = '';
         if (music.details && Object.keys(music.details).length > 0) {
             const detailsContent = Object.entries(music.details)
-                .filter(([key]) => key !== 'track' && key !== 'album' && key !== 'date') // 過濾掉不需要顯示的欄位
+                .filter(([key]) => key !== 'track' && key !== 'album' && key !== 'date')
                 .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
                 .join('');
             
@@ -275,7 +281,6 @@
                 </div>
             `;
         }
-
         card.innerHTML = `
             <div class="card-header">
                 <div class="music-icon"><i class="fas fa-play-circle"></i></div>
@@ -299,9 +304,7 @@
     function loadPlayer(id, element) {
         const card = element.closest('.music-card');
         if (card.classList.contains('loaded')) return;
-
         element.innerHTML = `<div class="loading"><i class="fas fa-spinner"></i><p>正在加載...</p></div>`;
-        
         setTimeout(() => {
             const playerWrapper = document.createElement('div');
             playerWrapper.className = 'player-wrapper';
@@ -309,7 +312,6 @@
                 <iframe frameborder="0" border="0" marginwidth="0" marginheight="0" width="100%" height="86"
                     src="https://music.163.com/outchain/player?type=2&id=${id}&auto=0&height=66">
                 </iframe>`;
-            
             element.replaceWith(playerWrapper);
             card.classList.add('loaded');
             card.querySelector('.music-icon i').className = 'fas fa-stop-circle';
@@ -325,58 +327,127 @@
             : '<i class="fas fa-chevron-up"></i> 收合資訊';
     }
 
-
     // --- MAIN APPLICATION LOGIC ---
 
     document.addEventListener('DOMContentLoaded', function() {
+        // --- DOM ELEMENT SELECTION ---
         const albumContainer = document.getElementById('albumContainer');
         const toc = document.getElementById('toc');
         const searchInput = document.getElementById('searchInput');
         const searchFieldInput = document.getElementById('searchField');
         const searchValueInput = document.getElementById('searchValue');
+        const themeToggle = document.getElementById('themeToggle');
+        const sortToggle = document.getElementById('sortToggle');
+        
+        // --- STATE MANAGEMENT ---
+        let isSortReversed = false;
 
-        let allTracksData = []; // 用於儲存所有合併後的曲目資料
+        // --- THEME MANAGEMENT ---
+        function applyTheme(theme) {
+            const icon = themeToggle.querySelector('i');
+            if (theme === 'light') {
+                document.body.classList.add('light-theme');
+                icon.className = 'fas fa-moon';
+            } else {
+                document.body.classList.remove('light-theme');
+                icon.className = 'fas fa-sun';
+            }
+        }
+        function toggleTheme() {
+            const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        }
+        themeToggle.addEventListener('click', toggleTheme);
+        // Load saved theme on startup
+        const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
+        applyTheme(savedTheme);
 
+
+        // --- SORTING ---
+        function toggleAlbumSort() {
+            isSortReversed = !isSortReversed;
+            
+            const albumSections = Array.from(albumContainer.children);
+            const tocLinks = Array.from(toc.children);
+
+            albumSections.reverse();
+            tocLinks.reverse();
+
+            albumContainer.innerHTML = '';
+            toc.innerHTML = '';
+
+            albumSections.forEach(section => albumContainer.appendChild(section));
+            tocLinks.forEach(link => toc.appendChild(link));
+
+            sortToggle.innerHTML = isSortReversed 
+                ? '<i class="fas fa-sort-up"></i> 專輯排序 (新→舊)' 
+                : '<i class="fas fa-sort-down"></i> 專輯排序 (舊→新)';
+        }
+        sortToggle.addEventListener('click', toggleAlbumSort);
+
+
+        // --- SHORTCUTS ---
+        function setupShortcuts() {
+            const personnel = [
+                "苑迪萌", "姜以君", "丁谦", "赵鑫", "陈子敏", "尤裴佳", "刘越", "车子玉",
+                "路南", "王予曦", "李洋", "索德尔", "冯琳尧", "罗静怡", "康贞兰", "柯江",
+                "殷照晴", "吴泽熙", "沈梦吟", "月岛", "高欢", "周千朔", "彭龙飞"
+            ];
+            const personnelSelect = document.getElementById('shortcutPersonnel');
+            personnel.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                personnelSelect.appendChild(option);
+            });
+
+            document.getElementById('shortcutArrangement').addEventListener('click', () => {
+                searchFieldInput.value = "编曲 配器 编配 改编";
+                searchFieldInput.dispatchEvent(new Event('input'));
+            });
+
+            personnelSelect.addEventListener('change', (e) => {
+                if (!e.target.value) return;
+                const currentVal = searchValueInput.value.trim();
+                searchValueInput.value = currentVal ? `${currentVal} ${e.target.value}` : e.target.value;
+                e.target.value = ""; // Reset select
+                searchValueInput.dispatchEvent(new Event('input'));
+            });
+        }
+        
+
+        // --- INITIALIZATION ---
         async function initializeApp() {
             try {
-                // 1. 獲取所有詳細資訊
+                // Fetching and merging data logic (unchanged)
                 const lyricsManifestResponse = await fetch('lyrics/manifest_lyrics.json');
                 if (!lyricsManifestResponse.ok) throw new Error('無法加載 lyrics/manifest_lyrics.json');
                 const lyricsManifest = await lyricsManifestResponse.json();
-                
-                const detailPromises = lyricsManifest.albums.map(file => 
-                    fetch(`lyrics/${file}`).then(res => res.json())
-                );
+                const detailPromises = lyricsManifest.albums.map(file => fetch(`lyrics/${file}`).then(res => res.json()));
                 const settledDetails = await Promise.allSettled(detailPromises);
-
                 const trackDetailsMap = new Map();
                 settledDetails.forEach(result => {
                     if (result.status === 'fulfilled') {
                         result.value.forEach(albumData => {
                             albumData.tracks.forEach(track => {
-                                trackDetailsMap.set(track.track, track); // 使用曲目全名作為 key
+                                trackDetailsMap.set(track.track, track);
                             });
                         });
                     }
                 });
 
-                // 2. 讀取基礎曲目ID列表
                 const manifestResponse = await fetch('IDs/manifest.json');
                 if (!manifestResponse.ok) throw new Error('無法加載 IDs/manifest.json');
                 const manifest = await manifestResponse.json();
                 const albumFiles = manifest.albums;
-
                 const albumPromises = albumFiles.map(filename =>
                     fetch(`IDs/${filename}`)
                     .then(res => res.ok ? res.text() : Promise.reject(`無法加載 ${filename}`))
-                    .then(text => ({
-                        title: filename.replace('.txt', '').replace(/_/g, ' '),
-                        content: text
-                    }))
+                    .then(text => ({ title: filename.replace('.txt', '').replace(/_/g, ' '), content: text }))
                 );
                 const settledAlbums = await Promise.allSettled(albumPromises);
-
-                // 3. 解析並合併資料
                 const allAlbumData = settledAlbums
                     .filter(result => result.status === 'fulfilled')
                     .map(result => {
@@ -384,26 +455,16 @@
                         const tracks = album.content.trim().split('\n').map(line => {
                             const parts = line.split('\t');
                             if (parts.length < 2) return null;
-                            
                             const id = parts[0].trim();
                             const fullTitle = parts[1].trim();
-                            const [title, ...subtitleParts] = fullTitle.split(' '); // 假設英文名用空格分隔
-
-                            const mergedTrack = {
-                                id,
-                                title: title,
-                                subtitle: subtitleParts.join(' ') || null,
-                                details: trackDetailsMap.get(fullTitle) || null // 根據完整曲目名查找詳細資訊
-                            };
-                            allTracksData.push(mergedTrack); // 儲存到全域變數
-                            return mergedTrack;
+                            const [title, ...subtitleParts] = fullTitle.split(' ');
+                            return { id, title, subtitle: subtitleParts.join(' ') || null, details: trackDetailsMap.get(fullTitle) || null };
                         }).filter(Boolean);
-
                         return { title: album.title, tracks };
                     });
 
-                // 4. 渲染頁面
                 renderPage(allAlbumData);
+                setupShortcuts();
 
             } catch (error) {
                 albumContainer.innerHTML = `<p style="color: white; font-size: 1.2rem; text-align: center;">初始化失敗: ${error.message}</p>`;
@@ -411,18 +472,16 @@
             }
         }
 
+        // --- RENDER PAGE ---
         function renderPage(allAlbumData) {
             albumContainer.innerHTML = '';
             toc.innerHTML = '';
-
             if (allAlbumData.length === 0) {
                 albumContainer.innerHTML = `<p style="color: white; text-align: center;">沒有找到任何專輯資料。</p>`;
                 return;
             }
-
             allAlbumData.forEach((album, index) => {
                 const albumId = `album-${index}`;
-
                 const tocLink = document.createElement('a');
                 tocLink.href = `#${albumId}`;
                 tocLink.textContent = album.title;
@@ -458,37 +517,40 @@
                 albumContainer.appendChild(albumSection);
             });
         }
+        
+        // --- FILTERING LOGIC ---
+        function checkAdvancedQuery(details, fieldQuery, valueQuery) {
+            if (!fieldQuery || !valueQuery) return true;
+            if (!details) return false;
+
+            const fields = fieldQuery.toLowerCase().split(' ').filter(f => f);
+            const searchCorpus = Object.entries(details)
+                .filter(([key]) => fields.some(f => key.toLowerCase().includes(f)))
+                .map(([, val]) => String(val).toLowerCase())
+                .join(' ');
+            
+            if (!searchCorpus) return false;
+
+            return valueQuery.toUpperCase().split(' AND ').every(andPart => {
+                const orKeywords = andPart.trim().toLowerCase().split(' ').filter(k => k);
+                if (orKeywords.length === 0) return true;
+                return orKeywords.some(keyword => searchCorpus.includes(keyword));
+            });
+        }
 
         function updateFilter() {
             const generalQuery = searchInput.value.toLowerCase().trim();
-            const fieldQuery = searchFieldInput.value.toLowerCase().trim();
-            const valueQuery = searchValueInput.value.toLowerCase().trim();
+            const fieldQuery = searchFieldInput.value.trim();
+            const valueQuery = searchValueInput.value.trim();
             
             const allCards = document.querySelectorAll('.music-card');
             const allAlbumSections = document.querySelectorAll('.album-section');
 
             allCards.forEach(card => {
-                // 檢查一般搜尋
                 const generalMatch = card.dataset.searchText.includes(generalQuery);
-
-                // 檢查進階搜尋
-                let advancedMatch = true;
-                if (fieldQuery && valueQuery) {
-                    advancedMatch = false; // 預設為不匹配，除非找到
-                    const details = card.dataset.details ? JSON.parse(card.dataset.details) : null;
-                    if (details) {
-                       for (const key in details) {
-                           // 讓使用者可以用中文或英文模糊搜尋欄位
-                           if (key.toLowerCase().includes(fieldQuery)) {
-                               const value = String(details[key]).toLowerCase();
-                               if (value.includes(valueQuery)) {
-                                   advancedMatch = true;
-                                   break; // 找到一個匹配就跳出迴圈
-                               }
-                           }
-                       }
-                    }
-                }
+                
+                const details = card.dataset.details ? JSON.parse(card.dataset.details) : null;
+                const advancedMatch = checkAdvancedQuery(details, fieldQuery, valueQuery);
                 
                 const isVisible = generalMatch && advancedMatch;
                 card.classList.toggle('hidden', !isVisible);
