@@ -6,574 +6,526 @@
   <title>音樂播放器</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="dark-theme">
+
   <div class="page-container">
     <header class="header">
-      <div class="header-content">
-        <i class="fas fa-music header-icon"></i>
-        <h1 class="header-title">音樂播放器</h1>
-        <p class="header-subtitle">網易雲內嵌測試</p>
+      <div class="header-left">
+        <i class="fas fa-music"></i>
+        <h1>音樂播放器</h1>
       </div>
-      <button id="themeToggle" class="theme-toggle" aria-label="切換主題">
-        <i class="fas fa-sun"></i>
-      </button>
-      <div class="header-bg"></div>
+      <div class="search-controls">
+        <input type="search" id="searchInput" placeholder="搜尋曲目、ID 或專輯..." class="search-input">
+        <div class="advanced-search">
+          <select id="shortcutField" class="shortcut-select"></select>
+          <input type="search" id="searchField" placeholder="↑ 或手動輸入欄位" class="search-input-adv">
+          <input type="search" id="searchValue" placeholder="輸入搜尋內容 (AND/OR)" class="search-input-adv">
+          <select id="shortcutPersonnel" class="shortcut-select">
+            <option value="">— 或快捷選擇人員 —</option>
+          </select>
+        </div>
+      </div>
+      <div class="header-right">
+        <button id="themeToggle" class="theme-toggle" aria-label="切換主題">
+          <i class="fas fa-sun"></i>
+        </button>
+      </div>
     </header>
 
     <div class="app-body">
       <aside class="sidebar">
         <div class="sidebar-sticky">
-          <h2>專輯目錄</h2>
-          
-          <div class="controls-section">
-            <button id="sortToggle" class="sidebar-button">
-              <i class="fas fa-sort"></i> 切換專輯排序
+          <div class="sidebar-header">
+            <h2>專輯目錄</h2>
+            <button id="sortToggle" class="sort-toggle" title="切換專輯排序">
+              <i class="fas fa-sort"></i>
             </button>
           </div>
-          
-          <div class="search-section">
-            <input type="search" id="searchInput" placeholder="搜尋曲目、ID 或專輯...">
-          </div>
-
-          <div class="advanced-search-section">
-            <h4>進階搜尋</h4>
-            <input type="search" id="searchField" placeholder="搜尋欄位 (如: 作曲)">
-            <input type="search" id="searchValue" placeholder="搜尋內容 (AND/OR)">
-            <div class="shortcuts">
-              <button id="shortcutArrangement" class="shortcut-button">快捷輸入: 編曲</button>
-              <select id="shortcutPersonnel" class="shortcut-select">
-                <option value="">— 快捷選擇人員 —</option>
-              </select>
-            </div>
-          </div>
-
           <nav id="toc" class="table-of-contents"></nav>
         </div>
       </aside>
 
       <main class="main-content" id="albumContainer">
-        </main>
+        <div id="skeleton-loader">
+          <div class="skeleton-summary"></div>
+          <div class="music-grid">
+            <div class="skeleton-card"></div><div class="skeleton-card"></div>
+            <div class="skeleton-card"></div><div class="skeleton-card"></div>
+            <div class="skeleton-card"></div><div class="skeleton-card"></div>
+          </div>
+          <div class="skeleton-summary"></div>
+          <div class="music-grid">
+            <div class="skeleton-card"></div><div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+          </div>
+        </div>
+      </main>
     </div>
-
-    <footer class="footer">
-      <p>&copy; 2025 音樂播放器. 測試網頁.</p>
-    </footer>
   </div>
 
+  <aside id="details-sidebar" class="details-sidebar">
+    <button id="close-sidebar-btn" class="close-btn">&times;</button>
+    <div id="sidebar-content" class="sidebar-content"></div>
+  </aside>
+
+  <div id="sticky-player" class="sticky-player">
+    <button id="close-sticky-player-btn" class="close-btn mini-close-btn">&times;</button>
+    <div id="sticky-player-content"></div>
+  </div>
+
+
   <style>
+    /* --- THEMES --- */
     :root {
-      /* Dark Theme (Default) */
-      --primary-color-start: #667eea;
-      --primary-color-end: #764ba2;
-      --body-bg: linear-gradient(135deg, #232526 0%, #414345 100%);
-      --card-bg: rgba(45, 48, 53, 0.85);
-      --text-color: #e0e0e0;
-      --text-color-light: #9e9e9e;
-      --header-bg: rgba(0,0,0,0.2);
-      --sidebar-bg: rgba(0,0,0,0.15);
-      --input-bg: rgba(0,0,0,0.3);
-      --input-border: rgba(255,255,255,0.2);
-      --toc-hover-bg: rgba(255,255,255,0.1);
-      --shadow-color: rgba(0,0,0,0.4);
-      --details-border: rgba(255,255,255,0.1);
-      --details-strong-color: #9fa8da;
-      --button-bg: rgba(255,255,255,0.1);
-      --button-hover-bg: rgba(255,255,255,0.2);
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --transition-fast: 0.3s ease;
+      --transition-med: 0.4s ease;
+    }
+    .dark-theme {
+      --bg-gradient: linear-gradient(135deg, #232526 0%, #414345 100%);
+      --bg-header: rgba(28, 30, 32, 0.7);
+      --bg-sidebar: rgba(28, 30, 32, 0.5);
+      --bg-main-content: transparent;
+      --bg-card: rgba(45, 48, 53, 0.85);
+      --bg-card-hover: rgba(55, 58, 63, 0.9);
+      --bg-input: rgba(0, 0, 0, 0.3);
+      --bg-details-sidebar: #1e2022;
+      --text-primary: #e0e0e0;
+      --text-secondary: #9e9e9e;
+      --border-color: rgba(255, 255, 255, 0.15);
+      --shadow-color: rgba(0, 0, 0, 0.4);
+      --primary-accent: #9fa8da;
+    }
+    .light-theme {
+      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      --bg-header: rgba(255, 255, 255, 0.7);
+      --bg-sidebar: rgba(255, 255, 255, 0.5);
+      --bg-main-content: transparent;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-card-hover: rgba(255, 255, 255, 1);
+      --bg-input: rgba(0, 0, 0, 0.05);
+      --bg-details-sidebar: #f8f9fa;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --border-color: rgba(0, 0, 0, 0.1);
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --primary-accent: #5c6bc0;
     }
 
-    body.light-theme {
-      /* Light Theme */
-      --body-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --card-bg: rgba(255,255,255,0.95);
-      --text-color: #333;
-      --text-color-light: #666;
-      --header-bg: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-      --sidebar-bg: rgba(255,255,255,0.1);
-      --input-bg: rgba(255,255,255,0.2);
-      --input-border: rgba(255,255,255,0.3);
-      --toc-hover-bg: rgba(255,255,255,0.2);
-      --shadow-color: rgba(0,0,0,0.1);
-      --details-border: rgba(0,0,0,0.1);
-      --details-strong-color: var(--primary-color-end);
-      --button-bg: rgba(0,0,0,0.05);
-      --button-hover-bg: rgba(0,0,0,0.1);
-    }
-
+    /* --- BASE & LAYOUT --- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--body-bg);
-      min-height: 100vh;
-      color: var(--text-color);
-      line-height: 1.6;
-      transition: background 0.4s ease, color 0.4s ease;
+      font-family: var(--font-family);
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      transition: background var(--transition-med), color var(--transition-med);
     }
-
-    .page-container { display: flex; flex-direction: column; min-height: 100vh; }
-    
+    .page-container { display: flex; flex-direction: column; height: 100vh; }
     .header {
-      position: relative;
-      padding: 2rem;
-      text-align: center;
-      color: white;
-      background: var(--header-bg);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .theme-toggle {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 1.2rem;
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: background 0.3s;
-    }
-    .theme-toggle:hover { background: rgba(255,255,255,0.2); }
-    .header-icon { font-size: 2.5rem; margin-bottom: 0.5rem; animation: pulse 2s ease-in-out infinite; }
-    .header-title { font-size: 2.2rem; }
-    .header-subtitle { font-size: 1.1rem; opacity: 0.9; }
-
-    .app-body { display: flex; flex: 1; max-width: 1600px; margin: 0 auto; width: 100%; }
-    .sidebar { width: 320px; padding: 2rem; flex-shrink: 0; }
-    .sidebar-sticky {
-      position: sticky;
-      top: 2rem;
-      background: var(--sidebar-bg);
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-header);
       backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 1.5rem;
-      color: white;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      gap: 1.5rem;
     }
-    .sidebar h2 { margin-bottom: 1rem; font-weight: 600; }
-    .controls-section { margin-bottom: 1.5rem; }
-    .sidebar-button {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background: var(--button-bg);
-      border: 1px solid var(--input-border);
-      color: white;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.2s;
+    .app-body { display: flex; flex: 1; overflow: hidden; }
+    .sidebar { width: 280px; flex-shrink: 0; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); padding: 1rem; }
+    .sidebar-sticky { display: flex; flex-direction: column; height: 100%; }
+    .main-content { flex: 1; overflow-y: auto; padding: 2rem; }
+
+    /* --- HEADER & CONTROLS --- */
+    .header-left { display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; white-space: nowrap; }
+    .search-controls { display: flex; flex-grow: 1; align-items: center; gap: 0.5rem; }
+    .advanced-search { display: flex; align-items: center; gap: 0.5rem; border-left: 1px solid var(--border-color); padding-left: 0.75rem; margin-left: 0.25rem;}
+    .search-input, .search-input-adv, .shortcut-select {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
     }
-    .sidebar-button:hover { background: var(--button-hover-bg); }
+    .search-input { width: 250px; }
+    .search-input-adv { width: 180px; }
+    .shortcut-select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239e9e9e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 2rem;}
+    .shortcut-select option { background: var(--bg-details-sidebar); color: var(--text-primary); }
+    .header-right .theme-toggle { background: none; border: none; color: var(--text-primary); font-size: 1.2rem; cursor: pointer; padding: 0.5rem; }
+
+    /* --- LEFT SIDEBAR --- */
+    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0 0.5rem; }
+    .sidebar-header h2 { font-size: 1.2rem; }
+    .sort-toggle { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; }
+    .table-of-contents { flex: 1; overflow-y: auto; }
+    .table-of-contents a { display: block; padding: 0.5rem; text-decoration: none; color: var(--text-secondary); border-radius: 5px; transition: all 0.2s ease; font-size: 0.95rem;}
+    .table-of-contents a:hover { background: var(--border-color); color: var(--text-primary); }
     
-    .search-section, .advanced-search-section { margin-bottom: 1.5rem; }
-    .advanced-search-section h4 { margin-bottom: 0.75rem; font-weight: 500; }
-
-    #searchInput, #searchField, #searchValue {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--input-border);
-      background: var(--input-bg);
-      border-radius: 8px;
-      color: white;
-      font-size: 1rem;
-    }
-    #searchField { margin-bottom: 0.5rem; }
-    #searchInput::placeholder, #searchField::placeholder, #searchValue::placeholder { color: rgba(255,255,255,0.7); }
-    
-    .shortcuts { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
-    .shortcut-button, .shortcut-select {
-        padding: 0.5rem;
-        background: var(--button-bg);
-        border: 1px solid var(--input-border);
-        color: white;
-        border-radius: 5px;
-        font-size: 0.9rem;
-        text-align: left;
-        cursor: pointer;
-        width: 100%;
-    }
-    .shortcut-select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.7rem center; background-size: 1em; }
-    .shortcut-select option { background: #333; color: white; }
-
-    .table-of-contents { list-style: none; max-height: 45vh; overflow-y: auto; }
-    .table-of-contents a { display: block; padding: 0.5rem; color: rgba(255,255,255,0.85); text-decoration: none; border-radius: 5px; transition: all 0.2s ease; }
-    .table-of-contents a:hover { background: var(--toc-hover-bg); color: white; }
-
-    .main-content { flex: 1; padding: 2rem; min-width: 0; }
+    /* --- MAIN CONTENT & CARDS --- */
     .album-section { margin-bottom: 2rem; }
-    .album-summary { font-size: 1.8rem; font-weight: 600; padding: 1rem; cursor: pointer; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); color: white; border-radius: 15px; transition: background 0.3s ease; }
-    .album-summary:hover { background: rgba(255,255,255,0.2); }
-    .album-section[open] > .album-summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-    .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; padding: 2rem; background: rgba(255,255,255,0.05); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
-
+    .album-summary { font-size: 1.8rem; font-weight: 600; padding: 1rem 0; color: var(--text-primary); }
+    .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
     .music-card {
-      background: var(--card-bg);
-      border-radius: 20px;
+      background: var(--bg-card);
+      border-radius: 12px;
       padding: 1.5rem;
+      border: 1px solid var(--border-color);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .music-card:hover { transform: translateY(-5px); background: var(--bg-card-hover); box-shadow: 0 10px 30px var(--shadow-color); }
+    .music-icon { width: 45px; height: 45px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .music-icon i { color: #fff; font-size: 1.4rem; }
+    .track-info { min-width: 0; }
+    .track-info h3 { font-size: 1.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .track-info p { font-size: 0.9rem; color: var(--text-secondary); }
+    
+    /* --- DETAILS SIDEBAR (RIGHT) --- */
+    .details-sidebar {
+      position: fixed;
+      top: 0; right: 0;
+      width: 400px;
+      height: 100%;
+      background: var(--bg-details-sidebar);
+      box-shadow: -10px 0 30px var(--shadow-color);
+      transform: translateX(100%);
+      transition: transform var(--transition-fast);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+    .details-sidebar.is-open { transform: translateX(0); }
+    .sidebar-content { padding: 1.5rem; padding-top: 4rem; overflow-y: auto; }
+    .sidebar-content h2 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .sidebar-content .track-id { color: var(--text-secondary); margin-bottom: 1.5rem; }
+    .sidebar-content .details-list p { margin-bottom: 0.75rem; font-size: 0.95rem; }
+    .sidebar-content .details-list strong { color: var(--primary-accent); }
+    .sidebar-content .player-container { margin-top: 1.5rem; }
+    .load-player-btn { background: var(--primary-accent); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 1rem; cursor: pointer; width: 100%; }
+    .close-btn { position: absolute; top: 0.75rem; right: 1rem; background: none; border: none; font-size: 2rem; color: var(--text-secondary); cursor: pointer; }
+    
+    /* --- STICKY PLAYER --- */
+    .sticky-player {
+      position: fixed;
+      bottom: 1.5rem; right: 1.5rem;
+      width: 350px;
+      background: var(--bg-details-sidebar);
+      border-radius: 12px;
       box-shadow: 0 10px 30px var(--shadow-color);
-      border: 1px solid var(--input-border);
-      transition: all 0.3s ease;
+      border: 1px solid var(--border-color);
+      z-index: 1001;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
+      pointer-events: none;
+    }
+    .sticky-player.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .mini-close-btn { top: 0; right: 0.25rem; font-size: 1.5rem; }
+
+    /* --- SKELETON LOADER --- */
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
+    #skeleton-loader .skeleton-summary { width: 40%; height: 3rem; margin-bottom: 1.5rem; background: var(--bg-card); border-radius: 8px; }
+    #skeleton-loader .skeleton-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      height: 80px;
       position: relative;
       overflow: hidden;
     }
-    .music-card:hover { transform: translateY(-5px); }
-    .card-header { display: flex; align-items: center; margin-bottom: 1rem; }
-    .music-icon { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; flex-shrink: 0; }
-    .music-icon i { font-size: 1.5rem; color: #fff; }
-    .track-info { min-width: 0; }
-    .track-info h3 { font-size: 1.3rem; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-    .track-id { color: var(--text-color-light); font-size: 0.9rem; }
-    .track-title-en { color: #888; font-size: 0.85rem; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-    
-    .card-body { border-top: 1px solid var(--details-border); padding-top: 1rem; }
-    .click-to-load { text-align: center; padding: 1.5rem; color: var(--text-color-light); background: rgba(0,0,0,0.2); border-radius: 10px; border: 2px dashed var(--input-border); cursor: pointer; }
-    body.light-theme .click-to-load { background: rgba(0,0,0,0.05); }
-    .loading { text-align: center; padding: 2rem; color: var(--primary-color-start); }
-    .loading i { font-size: 2rem; animation: spin 1s linear infinite; }
-    .player-wrapper { border-radius: 10px; overflow: hidden; margin-top: 1rem; }
-    .details-toggle { display: inline-block; margin-top: 1rem; padding: 0.4rem 0.8rem; background: var(--button-bg); color: var(--text-color); border-radius: 5px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
-    .details-toggle:hover { background: var(--button-hover-bg); }
-    .track-details { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--details-border); font-size: 0.9rem; max-height: 150px; overflow-y: auto; }
-    .track-details p { margin-bottom: 0.5rem; }
-    .track-details strong { color: var(--details-strong-color); }
+    #skeleton-loader .skeleton-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+
     .hidden { display: none !important; }
 
-    .footer { text-align: center; padding: 2rem; color: #fff; background: rgba(0,0,0,0.1); }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    @media (max-width: 1024px) {
-      .app-body { flex-direction: column; }
-      .sidebar { width: 100%; padding-bottom: 0; }
-      .sidebar-sticky { position: static; }
-      .table-of-contents { max-height: 200px; }
+    @media (max-width: 1200px) {
+      .advanced-search { flex-direction: column; align-items: stretch; border-left: none; padding-left: 0; margin-left: 0;}
+      .search-controls { flex-wrap: wrap; }
     }
+    @media (max-width: 768px) {
+      .header { flex-direction: column; align-items: stretch; height: auto; }
+      .app-body { flex-direction: column; }
+      .sidebar { width: 100%; height: 250px; border-right: none; border-bottom: 1px solid var(--border-color); }
+      .details-sidebar { width: 100%; }
+    }
+
   </style>
 
 <script>
-    // --- UTILITY FUNCTIONS --- (createMusicCard, loadPlayer, toggleDetails are unchanged from previous version)
+document.addEventListener('DOMContentLoaded', function() {
+    // --- DOM ELEMENT SELECTION ---
+    const albumContainer = document.getElementById('albumContainer');
+    const toc = document.getElementById('toc');
+    const searchInput = document.getElementById('searchInput');
+    const searchFieldInput = document.getElementById('searchField');
+    const searchValueInput = document.getElementById('searchValue');
+    const themeToggle = document.getElementById('themeToggle');
+    const sortToggle = document.getElementById('sortToggle');
+    const detailsSidebar = document.getElementById('details-sidebar');
+    const sidebarContent = document.getElementById('sidebar-content');
+    const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+    const stickyPlayer = document.getElementById('sticky-player');
+    const stickyPlayerContent = document.getElementById('sticky-player-content');
+    const closeStickyPlayerBtn = document.getElementById('close-sticky-player-btn');
+    const shortcutFieldSelect = document.getElementById('shortcutField');
+    
+    // --- STATE MANAGEMENT ---
+    let isSortReversed = false;
+    let allAlbumData = [];
+    
+    // --- THEME MANAGEMENT ---
+    function applyTheme(theme) {
+        document.body.className = theme === 'light' ? 'light-theme' : 'dark-theme';
+        themeToggle.querySelector('i').className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+    function toggleTheme() {
+        const newTheme = document.body.classList.contains('light-theme') ? 'dark' : 'light';
+        localStorage.setItem('theme', newTheme);
+        applyTheme(newTheme);
+    }
+    themeToggle.addEventListener('click', toggleTheme);
+    applyTheme(localStorage.getItem('theme') || 'dark');
 
-    function createMusicCard(music) {
-        const card = document.createElement('div');
-        card.className = 'music-card';
-        card.dataset.id = music.id;
-        card.dataset.searchText = `${music.title} ${music.subtitle || ''} ${music.id}`.toLowerCase();
+    // --- SORTING ---
+    function toggleAlbumSort() {
+        isSortReversed = !isSortReversed;
+        const albumSections = Array.from(albumContainer.querySelectorAll('.album-section'));
+        const tocLinks = Array.from(toc.children);
+        albumSections.reverse();
+        tocLinks.reverse();
+        albumContainer.innerHTML = '';
+        toc.innerHTML = '';
+        albumSections.forEach(section => albumContainer.appendChild(section));
+        tocLinks.forEach(link => toc.appendChild(link));
+        sortToggle.title = isSortReversed ? '專輯排序 (新→舊)' : '專輯排序 (舊→新)';
+    }
+    sortToggle.addEventListener('click', toggleAlbumSort);
+    
+    // --- DETAILS SIDEBAR & PLAYER ---
+    function showDetails(music) {
+        let detailsListHtml = 'No details available.';
         if (music.details) {
-            card.dataset.details = JSON.stringify(music.details);
-        }
-        let detailsHtml = '';
-        if (music.details && Object.keys(music.details).length > 0) {
-            const detailsContent = Object.entries(music.details)
-                .filter(([key]) => key !== 'track' && key !== 'album' && key !== 'date')
+            detailsListHtml = Object.entries(music.details)
+                .filter(([key]) => !['track', 'album', 'date'].includes(key))
                 .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
                 .join('');
-            
-            detailsHtml = `
-                <span class="details-toggle" onclick="toggleDetails(this)">
-                    <i class="fas fa-info-circle"></i> 詳細資訊
-                </span>
-                <div class="track-details">
-                    ${detailsContent}
-                </div>
-            `;
         }
-        card.innerHTML = `
-            <div class="card-header">
-                <div class="music-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="track-info">
-                    <h3 class="track-title">${music.title}</h3>
-                    <p class="track-id">ID: ${music.id}</p>
-                    ${music.subtitle ? `<p class="track-title-en">${music.subtitle}</p>` : ''}
-                </div>
-            </div>
-            ${detailsHtml}
-            <div class="card-body">
-              <div class="click-to-load" onclick="loadPlayer('${music.id}', this)">
-                  <i class="fas fa-music"></i>
-                  <p>點擊加載播放器</p>
-              </div>
+        
+        sidebarContent.innerHTML = `
+            <h2>${music.title}</h2>
+            <p class="track-id">ID: ${music.id}</p>
+            <div class="details-list">${detailsListHtml}</div>
+            <div class="player-container">
+                <button class="load-player-btn" data-id="${music.id}">加載播放器</button>
             </div>
         `;
-        return card;
+        detailsSidebar.classList.add('is-open');
     }
 
-    function loadPlayer(id, element) {
-        const card = element.closest('.music-card');
-        if (card.classList.contains('loaded')) return;
-        element.innerHTML = `<div class="loading"><i class="fas fa-spinner"></i><p>正在加載...</p></div>`;
-        setTimeout(() => {
-            const playerWrapper = document.createElement('div');
-            playerWrapper.className = 'player-wrapper';
-            playerWrapper.innerHTML = `
-                <iframe frameborder="0" border="0" marginwidth="0" marginheight="0" width="100%" height="86"
-                    src="https://music.163.com/outchain/player?type=2&id=${id}&auto=0&height=66">
-                </iframe>`;
-            element.replaceWith(playerWrapper);
-            card.classList.add('loaded');
-            card.querySelector('.music-icon i').className = 'fas fa-stop-circle';
-        }, 500);
+    function loadPlayer(id, container) {
+        const playerHtml = `
+            <iframe frameborder="0" border="0" marginwidth="0" marginheight="0" width="100%" height="86"
+                src="https://music.163.com/outchain/player?type=2&id=${id}&auto=1&height=66">
+            </iframe>`;
+        container.innerHTML = playerHtml;
+        stickyPlayerContent.innerHTML = playerHtml; // Clone to sticky player
+        stickyPlayer.classList.add('is-visible');
     }
 
-    function toggleDetails(element) {
-        const detailsDiv = element.nextElementSibling;
-        const isDisplayed = detailsDiv.style.display === 'block';
-        detailsDiv.style.display = isDisplayed ? 'none' : 'block';
-        element.innerHTML = isDisplayed 
-            ? '<i class="fas fa-info-circle"></i> 詳細資訊'
-            : '<i class="fas fa-chevron-up"></i> 收合資訊';
+    detailsSidebar.addEventListener('click', (e) => {
+        if (e.target.classList.contains('load-player-btn')) {
+            const id = e.target.dataset.id;
+            const container = e.target.parentElement;
+            loadPlayer(id, container);
+        }
+    });
+    
+    closeSidebarBtn.addEventListener('click', () => detailsSidebar.classList.remove('is-open'));
+    closeStickyPlayerBtn.addEventListener('click', () => {
+        stickyPlayer.classList.remove('is-visible');
+        stickyPlayerContent.innerHTML = '';
+    });
+    
+    // --- SHORTCUTS & SEARCH SETUP ---
+    function setupShortcuts(fieldKeys) {
+        // Field Selector
+        shortcutFieldSelect.innerHTML = '<option value="">快捷選擇欄位</option>';
+        const specialFields = {
+            "作曲": "作曲",
+            "編曲": "编曲 配器 编配 改编"
+        };
+        Object.entries(specialFields).forEach(([name, value]) => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = name;
+            shortcutFieldSelect.appendChild(option);
+        });
+        const otherKeys = fieldKeys.filter(k => !k.match(/作曲|编曲|配器|编配|改编/)).sort();
+        otherKeys.forEach(key => {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = key;
+            shortcutFieldSelect.appendChild(option);
+        });
+        shortcutFieldSelect.addEventListener('change', (e) => {
+            if (!e.target.value) return;
+            searchFieldInput.value = e.target.value;
+            updateFilter();
+        });
+
+        // Personnel Selector
+        const personnelSelect = document.getElementById('shortcutPersonnel');
+        const personnel = ["苑迪萌", "姜以君", "丁谦", "赵鑫", "陈子敏", "尤裴佳", "刘越", "车子玉", "路南", "王予曦", "李洋", "索德尔", "冯琳尧", "罗静怡", "康贞兰", "柯江", "殷照晴", "吴泽熙", "沈梦吟", "月岛", "高欢", "周千朔", "彭龙飞"];
+        personnel.forEach(name => {
+            personnelSelect.appendChild(new Option(name, name));
+        });
+        personnelSelect.addEventListener('change', (e) => {
+            if (!e.target.value) return;
+            searchValueInput.value = searchValueInput.value.trim() ? `${searchValueInput.value.trim()} ${e.target.value}` : e.target.value;
+            e.target.value = "";
+            updateFilter();
+        });
     }
-
-    // --- MAIN APPLICATION LOGIC ---
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- DOM ELEMENT SELECTION ---
-        const albumContainer = document.getElementById('albumContainer');
-        const toc = document.getElementById('toc');
-        const searchInput = document.getElementById('searchInput');
-        const searchFieldInput = document.getElementById('searchField');
-        const searchValueInput = document.getElementById('searchValue');
-        const themeToggle = document.getElementById('themeToggle');
-        const sortToggle = document.getElementById('sortToggle');
-        
-        // --- STATE MANAGEMENT ---
-        let isSortReversed = false;
-
-        // --- THEME MANAGEMENT ---
-        function applyTheme(theme) {
-            const icon = themeToggle.querySelector('i');
-            if (theme === 'light') {
-                document.body.classList.add('light-theme');
-                icon.className = 'fas fa-moon';
-            } else {
-                document.body.classList.remove('light-theme');
-                icon.className = 'fas fa-sun';
-            }
-        }
-        function toggleTheme() {
-            const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            localStorage.setItem('theme', newTheme);
-            applyTheme(newTheme);
-        }
-        themeToggle.addEventListener('click', toggleTheme);
-        // Load saved theme on startup
-        const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
-        applyTheme(savedTheme);
-
-
-        // --- SORTING ---
-        function toggleAlbumSort() {
-            isSortReversed = !isSortReversed;
-            
-            const albumSections = Array.from(albumContainer.children);
-            const tocLinks = Array.from(toc.children);
-
-            albumSections.reverse();
-            tocLinks.reverse();
-
-            albumContainer.innerHTML = '';
-            toc.innerHTML = '';
-
-            albumSections.forEach(section => albumContainer.appendChild(section));
-            tocLinks.forEach(link => toc.appendChild(link));
-
-            sortToggle.innerHTML = isSortReversed 
-                ? '<i class="fas fa-sort-up"></i> 專輯排序 (新→舊)' 
-                : '<i class="fas fa-sort-down"></i> 專輯排序 (舊→新)';
-        }
-        sortToggle.addEventListener('click', toggleAlbumSort);
-
-
-        // --- SHORTCUTS ---
-        function setupShortcuts() {
-            const personnel = [
-                "苑迪萌", "姜以君", "丁谦", "赵鑫", "陈子敏", "尤裴佳", "刘越", "车子玉",
-                "路南", "王予曦", "李洋", "索德尔", "冯琳尧", "罗静怡", "康贞兰", "柯江",
-                "殷照晴", "吴泽熙", "沈梦吟", "月岛", "高欢", "周千朔", "彭龙飞"
-            ];
-            const personnelSelect = document.getElementById('shortcutPersonnel');
-            personnel.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                personnelSelect.appendChild(option);
-            });
-
-            document.getElementById('shortcutArrangement').addEventListener('click', () => {
-                searchFieldInput.value = "编曲 配器 编配 改编";
-                searchFieldInput.dispatchEvent(new Event('input'));
-            });
-
-            personnelSelect.addEventListener('change', (e) => {
-                if (!e.target.value) return;
-                const currentVal = searchValueInput.value.trim();
-                searchValueInput.value = currentVal ? `${currentVal} ${e.target.value}` : e.target.value;
-                e.target.value = ""; // Reset select
-                searchValueInput.dispatchEvent(new Event('input'));
-            });
-        }
-        
-
-        // --- INITIALIZATION ---
-        async function initializeApp() {
-            try {
-                // Fetching and merging data logic (unchanged)
-                const lyricsManifestResponse = await fetch('lyrics/manifest_lyrics.json');
-                if (!lyricsManifestResponse.ok) throw new Error('無法加載 lyrics/manifest_lyrics.json');
-                const lyricsManifest = await lyricsManifestResponse.json();
-                const detailPromises = lyricsManifest.albums.map(file => fetch(`lyrics/${file}`).then(res => res.json()));
-                const settledDetails = await Promise.allSettled(detailPromises);
-                const trackDetailsMap = new Map();
-                settledDetails.forEach(result => {
-                    if (result.status === 'fulfilled') {
-                        result.value.forEach(albumData => {
-                            albumData.tracks.forEach(track => {
-                                trackDetailsMap.set(track.track, track);
-                            });
+    
+    // --- INITIALIZATION ---
+    async function initializeApp() {
+        try {
+            const lyricsManifestResponse = await fetch('lyrics/manifest_lyrics.json');
+            const lyricsManifest = await lyricsManifestResponse.json();
+            const detailPromises = lyricsManifest.albums.map(file => fetch(`lyrics/${file}`).then(res => res.json()));
+            const settledDetails = await Promise.allSettled(detailPromises);
+            const trackDetailsMap = new Map();
+            const fieldKeys = new Set();
+            settledDetails.forEach(result => {
+                if (result.status === 'fulfilled') {
+                    result.value.forEach(albumData => {
+                        albumData.tracks.forEach(track => {
+                            trackDetailsMap.set(track.track, track);
+                            Object.keys(track).forEach(key => fieldKeys.add(key));
                         });
-                    }
-                });
-
-                const manifestResponse = await fetch('IDs/manifest.json');
-                if (!manifestResponse.ok) throw new Error('無法加載 IDs/manifest.json');
-                const manifest = await manifestResponse.json();
-                const albumFiles = manifest.albums;
-                const albumPromises = albumFiles.map(filename =>
-                    fetch(`IDs/${filename}`)
-                    .then(res => res.ok ? res.text() : Promise.reject(`無法加載 ${filename}`))
-                    .then(text => ({ title: filename.replace('.txt', '').replace(/_/g, ' '), content: text }))
-                );
-                const settledAlbums = await Promise.allSettled(albumPromises);
-                const allAlbumData = settledAlbums
-                    .filter(result => result.status === 'fulfilled')
-                    .map(result => {
-                        const album = result.value;
-                        const tracks = album.content.trim().split('\n').map(line => {
-                            const parts = line.split('\t');
-                            if (parts.length < 2) return null;
-                            const id = parts[0].trim();
-                            const fullTitle = parts[1].trim();
-                            const [title, ...subtitleParts] = fullTitle.split(' ');
-                            return { id, title, subtitle: subtitleParts.join(' ') || null, details: trackDetailsMap.get(fullTitle) || null };
-                        }).filter(Boolean);
-                        return { title: album.title, tracks };
                     });
-
-                renderPage(allAlbumData);
-                setupShortcuts();
-
-            } catch (error) {
-                albumContainer.innerHTML = `<p style="color: white; font-size: 1.2rem; text-align: center;">初始化失敗: ${error.message}</p>`;
-                console.error('初始化失敗:', error);
-            }
-        }
-
-        // --- RENDER PAGE ---
-        function renderPage(allAlbumData) {
-            albumContainer.innerHTML = '';
-            toc.innerHTML = '';
-            if (allAlbumData.length === 0) {
-                albumContainer.innerHTML = `<p style="color: white; text-align: center;">沒有找到任何專輯資料。</p>`;
-                return;
-            }
-            allAlbumData.forEach((album, index) => {
-                const albumId = `album-${index}`;
-                const tocLink = document.createElement('a');
-                tocLink.href = `#${albumId}`;
-                tocLink.textContent = album.title;
-                tocLink.onclick = (e) => {
-                    e.preventDefault();
-                    const target = document.getElementById(albumId);
-                    if (target) {
-                        target.open = true;
-                        target.scrollIntoView({ behavior: 'smooth' });
-                    }
-                };
-                toc.appendChild(tocLink);
-                
-                const albumSection = document.createElement('details');
-                albumSection.className = 'album-section';
-                albumSection.id = albumId;
-                albumSection.open = true;
-                albumSection.dataset.albumTitle = album.title.toLowerCase();
-
-                const summary = document.createElement('summary');
-                summary.className = 'album-summary';
-                summary.textContent = album.title;
-                
-                const musicGrid = document.createElement('div');
-                musicGrid.className = 'music-grid';
-
-                album.tracks.forEach(track => {
-                    musicGrid.appendChild(createMusicCard(track));
-                });
-                
-                albumSection.appendChild(summary);
-                albumSection.appendChild(musicGrid);
-                albumContainer.appendChild(albumSection);
-            });
-        }
-        
-        // --- FILTERING LOGIC ---
-        function checkAdvancedQuery(details, fieldQuery, valueQuery) {
-            if (!fieldQuery || !valueQuery) return true;
-            if (!details) return false;
-
-            const fields = fieldQuery.toLowerCase().split(' ').filter(f => f);
-            const searchCorpus = Object.entries(details)
-                .filter(([key]) => fields.some(f => key.toLowerCase().includes(f)))
-                .map(([, val]) => String(val).toLowerCase())
-                .join(' ');
-            
-            if (!searchCorpus) return false;
-
-            return valueQuery.toUpperCase().split(' AND ').every(andPart => {
-                const orKeywords = andPart.trim().toLowerCase().split(' ').filter(k => k);
-                if (orKeywords.length === 0) return true;
-                return orKeywords.some(keyword => searchCorpus.includes(keyword));
-            });
-        }
-
-        function updateFilter() {
-            const generalQuery = searchInput.value.toLowerCase().trim();
-            const fieldQuery = searchFieldInput.value.trim();
-            const valueQuery = searchValueInput.value.trim();
-            
-            const allCards = document.querySelectorAll('.music-card');
-            const allAlbumSections = document.querySelectorAll('.album-section');
-
-            allCards.forEach(card => {
-                const generalMatch = card.dataset.searchText.includes(generalQuery);
-                
-                const details = card.dataset.details ? JSON.parse(card.dataset.details) : null;
-                const advancedMatch = checkAdvancedQuery(details, fieldQuery, valueQuery);
-                
-                const isVisible = generalMatch && advancedMatch;
-                card.classList.toggle('hidden', !isVisible);
-            });
-
-            allAlbumSections.forEach(section => {
-                const hasVisibleCards = section.querySelector('.music-card:not(.hidden)');
-                const albumTitleMatch = section.dataset.albumTitle.includes(generalQuery);
-                const isSectionVisible = hasVisibleCards || (albumTitleMatch && !fieldQuery && !valueQuery);
-                
-                section.classList.toggle('hidden', !isSectionVisible);
-                if ((generalQuery || (fieldQuery && valueQuery)) && isSectionVisible) {
-                    section.open = true;
                 }
             });
+
+            const manifestResponse = await fetch('IDs/manifest.json');
+            const manifest = await manifestResponse.json();
+            const albumPromises = manifest.albums.map(filename =>
+                fetch(`IDs/${filename}`).then(res => res.text()).then(text => ({ title: filename.replace('.txt', ''), content: text }))
+            );
+            const settledAlbums = await Promise.allSettled(settledAlbums);
+            
+            allAlbumData = settledAlbums
+                .filter(result => result.status === 'fulfilled')
+                .map(result => {
+                    const album = result.value;
+                    const tracks = album.content.trim().split('\n').map(line => {
+                        const parts = line.split('\t');
+                        if (parts.length < 2) return null;
+                        const id = parts[0].trim();
+                        const fullTitle = parts[1].trim();
+                        return { id, fullTitle, details: trackDetailsMap.get(fullTitle) || { track: fullTitle } };
+                    }).filter(Boolean);
+                    return { title: album.title, tracks };
+                });
+
+            renderPage(allAlbumData);
+            setupShortcuts(Array.from(fieldKeys));
+
+        } catch (error) {
+            albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;
         }
+    }
 
-        searchInput.addEventListener('input', updateFilter);
-        searchFieldInput.addEventListener('input', updateFilter);
-        searchValueInput.addEventListener('input', updateFilter);
+    // --- RENDER PAGE ---
+    function renderPage(data) {
+        albumContainer.innerHTML = '';
+        toc.innerHTML = '';
+        data.forEach((album, index) => {
+            const albumId = `album-${index}`;
+            const tocLink = document.createElement('a');
+            tocLink.href = `#${albumId}`;
+            tocLink.textContent = album.title;
+            toc.appendChild(tocLink);
+            
+            const albumSection = document.createElement('section');
+            albumSection.className = 'album-section';
+            albumSection.id = albumId;
+            albumSection.dataset.albumTitle = album.title.toLowerCase();
 
-        initializeApp();
-    });
+            const summary = document.createElement('h2');
+            summary.className = 'album-summary';
+            summary.textContent = album.title;
+            
+            const musicGrid = document.createElement('div');
+            musicGrid.className = 'music-grid';
+            album.tracks.forEach(track => {
+                const card = document.createElement('div');
+                card.className = 'music-card';
+                card.innerHTML = `
+                    <div class="music-icon"><i class="fas fa-play"></i></div>
+                    <div class="track-info">
+                        <h3>${track.details.track.split(' ')[0]}</h3>
+                        <p>${track.details.track.split(' ').slice(1).join(' ')}</p>
+                    </div>`;
+                card.dataset.searchText = track.fullTitle.toLowerCase();
+                if (track.details) card.dataset.details = JSON.stringify(track.details);
+                card.addEventListener('click', () => showDetails({
+                    id: track.id,
+                    title: track.fullTitle,
+                    details: track.details
+                }));
+                musicGrid.appendChild(card);
+            });
+            
+            albumSection.appendChild(summary);
+            albumSection.appendChild(musicGrid);
+            albumContainer.appendChild(albumSection);
+        });
+    }
+    
+    // --- FILTERING LOGIC ---
+    function checkAdvancedQuery(details, fieldQuery, valueQuery) {
+        if (!fieldQuery || !valueQuery) return true;
+        if (!details) return false;
+        const fields = fieldQuery.toLowerCase().split(' ').filter(f => f);
+        const searchCorpus = Object.entries(details)
+            .filter(([key]) => fields.some(f => key.toLowerCase().includes(f)))
+            .map(([, val]) => String(val).toLowerCase()).join(' ');
+        if (!searchCorpus) return false;
+        return valueQuery.toUpperCase().split(' AND ').every(andPart => 
+            (andPart.trim().toLowerCase().split(' ').filter(k => k)).some(keyword => searchCorpus.includes(keyword))
+        );
+    }
+
+    function updateFilter() {
+        const generalQuery = searchInput.value.toLowerCase().trim();
+        const fieldQuery = searchFieldInput.value.trim();
+        const valueQuery = searchValueInput.value.trim();
+        
+        document.querySelectorAll('.album-section').forEach(section => {
+            let hasVisibleCards = false;
+            section.querySelectorAll('.music-card').forEach(card => {
+                const generalMatch = card.dataset.searchText.includes(generalQuery);
+                const details = card.dataset.details ? JSON.parse(card.dataset.details) : null;
+                const advancedMatch = checkAdvancedQuery(details, fieldQuery, valueQuery);
+                const isVisible = generalMatch && advancedMatch;
+                card.classList.toggle('hidden', !isVisible);
+                if (isVisible) hasVisibleCards = true;
+            });
+            const albumTitleMatch = section.dataset.albumTitle.includes(generalQuery);
+            section.classList.toggle('hidden', !hasVisibleCards && !(albumTitleMatch && !fieldQuery && !valueQuery));
+        });
+    }
+
+    [searchInput, searchFieldInput, searchValueInput].forEach(el => el.addEventListener('input', updateFilter));
+    
+    initializeApp();
+});
 </script>
 
 </body>
