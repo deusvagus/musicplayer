@@ -62,6 +62,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- DETAILS SIDEBAR & PLAYER ---
     function showDetails(track, albumId) {
+        // Prevent showing an empty panel
+        if (!track || !track.details) {
+          return;
+        }
+
         if (!detailsSidebar || !sidebarContent) return;
 
         let detailsListHtml = 'No details available.';
@@ -98,6 +103,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function closeDetailsSidebar() {
+        detailsSidebar.classList.remove('is-open');
+        if (detailsBackdrop) {
+            detailsBackdrop.classList.remove('is-visible');
+        }
+    }
+    
     function loadPlayer(id) {
         if (!stickyPlayer || !stickyPlayerContent) return;
         const playerHtml = `
@@ -117,19 +129,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (closeSidebarBtn) {
-        closeSidebarBtn.addEventListener('click', () => {
-            detailsSidebar.classList.remove('is-open');
-            if (detailsBackdrop) {
-                detailsBackdrop.classList.remove('is-visible');
-            }
-        });
+        closeSidebarBtn.addEventListener('click', closeDetailsSidebar);
     }
 
     if (detailsBackdrop) {
-        detailsBackdrop.addEventListener('click', () => {
-            detailsSidebar.classList.remove('is-open');
-            detailsBackdrop.classList.remove('is-visible');
-        });
+        detailsBackdrop.addEventListener('click', closeDetailsSidebar);
     }
     
     if (closeStickyPlayerBtn) {
@@ -142,14 +146,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- MOBILE SIDEBAR TOGGLE ---
     if (tocToggleMobile && leftSidebar && sidebarBackdrop) {
         tocToggleMobile.addEventListener("click", () => {
-            leftSidebar.classList.toggle("is-open");
-            sidebarBackdrop.classList.toggle("is-visible");
+            leftSidebar.classList.add("is-open");
+            sidebarBackdrop.classList.add("is-visible");
         });
         sidebarBackdrop.addEventListener("click", () => {
             leftSidebar.classList.remove("is-open");
             sidebarBackdrop.classList.remove("is-visible");
         });
     }
+    
+    // Ensure both sidebars are closed on initial load
+    if (leftSidebar) {
+      leftSidebar.classList.remove('is-open');
+    }
+    if (detailsSidebar) {
+      detailsSidebar.classList.remove('is-open');
+    }
+
 
     // --- SEARCH & FILTERING ---
     function checkAdvancedQuery(details, fieldQuery, valueQuery) {
@@ -158,13 +171,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const valueQueryLower = valueQuery.toLowerCase();
         
-        // 抓取所有用雙引號包裹的精確詞組
         const exactMatches = (valueQueryLower.match(/"[^"]+"/g) || []).map(m => m.slice(1, -1));
-        
-        // 移除已處理的詞組，並將剩餘的詞彙按空格分割
         const remainingQuery = valueQueryLower.replace(/"[^"]+"/g, '').trim();
         const keywords = remainingQuery.split(/\s+/).filter(k => k);
-
         const allTerms = [...exactMatches, ...keywords];
         if (allTerms.length === 0) return true;
 
@@ -314,25 +323,21 @@ document.addEventListener('DOMContentLoaded', function() {
             let canonicalName = key;
             let searchTerms = key;
 
-            // 處理複合中英文詞彙，例如 "Additional Strings / 附加弦乐"
             if (chinesePart && englishPart) {
                 if (key.includes('/')) {
                     canonicalName = `${englishPart} / ${chinesePart}`;
                     searchTerms = `"${englishPart}" ${chinesePart}`;
                 } else {
-                    // 處理 "电吉他Electric Guitar" 這種沒有空格的複合詞彙
                     canonicalName = `${englishPart} / ${chinesePart}`;
                     searchTerms = `${chinesePart} "${englishPart}"`;
                 }
             } else {
-                // 如果是單純的中英文詞彙
                 const words = key.split(' ').filter(word => word);
                 if (words.length > 1) {
                     searchTerms = `"${key}"`;
                 }
             }
 
-            // 檢查是否為固定欄位
             let isPinned = false;
             for (const config of Object.values(pinnedFieldConfig)) {
                 if (config.keywords.some(kw => key.includes(kw))) {
@@ -343,7 +348,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (isPinned) return;
 
-            // 分組並加入到 map
             if (!fieldGroups.has(canonicalName)) {
                 fieldGroups.set(canonicalName, { searchTerms: new Set(), originalKeys: new Set() });
             }
@@ -545,6 +549,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- DYNAMIC LAYOUT UPDATE ---
+    function updateLayout() {
+        const header = document.querySelector('.header');
+        if (header) {
+            const headerHeight = header.offsetHeight;
+            const style = `top: ${headerHeight}px; height: calc(100vh - ${headerHeight}px);`;
+            
+            if (window.innerWidth <= 768) {
+                if (leftSidebar) leftSidebar.style = style;
+                if (detailsSidebar) detailsSidebar.style = style;
+            } else {
+                if (leftSidebar) leftSidebar.style.height = `calc(100vh - ${headerHeight}px)`;
+                if (detailsSidebar) detailsSidebar.style.height = `calc(100vh - ${headerHeight}px)`;
+            }
+        }
+    }
+
+    
     // --- INITIALIZATION ---
     async function initializeApp() {
         try {
@@ -613,6 +635,8 @@ document.addEventListener('DOMContentLoaded', function() {
             setupResizers();
             setupScrollSpy();
             setupTocClickHandler();
+            updateLayout(); // Initial call
+            window.addEventListener('resize', updateLayout); // Update on resize
 
         } catch (error) {
             if (albumContainer) {
