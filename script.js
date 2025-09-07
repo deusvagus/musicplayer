@@ -166,23 +166,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- SEARCH & FILTERING ---
     function checkAdvancedQuery(details, fieldQuery, valueQuery) {
-        if (!valueQuery.trim()) return true;
+        if (valueQuery.trim() === '') {
+            if (!fieldQuery.trim()) return true;
+            if (!details) return false;
+
+            // 修正欄位搜尋邏輯：支援 AND/OR
+            const fieldsQueryLower = fieldQuery.toLowerCase();
+            const isAndSearch = fieldsQueryLower.includes(' and ');
+            const fieldTerms = fieldsQueryLower.split(isAndSearch ? ' and ' : ' ').filter(f => f);
+            const detailKeys = Object.keys(details).map(key => key.toLowerCase());
+
+            const fieldCheck = term => detailKeys.some(dk => dk.includes(term));
+
+            return isAndSearch 
+                ? fieldTerms.every(fieldCheck)
+                : fieldTerms.some(fieldCheck);
+        }
+        
         if (!details) return false;
         
         const valueQueryLower = valueQuery.toLowerCase();
         
+        // 分離出雙引號內的精確搜尋詞
         const exactMatches = (valueQueryLower.match(/"[^"]+"/g) || []).map(m => m.slice(1, -1));
         const remainingQuery = valueQueryLower.replace(/"[^"]+"/g, '').trim();
         const keywords = remainingQuery.split(/\s+/).filter(k => k);
         const allTerms = [...exactMatches, ...keywords];
-        if (allTerms.length === 0) return true;
+        
+        if (valueQuery.trim() !== '' && allTerms.length === 0) {
+            return false;
+        }
 
         const checkValueMatch = (text, terms) => {
             return terms.every(term => text.includes(term));
         };
         
         if (!fieldQuery.trim()) {
-            const entireRecord = Object.values(details).map(v => String(v).toLowerCase()).join(' ');
+            const entireRecord = Object.keys(details).map(k => k.toLowerCase())
+                                 .concat(Object.values(details).map(v => String(v).toLowerCase())).join(' ');
             return checkValueMatch(entireRecord, allTerms);
         } else {
             const fields = fieldQuery.toLowerCase().split(' ').filter(f => f);
@@ -240,11 +261,12 @@ document.addEventListener('DOMContentLoaded', function() {
         let chineseTitle = '';
         let englishTitle = '';
         const fullTitle = track.fullTitle.trim();
-
-        const titleRegex = /^([\u4e00-\u9fa5].*?)\s+([a-zA-Z].*)$/;
-        const match = fullTitle.match(titleRegex);
         
-        if (match && match[1] && match[2]) {
+        // 修正：更穩健的標題解析邏輯
+        const regex = /^([\u4e00-\u9fa5]+)\s*([a-zA-Z0-9\s#b]+)$/;
+        const match = fullTitle.match(regex);
+        
+        if (match) {
             chineseTitle = match[1].trim();
             englishTitle = match[2].trim();
         } else {
@@ -304,77 +326,133 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- SHORTCUTS & SEARCH SETUP ---
     async function setupShortcuts(fieldKeys) {
         const pinnedFieldConfig = {
-            "作曲": { keywords: ["作曲"], canonical: "作曲 / Composer", originals: new Set(), searchTerms: "作曲 Composer" },
-            "編曲": { keywords: ["编曲", "配器", "编配", "改编", "原编曲", "original"], canonical: "編曲 / Arranger", originals: new Set(), searchTerms: "编曲 配器 改编 Arranger orchestrator Adoption" },
-            "作詞": { keywords: ["作词", "lyric"], canonical: "作詞 / Lyricist", originals: new Set(), searchTerms: "作词 Lyricist" }
+            "作曲": { keywords: ["作曲", "composer"], canonical: "Composer / 作曲", originals: new Set() },
+            "編曲": { keywords: ["编曲", "配器", "编配", "改编", "原编曲", "original", "arranger"], canonical: "Arranger / 編曲", originals: new Set() },
+            "作詞": { keywords: ["作词", "lyric", "lyricist"], canonical: "Lyricist / 作詞", originals: new Set() }
         };
         const pinnedOrder = ["作曲", "編曲", "作詞"];
 
         const fieldGroups = new Map();
-        const capitalize = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
 
+        // 核心邏輯修正
         fieldKeys.forEach(key => {
             if (!key) return;
-            const chineseMatch = key.match(/[\u4e00-\u9fa5]+/g);
-            const englishMatch = key.match(/[a-zA-Z0-9][a-zA-Z0-9 -]*/g);
-            const chinesePart = chineseMatch ? chineseMatch.join('').trim() : '';
-            const englishPart = englishMatch ? englishMatch.join(' ').trim() : '';
+            const subKeys = key.split('/').map(s => s.trim()).filter(s => s);
             
-            let canonicalName = key;
-            let searchTerms = key;
-
-            if (chinesePart && englishPart) {
-                if (key.includes('/')) {
-                    canonicalName = `${englishPart} / ${chinesePart}`;
-                    searchTerms = `"${englishPart}" ${chinesePart}`;
+            subKeys.forEach(subKey => {
+                let chinesePart = '';
+                let englishPart = '';
+                let searchTerms = subKey;
+                
+                // 優先處理「中文字+英文字母」的格式，避免單一英文字母被忽略
+                const chineseFirstMatch = subKey.match(/^([\u4e00-\u9fa5]+)\s*([a-zA-Z0-9\s#b]+)$/);
+                if (chineseFirstMatch) {
+                    chinesePart = chineseFirstMatch[1].trim();
+                    englishPart = chineseFirstMatch[2].trim();
                 } else {
-                    canonicalName = `${englishPart} / ${chinesePart}`;
-                    searchTerms = `${chinesePart} "${englishPart}"`;
-                }
-            } else {
-                const words = key.split(' ').filter(word => word);
-                if (words.length > 1) {
-                    searchTerms = `"${key}"`;
-                }
-            }
+                    // 處理「英文字母+中文字」以及純中英文的情況
+                    const chineseMatch = subKey.match(/[\u4e00-\u9fa5]+/g);
+                    const englishMatch = subKey.match(/[a-zA-Z0-9][a-zA-Z0-9 -]*/g);
+                    
+                    let foundChinese = chineseMatch ? chineseMatch.join('').trim() : '';
+                    let foundEnglish = englishMatch ? englishMatch.join(' ').trim() : '';
 
-            let isPinned = false;
-            for (const config of Object.values(pinnedFieldConfig)) {
-                if (config.keywords.some(kw => key.includes(kw))) {
-                    config.originals.add(key);
-                    isPinned = true;
-                    break;
+                    if (foundChinese && foundEnglish) {
+                        chinesePart = foundChinese;
+                        englishPart = foundEnglish;
+                    } else if (foundChinese) {
+                        chinesePart = foundChinese;
+                    } else if (foundEnglish) {
+                        chinesePart = foundEnglish; // 這裡將英文視為中文部分，以避免合併
+                        englishPart = '';
+                    } else {
+                        chinesePart = subKey;
+                        englishPart = '';
+                    }
                 }
-            }
-            if (isPinned) return;
+                
+                if (chinesePart && englishPart) {
+                    const term1 = chinesePart.includes(' ') ? `"${chinesePart}"` : chinesePart;
+                    const term2 = englishPart.includes(' ') ? `"${englishPart}"` : englishPart;
+                    searchTerms = `${term1} ${term2}`;
+                } else if (chinesePart) {
+                    searchTerms = chinesePart.includes(' ') ? `"${chinesePart}"` : chinesePart;
+                } else {
+                    searchTerms = subKey;
+                }
 
-            if (!fieldGroups.has(canonicalName)) {
-                fieldGroups.set(canonicalName, { searchTerms: new Set(), originalKeys: new Set() });
-            }
-            fieldGroups.get(canonicalName).searchTerms.add(searchTerms);
-            fieldGroups.get(canonicalName).originalKeys.add(key);
+                let isPinned = false;
+                for (const config of Object.values(pinnedFieldConfig)) {
+                    const lowerChinese = chinesePart.toLowerCase();
+                    if (config.keywords.some(kw => lowerChinese.includes(kw.toLowerCase()))) {
+                        config.originals.add(subKey);
+                        isPinned = true;
+                        break;
+                    }
+                }
+                if (isPinned) return;
+
+                // 核心修正：使用原始的 subKey 作為 map 的鍵，以避免合併
+                if (!fieldGroups.has(subKey)) {
+                    fieldGroups.set(subKey, { 
+                        searchTerms: new Set(), 
+                        englishParts: new Set(),
+                        chineseParts: new Set()
+                    });
+                }
+                fieldGroups.get(subKey).searchTerms.add(searchTerms);
+                if (englishPart) {
+                    fieldGroups.get(subKey).englishParts.add(englishPart);
+                }
+                if (chinesePart) {
+                    fieldGroups.get(subKey).chineseParts.add(chinesePart);
+                }
+            });
         });
-
+        
         if (shortcutFieldSelect) {
             shortcutFieldSelect.innerHTML = '<option value="">快捷輸入欄位</option>';
+
+            const options = [];
             pinnedOrder.forEach(key => {
                 const config = pinnedFieldConfig[key];
                 if (config.originals.size > 0) {
-                    const option = document.createElement('option');
-                    option.value = config.searchTerms;
-                    option.textContent = config.canonical;
-                    shortcutFieldSelect.appendChild(option);
+                    options.push({
+                        text: config.canonical,
+                        value: config.searchTerms
+                    });
                 }
             });
 
-            const sortedRegularKeys = [...fieldGroups.keys()].sort((a, b) => a.localeCompare(b));
-            sortedRegularKeys.forEach(canonical => {
-                if (canonical.match(/track|album|date/i)) return;
-                const option = document.createElement('option');
-                const terms = [...fieldGroups.get(canonical).searchTerms].join(' ');
-                option.value = terms;
-                option.textContent = canonical;
-                shortcutFieldSelect.appendChild(option);
+            fieldGroups.forEach((group, key) => {
+                if (key.match(/track|album|date/i)) return;
+                
+                const terms = [...group.searchTerms].join(' ');
+                
+                const englishJoined = [...new Set([...group.englishParts])].sort().join(' / ');
+                const chineseJoined = [...new Set([...group.chineseParts])].sort().join(' / ');
+                
+                let canonical;
+                if (englishJoined && chineseJoined) {
+                    canonical = `${englishJoined} / ${chineseJoined}`;
+                } else if (englishJoined) {
+                    canonical = englishJoined;
+                } else {
+                    canonical = chineseJoined;
+                }
+                
+                options.push({
+                    text: canonical,
+                    value: terms
+                });
+            });
+
+            options.sort((a, b) => a.text.localeCompare(b.text));
+            options.forEach(option => {
+                const el = document.createElement('option');
+                el.value = option.value;
+                el.textContent = option.text;
+                shortcutFieldSelect.appendChild(el);
             });
             
             shortcutFieldSelect.addEventListener('change', (e) => {
@@ -409,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-
+    
     function setupClearButtons() {
         const fields = [
             { input: searchInput, btn: document.getElementById('clearSearchInput') },
