@@ -21,7 +21,17 @@
       <aside class="sidebar">
         <div class="sidebar-sticky">
           <h2>專輯目錄</h2>
-          <input type="search" id="searchInput" placeholder="搜尋曲目、ID 或專輯...">
+          
+          <div class="search-section">
+            <input type="search" id="searchInput" placeholder="搜尋曲目、ID 或專輯...">
+          </div>
+
+          <div class="advanced-search-section">
+            <h4>進階搜尋</h4>
+            <input type="search" id="searchField" placeholder="搜尋欄位 (如: 作曲)">
+            <input type="search" id="searchValue" placeholder="搜尋內容...">
+          </div>
+
           <nav id="toc" class="table-of-contents"></nav>
         </div>
       </aside>
@@ -41,7 +51,7 @@
       --primary-color-end: #764ba2;
       --card-bg: rgba(255,255,255,0.95);
       --text-color: #333;
-      --sidebar-width: 300px;
+      --sidebar-width: 320px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -99,7 +109,15 @@
     }
     .sidebar h2 { margin-bottom: 1.5rem; font-weight: 600; }
     
-    #searchInput {
+    .search-section, .advanced-search-section {
+        margin-bottom: 1.5rem;
+    }
+    .advanced-search-section h4 {
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+    }
+
+    #searchInput, #searchField, #searchValue {
       width: 100%;
       padding: 0.75rem 1rem;
       border: 1px solid rgba(255,255,255,0.3);
@@ -107,13 +125,13 @@
       border-radius: 8px;
       color: white;
       font-size: 1rem;
-      margin-bottom: 1.5rem;
     }
-    #searchInput::placeholder { color: rgba(255,255,255,0.7); }
+    #searchField { margin-bottom: 0.5rem; }
+    #searchInput::placeholder, #searchField::placeholder, #searchValue::placeholder { color: rgba(255,255,255,0.7); }
 
     .table-of-contents {
       list-style: none;
-      max-height: 60vh;
+      max-height: 55vh;
       overflow-y: auto;
     }
     .table-of-contents a {
@@ -132,13 +150,11 @@
     .main-content {
       flex: 1;
       padding: 2rem;
-      min-width: 0; /* Prevents flexbox overflow */
+      min-width: 0;
     }
 
     /* Album Section */
-    .album-section {
-      margin-bottom: 2rem;
-    }
+    .album-section { margin-bottom: 2rem; }
     .album-summary {
       font-size: 1.8rem;
       font-weight: 600;
@@ -150,13 +166,8 @@
       border-radius: 15px;
       transition: background 0.3s ease;
     }
-    .album-summary:hover {
-      background: rgba(255,255,255,0.3);
-    }
-    .album-section[open] > .album-summary {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-    }
+    .album-summary:hover { background: rgba(255,255,255,0.3); }
+    .album-section[open] > .album-summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
     .music-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -167,7 +178,7 @@
       border-bottom-right-radius: 15px;
     }
 
-    /* Music Card Styles (mostly unchanged) */
+    /* Music Card Styles */
     .music-card {
       background: var(--card-bg);
       border-radius: 20px;
@@ -177,19 +188,43 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-      cursor: pointer;
     }
     .music-card:hover { transform: translateY(-5px); }
-    .card-header { display: flex; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(0,0,0,0.1); }
-    .music-icon { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; }
+    .card-header { display: flex; align-items: center; margin-bottom: 1rem; }
+    .music-icon { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; flex-shrink: 0; }
     .music-icon i { font-size: 1.5rem; color: #fff; }
-    .track-info h3 { font-size: 1.3rem; margin-bottom: 0.25rem; }
+    .track-info { min-width: 0; }
+    .track-info h3 { font-size: 1.3rem; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
     .track-id { color: #666; font-size: 0.9rem; }
-    .track-title-en { color: #888; font-size: 0.85rem; font-style: italic; }
-    .click-to-load { text-align: center; padding: 2rem; color: #666; background: rgba(0,0,0,0.05); border-radius: 10px; border: 2px dashed rgba(0,0,0,0.1); }
+    .track-title-en { color: #888; font-size: 0.85rem; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    
+    .card-body { border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1rem; }
+    .click-to-load { text-align: center; padding: 1.5rem; color: #666; background: rgba(0,0,0,0.05); border-radius: 10px; border: 2px dashed rgba(0,0,0,0.1); cursor: pointer; }
     .loading { text-align: center; padding: 2rem; color: var(--primary-color-start); }
     .loading i { font-size: 2rem; animation: spin 1s linear infinite; }
     .player-wrapper { border-radius: 10px; overflow: hidden; margin-top: 1rem; }
+
+    .details-toggle {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.4rem 0.8rem;
+        background: rgba(0,0,0,0.05);
+        color: #555;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+    }
+    .details-toggle:hover { background: rgba(0,0,0,0.1); }
+    .track-details {
+        display: none;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0,0,0,0.1);
+        font-size: 0.9rem;
+    }
+    .track-details p { margin-bottom: 0.5rem; }
+    .track-details strong { color: var(--primary-color-end); }
     .hidden { display: none !important; }
 
     /* Footer */
@@ -208,190 +243,276 @@
     }
   </style>
 
-  <script>
+<script>
     // --- UTILITY FUNCTIONS ---
 
-    // 創建音樂卡片 HTML
     function createMusicCard(music) {
-      const card = document.createElement('div');
-      card.className = 'music-card';
-      card.dataset.id = music.id;
-      // 用於搜尋的數據
-      card.dataset.searchText = `${music.title} ${music.subtitle || ''} ${music.id}`.toLowerCase();
-      
-      card.innerHTML = `
-        <div class="card-header">
-          <div class="music-icon"><i class="fas fa-play-circle"></i></div>
-          <div class="track-info">
-            <h3 class="track-title">${music.title}</h3>
-            <p class="track-id">ID: ${music.id}</p>
-            ${music.subtitle ? `<p class="track-title-en">${music.subtitle}</p>` : ''}
-          </div>
-        </div>
-        <div class="click-to-load" onclick="loadPlayer('${music.id}', this)">
-          <i class="fas fa-music"></i>
-          <p>點擊加載播放器</p>
-        </div>
-      `;
-      return card;
-    }
-
-    // 加載網易雲播放器
-    function loadPlayer(id, element) {
-      const card = element.closest('.music-card');
-      if (card.classList.contains('loaded')) return;
-
-      element.innerHTML = `<div class="loading"><i class="fas fa-spinner"></i><p>正在加載...</p></div>`;
-      
-      setTimeout(() => {
-        const playerWrapper = document.createElement('div');
-        playerWrapper.className = 'player-wrapper';
-        playerWrapper.innerHTML = `
-          <iframe frameborder="0" border="0" marginwidth="0" marginheight="0" width="100%" height="86"
-            src="https://music.163.com/outchain/player?type=2&id=${id}&auto=0&height=66">
-          </iframe>`;
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        card.dataset.id = music.id;
         
-        element.replaceWith(playerWrapper);
-        card.classList.add('loaded');
-        card.querySelector('.music-icon i').className = 'fas fa-stop-circle';
-      }, 500);
+        // 用於一般搜尋的數據
+        card.dataset.searchText = `${music.title} ${music.subtitle || ''} ${music.id}`.toLowerCase();
+        
+        // 用於進階搜尋的數據
+        if (music.details) {
+            card.dataset.details = JSON.stringify(music.details);
+        }
+
+        let detailsHtml = '';
+        if (music.details && Object.keys(music.details).length > 0) {
+            const detailsContent = Object.entries(music.details)
+                .filter(([key]) => key !== 'track' && key !== 'album' && key !== 'date') // 過濾掉不需要顯示的欄位
+                .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
+                .join('');
+            
+            detailsHtml = `
+                <span class="details-toggle" onclick="toggleDetails(this)">
+                    <i class="fas fa-info-circle"></i> 詳細資訊
+                </span>
+                <div class="track-details">
+                    ${detailsContent}
+                </div>
+            `;
+        }
+
+        card.innerHTML = `
+            <div class="card-header">
+                <div class="music-icon"><i class="fas fa-play-circle"></i></div>
+                <div class="track-info">
+                    <h3 class="track-title">${music.title}</h3>
+                    <p class="track-id">ID: ${music.id}</p>
+                    ${music.subtitle ? `<p class="track-title-en">${music.subtitle}</p>` : ''}
+                </div>
+            </div>
+            ${detailsHtml}
+            <div class="card-body">
+              <div class="click-to-load" onclick="loadPlayer('${music.id}', this)">
+                  <i class="fas fa-music"></i>
+                  <p>點擊加載播放器</p>
+              </div>
+            </div>
+        `;
+        return card;
     }
+
+    function loadPlayer(id, element) {
+        const card = element.closest('.music-card');
+        if (card.classList.contains('loaded')) return;
+
+        element.innerHTML = `<div class="loading"><i class="fas fa-spinner"></i><p>正在加載...</p></div>`;
+        
+        setTimeout(() => {
+            const playerWrapper = document.createElement('div');
+            playerWrapper.className = 'player-wrapper';
+            playerWrapper.innerHTML = `
+                <iframe frameborder="0" border="0" marginwidth="0" marginheight="0" width="100%" height="86"
+                    src="https://music.163.com/outchain/player?type=2&id=${id}&auto=0&height=66">
+                </iframe>`;
+            
+            element.replaceWith(playerWrapper);
+            card.classList.add('loaded');
+            card.querySelector('.music-icon i').className = 'fas fa-stop-circle';
+        }, 500);
+    }
+
+    function toggleDetails(element) {
+        const detailsDiv = element.nextElementSibling;
+        const isDisplayed = detailsDiv.style.display === 'block';
+        detailsDiv.style.display = isDisplayed ? 'none' : 'block';
+        element.innerHTML = isDisplayed 
+            ? '<i class="fas fa-info-circle"></i> 詳細資訊'
+            : '<i class="fas fa-chevron-up"></i> 收合資訊';
+    }
+
 
     // --- MAIN APPLICATION LOGIC ---
 
     document.addEventListener('DOMContentLoaded', function() {
-      const albumContainer = document.getElementById('albumContainer');
-      const toc = document.getElementById('toc');
-      const searchInput = document.getElementById('searchInput');
+        const albumContainer = document.getElementById('albumContainer');
+        const toc = document.getElementById('toc');
+        const searchInput = document.getElementById('searchInput');
+        const searchFieldInput = document.getElementById('searchField');
+        const searchValueInput = document.getElementById('searchValue');
 
-      // 初始化應用
-      async function initializeApp() {
-        try {
-          // 1. 讀取 manifest.json 獲取專輯列表
-          const manifestResponse = await fetch('IDs/manifest.json');
-          if (!manifestResponse.ok) throw new Error('無法加載 manifest.json，請檢查檔案是否存在於 IDs 資料夾中。');
-          const manifest = await manifestResponse.json();
-          const albumFiles = manifest.albums;
+        let allTracksData = []; // 用於儲存所有合併後的曲目資料
 
-          // 2. 平行獲取所有專輯檔案的內容
-          const albumPromises = albumFiles.map(filename => 
-            fetch(`IDs/${filename}`)
-              .then(res => res.ok ? res.text() : Promise.reject(`無法加載 ${filename}`))
-              .then(text => ({
-                title: filename.replace('.txt', ''),
-                content: text
-              }))
-          );
-          const settledAlbums = await Promise.allSettled(albumPromises);
-          
-          // 3. 解析檔案內容並建立數據結構
-          const allAlbumData = settledAlbums
-            .filter(result => result.status === 'fulfilled')
-            .map(result => {
-              const album = result.value;
-              const tracks = album.content.trim().split('\n').map(line => {
-                const parts = line.split('\t');
-                if (parts.length < 2) return null;
+        async function initializeApp() {
+            try {
+                // 1. 獲取所有詳細資訊
+                const lyricsManifestResponse = await fetch('lyrics/manifest_lyrics.json');
+                if (!lyricsManifestResponse.ok) throw new Error('無法加載 lyrics/manifest_lyrics.json');
+                const lyricsManifest = await lyricsManifestResponse.json();
                 
-                const id = parts[0].trim();
-                const [title, ...subtitleParts] = parts[1].trim().split('_');
-                
-                return {
-                  id,
-                  title,
-                  subtitle: subtitleParts.join('_') || null
+                const detailPromises = lyricsManifest.albums.map(file => 
+                    fetch(`lyrics/${file}`).then(res => res.json())
+                );
+                const settledDetails = await Promise.allSettled(detailPromises);
+
+                const trackDetailsMap = new Map();
+                settledDetails.forEach(result => {
+                    if (result.status === 'fulfilled') {
+                        result.value.forEach(albumData => {
+                            albumData.tracks.forEach(track => {
+                                trackDetailsMap.set(track.track, track); // 使用曲目全名作為 key
+                            });
+                        });
+                    }
+                });
+
+                // 2. 讀取基礎曲目ID列表
+                const manifestResponse = await fetch('IDs/manifest.json');
+                if (!manifestResponse.ok) throw new Error('無法加載 IDs/manifest.json');
+                const manifest = await manifestResponse.json();
+                const albumFiles = manifest.albums;
+
+                const albumPromises = albumFiles.map(filename =>
+                    fetch(`IDs/${filename}`)
+                    .then(res => res.ok ? res.text() : Promise.reject(`無法加載 ${filename}`))
+                    .then(text => ({
+                        title: filename.replace('.txt', '').replace(/_/g, ' '),
+                        content: text
+                    }))
+                );
+                const settledAlbums = await Promise.allSettled(albumPromises);
+
+                // 3. 解析並合併資料
+                const allAlbumData = settledAlbums
+                    .filter(result => result.status === 'fulfilled')
+                    .map(result => {
+                        const album = result.value;
+                        const tracks = album.content.trim().split('\n').map(line => {
+                            const parts = line.split('\t');
+                            if (parts.length < 2) return null;
+                            
+                            const id = parts[0].trim();
+                            const fullTitle = parts[1].trim();
+                            const [title, ...subtitleParts] = fullTitle.split(' '); // 假設英文名用空格分隔
+
+                            const mergedTrack = {
+                                id,
+                                title: title,
+                                subtitle: subtitleParts.join(' ') || null,
+                                details: trackDetailsMap.get(fullTitle) || null // 根據完整曲目名查找詳細資訊
+                            };
+                            allTracksData.push(mergedTrack); // 儲存到全域變數
+                            return mergedTrack;
+                        }).filter(Boolean);
+
+                        return { title: album.title, tracks };
+                    });
+
+                // 4. 渲染頁面
+                renderPage(allAlbumData);
+
+            } catch (error) {
+                albumContainer.innerHTML = `<p style="color: white; font-size: 1.2rem; text-align: center;">初始化失敗: ${error.message}</p>`;
+                console.error('初始化失敗:', error);
+            }
+        }
+
+        function renderPage(allAlbumData) {
+            albumContainer.innerHTML = '';
+            toc.innerHTML = '';
+
+            if (allAlbumData.length === 0) {
+                albumContainer.innerHTML = `<p style="color: white; text-align: center;">沒有找到任何專輯資料。</p>`;
+                return;
+            }
+
+            allAlbumData.forEach((album, index) => {
+                const albumId = `album-${index}`;
+
+                const tocLink = document.createElement('a');
+                tocLink.href = `#${albumId}`;
+                tocLink.textContent = album.title;
+                tocLink.onclick = (e) => {
+                    e.preventDefault();
+                    const target = document.getElementById(albumId);
+                    if (target) {
+                        target.open = true;
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
                 };
-              }).filter(Boolean); // 過濾掉解析失敗的行
+                toc.appendChild(tocLink);
+                
+                const albumSection = document.createElement('details');
+                albumSection.className = 'album-section';
+                albumSection.id = albumId;
+                albumSection.open = true;
+                albumSection.dataset.albumTitle = album.title.toLowerCase();
 
-              return { title: album.title, tracks };
+                const summary = document.createElement('summary');
+                summary.className = 'album-summary';
+                summary.textContent = album.title;
+                
+                const musicGrid = document.createElement('div');
+                musicGrid.className = 'music-grid';
+
+                album.tracks.forEach(track => {
+                    musicGrid.appendChild(createMusicCard(track));
+                });
+                
+                albumSection.appendChild(summary);
+                albumSection.appendChild(musicGrid);
+                albumContainer.appendChild(albumSection);
+            });
+        }
+
+        function updateFilter() {
+            const generalQuery = searchInput.value.toLowerCase().trim();
+            const fieldQuery = searchFieldInput.value.toLowerCase().trim();
+            const valueQuery = searchValueInput.value.toLowerCase().trim();
+            
+            const allCards = document.querySelectorAll('.music-card');
+            const allAlbumSections = document.querySelectorAll('.album-section');
+
+            allCards.forEach(card => {
+                // 檢查一般搜尋
+                const generalMatch = card.dataset.searchText.includes(generalQuery);
+
+                // 檢查進階搜尋
+                let advancedMatch = true;
+                if (fieldQuery && valueQuery) {
+                    advancedMatch = false; // 預設為不匹配，除非找到
+                    const details = card.dataset.details ? JSON.parse(card.dataset.details) : null;
+                    if (details) {
+                       for (const key in details) {
+                           // 讓使用者可以用中文或英文模糊搜尋欄位
+                           if (key.toLowerCase().includes(fieldQuery)) {
+                               const value = String(details[key]).toLowerCase();
+                               if (value.includes(valueQuery)) {
+                                   advancedMatch = true;
+                                   break; // 找到一個匹配就跳出迴圈
+                               }
+                           }
+                       }
+                    }
+                }
+                
+                const isVisible = generalMatch && advancedMatch;
+                card.classList.toggle('hidden', !isVisible);
             });
 
-          // 4. 渲染頁面
-          renderPage(allAlbumData);
-
-        } catch (error) {
-          albumContainer.innerHTML = `<p style="color: white; font-size: 1.2rem; text-align: center;">${error.message}</p>`;
-          console.error('初始化失敗:', error);
-        }
-      }
-
-      // 根據數據渲染整個頁面
-      function renderPage(allAlbumData) {
-        albumContainer.innerHTML = ''; // 清空現有內容
-        toc.innerHTML = '';
-
-        if (allAlbumData.length === 0) {
-            albumContainer.innerHTML = `<p style="color: white; text-align: center;">沒有找到任何專輯資料。</p>`;
-            return;
+            allAlbumSections.forEach(section => {
+                const hasVisibleCards = section.querySelector('.music-card:not(.hidden)');
+                const albumTitleMatch = section.dataset.albumTitle.includes(generalQuery);
+                const isSectionVisible = hasVisibleCards || (albumTitleMatch && !fieldQuery && !valueQuery);
+                
+                section.classList.toggle('hidden', !isSectionVisible);
+                if ((generalQuery || (fieldQuery && valueQuery)) && isSectionVisible) {
+                    section.open = true;
+                }
+            });
         }
 
-        allAlbumData.forEach((album, index) => {
-          const albumId = `album-${index}`;
+        searchInput.addEventListener('input', updateFilter);
+        searchFieldInput.addEventListener('input', updateFilter);
+        searchValueInput.addEventListener('input', updateFilter);
 
-          // 創建目錄連結
-          const tocLink = document.createElement('a');
-          tocLink.href = `#${albumId}`;
-          tocLink.textContent = album.title;
-          tocLink.onclick = (e) => {
-            e.preventDefault();
-            const target = document.getElementById(albumId);
-            if (target) {
-                target.open = true;
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
-          };
-          toc.appendChild(tocLink);
-          
-          // 創建專輯區塊
-          const albumSection = document.createElement('details');
-          albumSection.className = 'album-section';
-          albumSection.id = albumId;
-          albumSection.open = true; // 預設展開
-          albumSection.dataset.albumTitle = album.title.toLowerCase();
-
-          const summary = document.createElement('summary');
-          summary.className = 'album-summary';
-          summary.textContent = album.title;
-          
-          const musicGrid = document.createElement('div');
-          musicGrid.className = 'music-grid';
-
-          album.tracks.forEach(track => {
-            musicGrid.appendChild(createMusicCard(track));
-          });
-          
-          albumSection.appendChild(summary);
-          albumSection.appendChild(musicGrid);
-          albumContainer.appendChild(albumSection);
-        });
-      }
-
-      // 處理搜尋功能
-      function handleSearch() {
-        const query = searchInput.value.toLowerCase().trim();
-        const allCards = document.querySelectorAll('.music-card');
-        const allAlbumSections = document.querySelectorAll('.album-section');
-
-        allCards.forEach(card => {
-          const isVisible = card.dataset.searchText.includes(query);
-          card.classList.toggle('hidden', !isVisible);
-        });
-
-        allAlbumSections.forEach(section => {
-          const hasVisibleCards = section.querySelector('.music-card:not(.hidden)');
-          const albumTitleMatch = section.dataset.albumTitle.includes(query);
-          const isSectionVisible = hasVisibleCards || albumTitleMatch;
-          
-          section.classList.toggle('hidden', !isSectionVisible);
-          if (query && isSectionVisible) {
-            section.open = true; // 在搜尋時自動展開符合條件的區塊
-          }
-        });
-      }
-
-      searchInput.addEventListener('input', handleSearch);
-      initializeApp();
+        initializeApp();
     });
-  </script>
+</script>
+
 </body>
 </html>
