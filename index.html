@@ -7,7 +7,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
+  <div class="page-container">
     <header class="header">
       <div class="header-content">
         <i class="fas fa-music header-icon"></i>
@@ -17,368 +17,211 @@
       <div class="header-bg"></div>
     </header>
 
-    <main class="main-content">
-      <div class="music-grid" id="musicGrid">
+    <div class="app-body">
+      <aside class="sidebar">
+        <div class="sidebar-sticky">
+          <h2>專輯目錄</h2>
+          <input type="search" id="searchInput" placeholder="搜尋曲目、ID 或專輯...">
+          <nav id="toc" class="table-of-contents"></nav>
         </div>
-    </main>
+      </aside>
+
+      <main class="main-content" id="albumContainer">
+        </main>
+    </div>
 
     <footer class="footer">
-      <div class="music-waves">
-        <div class="wave wave1"></div>
-        <div class="wave wave2"></div>
-        <div class="wave wave3"></div>
-      </div>
       <p>&copy; 2025 音樂播放器. 測試網頁.</p>
     </footer>
   </div>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --primary-color-start: #667eea;
+      --primary-color-end: #764ba2;
+      --card-bg: rgba(255,255,255,0.95);
+      --text-color: #333;
+      --sidebar-width: 300px;
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--primary-color-start) 0%, var(--primary-color-end) 100%);
       min-height: 100vh;
-      color: #333;
+      color: var(--text-color);
       line-height: 1.6;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      min-height: 100vh;
+    .page-container {
       display: flex;
       flex-direction: column;
+      min-height: 100vh;
     }
 
     /* Header Styles */
     .header {
       position: relative;
+      padding: 2rem;
+      text-align: center;
+      color: white;
       background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 3rem 2rem;
-      text-align: center;
-      overflow: hidden;
+    }
+    .header-icon { font-size: 2.5rem; margin-bottom: 0.5rem; animation: pulse 2s ease-in-out infinite; }
+    .header-title { font-size: 2.2rem; }
+    .header-subtitle { font-size: 1.1rem; opacity: 0.9; }
+
+    /* App Body Layout */
+    .app-body {
+      display: flex;
+      flex: 1;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
     }
 
-    .header-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.08)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.06)"/></svg>');
-      animation: float 20s ease-in-out infinite;
+    .sidebar {
+      width: var(--sidebar-width);
+      padding: 2rem;
+      flex-shrink: 0;
+    }
+    .sidebar-sticky {
+      position: sticky;
+      top: 2rem;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      color: white;
+    }
+    .sidebar h2 { margin-bottom: 1.5rem; font-weight: 600; }
+    
+    #searchInput {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    #searchInput::placeholder { color: rgba(255,255,255,0.7); }
+
+    .table-of-contents {
+      list-style: none;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    .table-of-contents a {
+      display: block;
+      padding: 0.5rem;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      border-radius: 5px;
+      transition: all 0.2s ease;
+    }
+    .table-of-contents a:hover {
+      background: rgba(255,255,255,0.2);
+      color: white;
     }
 
-    .header-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .header-icon {
-      font-size: 3rem;
-      color: #fff;
-      margin-bottom: 1rem;
-      text-shadow: 0 0 20px rgba(255,255,255,0.5);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    .header-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 0.5rem;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    }
-
-    .header-subtitle {
-      font-size: 1.2rem;
-      color: rgba(255,255,255,0.9);
-      font-weight: 300;
-    }
-
-    /* Main Content */
     .main-content {
       flex: 1;
-      padding: 3rem 2rem;
+      padding: 2rem;
+      min-width: 0; /* Prevents flexbox overflow */
     }
 
+    /* Album Section */
+    .album-section {
+      margin-bottom: 2rem;
+    }
+    .album-summary {
+      font-size: 1.8rem;
+      font-weight: 600;
+      padding: 1rem;
+      cursor: pointer;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(5px);
+      color: white;
+      border-radius: 15px;
+      transition: background 0.3s ease;
+    }
+    .album-summary:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    .album-section[open] > .album-summary {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
     .music-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
+      gap: 1.5rem;
+      padding: 2rem;
+      background: rgba(255,255,255,0.4);
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
     }
 
-    /* Music Card Styles */
+    /* Music Card Styles (mostly unchanged) */
     .music-card {
-      background: rgba(255,255,255,0.95);
+      background: var(--card-bg);
       border-radius: 20px;
       padding: 1.5rem;
-      box-shadow: 
-        0 10px 30px rgba(0,0,0,0.1),
-        0 1px 8px rgba(0,0,0,0.1);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       border: 1px solid rgba(255,255,255,0.2);
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
       cursor: pointer;
     }
-
-    .music-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-      background-size: 400% 400%;
-      animation: gradient 3s ease infinite;
-    }
-
-    .music-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 
-        0 20px 40px rgba(0,0,0,0.15),
-        0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .music-card.loaded {
-      cursor: default;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .music-icon {
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 1rem;
-      box-shadow: 0 4px 15px rgba(102,126,234,0.3);
-      transition: all 0.3s ease;
-    }
-
-    .music-icon i {
-      font-size: 1.5rem;
-      color: #fff;
-      transition: all 0.3s ease;
-    }
-
-    .music-card:not(.loaded) .music-icon:hover {
-      transform: scale(1.1);
-    }
-
-    .music-card:not(.loaded) .music-icon:hover i {
-      animation: bounce 0.6s ease;
-    }
-
-    .track-info {
-      flex: 1;
-    }
-
-    .track-info h3 {
-      font-size: 1.3rem;
-      color: #333;
-      margin-bottom: 0.25rem;
-      font-weight: 600;
-    }
-
-    .track-id {
-      color: #666;
-      font-size: 0.9rem;
-      font-family: 'Courier New', monospace;
-      margin-bottom: 0.5rem;
-    }
-
-    .track-title-en {
-      color: #888;
-      font-size: 0.85rem;
-      font-style: italic;
-      line-height: 1.3;
-    }
-
-    .player-wrapper {
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      margin-top: 1rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.5s ease;
-    }
-
-    .player-wrapper.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .click-to-load {
-      text-align: center;
-      padding: 2rem;
-      color: #666;
-      background: rgba(0,0,0,0.05);
-      border-radius: 10px;
-      border: 2px dashed rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-    }
-
-    .click-to-load:hover {
-      background: rgba(102,126,234,0.1);
-      border-color: rgba(102,126,234,0.3);
-      color: #667eea;
-    }
-
-    .click-to-load i {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      display: block;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 2rem;
-      color: #667eea;
-    }
-
-    .loading i {
-      font-size: 2rem;
-      animation: spin 1s linear infinite;
-      margin-bottom: 0.5rem;
-      display: block;
-    }
+    .music-card:hover { transform: translateY(-5px); }
+    .card-header { display: flex; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .music-icon { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; }
+    .music-icon i { font-size: 1.5rem; color: #fff; }
+    .track-info h3 { font-size: 1.3rem; margin-bottom: 0.25rem; }
+    .track-id { color: #666; font-size: 0.9rem; }
+    .track-title-en { color: #888; font-size: 0.85rem; font-style: italic; }
+    .click-to-load { text-align: center; padding: 2rem; color: #666; background: rgba(0,0,0,0.05); border-radius: 10px; border: 2px dashed rgba(0,0,0,0.1); }
+    .loading { text-align: center; padding: 2rem; color: var(--primary-color-start); }
+    .loading i { font-size: 2rem; animation: spin 1s linear infinite; }
+    .player-wrapper { border-radius: 10px; overflow: hidden; margin-top: 1rem; }
+    .hidden { display: none !important; }
 
     /* Footer */
-    .footer {
-      background: rgba(0,0,0,0.1);
-      backdrop-filter: blur(10px);
-      padding: 2rem;
-      text-align: center;
-      color: #fff;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .music-waves {
-      position: absolute;
-      top: -10px;
-      left: 0;
-      right: 0;
-      height: 20px;
-      display: flex;
-      align-items: end;
-      justify-content: center;
-      gap: 2px;
-    }
-
-    .wave {
-      width: 3px;
-      background: linear-gradient(to top, #ff6b6b, #4ecdc4);
-      border-radius: 2px;
-      animation: wave 1.5s ease-in-out infinite;
-    }
-
-    .wave1 { animation-delay: 0s; height: 10px; }
-    .wave2 { animation-delay: 0.2s; height: 15px; }
-    .wave3 { animation-delay: 0.4s; height: 8px; }
+    .footer { text-align: center; padding: 2rem; color: #fff; background: rgba(0,0,0,0.1); }
 
     /* Animations */
-    @keyframes gradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-    }
-
-    @keyframes wave {
-      0%, 100% { transform: scaleY(1); }
-      50% { transform: scaleY(2); }
-    }
-
-    @keyframes bounce {
-      0%, 20%, 60%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      80% { transform: translateY(-5px); }
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .header {
-        padding: 2rem 1rem;
-      }
-      
-      .header-title {
-        font-size: 2rem;
-      }
-      
-      .main-content {
-        padding: 2rem 1rem;
-      }
-      
-      .music-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .music-card {
-        padding: 1rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .header-title {
-        font-size: 1.8rem;
-      }
-      
-      .header-subtitle {
-        font-size: 1rem;
-      }
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .app-body { flex-direction: column; }
+      .sidebar { width: 100%; padding-bottom: 0; }
+      .sidebar-sticky { position: static; }
+      .table-of-contents { max-height: 200px; }
     }
   </style>
 
   <script>
-    // 生成音樂卡片
-    function createMusicCard(music, index) {
+    // --- UTILITY FUNCTIONS ---
+
+    // 創建音樂卡片 HTML
+    function createMusicCard(music) {
       const card = document.createElement('div');
       card.className = 'music-card';
       card.dataset.id = music.id;
+      // 用於搜尋的數據
+      card.dataset.searchText = `${music.title} ${music.subtitle || ''} ${music.id}`.toLowerCase();
       
       card.innerHTML = `
         <div class="card-header">
-          <div class="music-icon">
-            <i class="fas fa-play-circle"></i>
-          </div>
+          <div class="music-icon"><i class="fas fa-play-circle"></i></div>
           <div class="track-info">
             <h3 class="track-title">${music.title}</h3>
             <p class="track-id">ID: ${music.id}</p>
@@ -390,101 +233,164 @@
           <p>點擊加載播放器</p>
         </div>
       `;
-      
       return card;
     }
 
-    // 加載播放器
+    // 加載網易雲播放器
     function loadPlayer(id, element) {
       const card = element.closest('.music-card');
       if (card.classList.contains('loaded')) return;
+
+      element.innerHTML = `<div class="loading"><i class="fas fa-spinner"></i><p>正在加載...</p></div>`;
       
-      // 顯示加載狀態
-      element.innerHTML = `
-        <div class="loading">
-          <i class="fas fa-spinner"></i>
-          <p>正在加載播放器...</p>
-        </div>
-      `;
-      
-      // 模擬加載延遲
       setTimeout(() => {
         const playerWrapper = document.createElement('div');
         playerWrapper.className = 'player-wrapper';
         playerWrapper.innerHTML = `
-          <iframe 
-            frameborder="0" 
-            border="0" 
-            marginwidth="0" 
-            marginheight="0" 
-            width="100%" 
-            height="86"
+          <iframe frameborder="0" border="0" marginwidth="0" marginheight="0" width="100%" height="86"
             src="https://music.163.com/outchain/player?type=2&id=${id}&auto=0&height=66">
-          </iframe>
-        `;
+          </iframe>`;
         
-        // 替換點擊區域
         element.replaceWith(playerWrapper);
-        
-        // 添加顯示動畫
-        setTimeout(() => {
-          playerWrapper.classList.add('show');
-        }, 100);
-        
-        // 標記為已加載
         card.classList.add('loaded');
-        
-        // 更新圖標
-        const icon = card.querySelector('.music-icon i');
-        icon.className = 'fas fa-stop-circle';
-        
-      }, 800);
+        card.querySelector('.music-icon i').className = 'fas fa-stop-circle';
+      }, 500);
     }
 
-    // 初始化頁面
-    document.addEventListener('DOMContentLoaded', function() {
-      const grid = document.getElementById('musicGrid');
-      
-      // 從 netease_ids.txt 文件讀取數據
-      fetch('netease_ids.txt')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('無法加載文件，請確認 netease_ids.txt 存在於相同目錄下。');
-          }
-          return response.text();
-        })
-        .then(text => {
-          // 解析文本數據
-          const musicData = text.trim().split('\n').map(line => {
-            const parts = line.split('\t');
-            if (parts.length < 2) return null; // 如果行格式不正確則跳過
+    // --- MAIN APPLICATION LOGIC ---
 
-            const id = parts[0].trim();
-            const fullTitle = parts[1].trim();
-            const titleParts = fullTitle.split('_');
-            
-            const musicObject = {
-              id: id,
-              title: titleParts[0]
-            };
-            
-            if (titleParts.length > 1) {
-              musicObject.subtitle = titleParts.slice(1).join('_');
-            }
-            
-            return musicObject;
-          }).filter(Boolean); // 過濾掉無效的行 (null)
+    document.addEventListener('DOMContentLoaded', function() {
+      const albumContainer = document.getElementById('albumContainer');
+      const toc = document.getElementById('toc');
+      const searchInput = document.getElementById('searchInput');
+
+      // 初始化應用
+      async function initializeApp() {
+        try {
+          // 1. 讀取 manifest.json 獲取專輯列表
+          const manifestResponse = await fetch('IDs/manifest.json');
+          if (!manifestResponse.ok) throw new Error('無法加載 manifest.json，請檢查檔案是否存在於 IDs 資料夾中。');
+          const manifest = await manifestResponse.json();
+          const albumFiles = manifest.albums;
+
+          // 2. 平行獲取所有專輯檔案的內容
+          const albumPromises = albumFiles.map(filename => 
+            fetch(`IDs/${filename}`)
+              .then(res => res.ok ? res.text() : Promise.reject(`無法加載 ${filename}`))
+              .then(text => ({
+                title: filename.replace('.txt', ''),
+                content: text
+              }))
+          );
+          const settledAlbums = await Promise.allSettled(albumPromises);
           
-          // 生成音樂卡片
-          musicData.forEach((music, index) => {
-            const card = createMusicCard(music, index);
-            grid.appendChild(card);
+          // 3. 解析檔案內容並建立數據結構
+          const allAlbumData = settledAlbums
+            .filter(result => result.status === 'fulfilled')
+            .map(result => {
+              const album = result.value;
+              const tracks = album.content.trim().split('\n').map(line => {
+                const parts = line.split('\t');
+                if (parts.length < 2) return null;
+                
+                const id = parts[0].trim();
+                const [title, ...subtitleParts] = parts[1].trim().split('_');
+                
+                return {
+                  id,
+                  title,
+                  subtitle: subtitleParts.join('_') || null
+                };
+              }).filter(Boolean); // 過濾掉解析失敗的行
+
+              return { title: album.title, tracks };
+            });
+
+          // 4. 渲染頁面
+          renderPage(allAlbumData);
+
+        } catch (error) {
+          albumContainer.innerHTML = `<p style="color: white; font-size: 1.2rem; text-align: center;">${error.message}</p>`;
+          console.error('初始化失敗:', error);
+        }
+      }
+
+      // 根據數據渲染整個頁面
+      function renderPage(allAlbumData) {
+        albumContainer.innerHTML = ''; // 清空現有內容
+        toc.innerHTML = '';
+
+        if (allAlbumData.length === 0) {
+            albumContainer.innerHTML = `<p style="color: white; text-align: center;">沒有找到任何專輯資料。</p>`;
+            return;
+        }
+
+        allAlbumData.forEach((album, index) => {
+          const albumId = `album-${index}`;
+
+          // 創建目錄連結
+          const tocLink = document.createElement('a');
+          tocLink.href = `#${albumId}`;
+          tocLink.textContent = album.title;
+          tocLink.onclick = (e) => {
+            e.preventDefault();
+            const target = document.getElementById(albumId);
+            if (target) {
+                target.open = true;
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+          };
+          toc.appendChild(tocLink);
+          
+          // 創建專輯區塊
+          const albumSection = document.createElement('details');
+          albumSection.className = 'album-section';
+          albumSection.id = albumId;
+          albumSection.open = true; // 預設展開
+          albumSection.dataset.albumTitle = album.title.toLowerCase();
+
+          const summary = document.createElement('summary');
+          summary.className = 'album-summary';
+          summary.textContent = album.title;
+          
+          const musicGrid = document.createElement('div');
+          musicGrid.className = 'music-grid';
+
+          album.tracks.forEach(track => {
+            musicGrid.appendChild(createMusicCard(track));
           });
-        })
-        .catch(error => {
-          console.error('讀取音樂列表時發生錯誤:', error);
-          grid.innerHTML = `<p style="color: white; text-align: center; font-size: 1.2rem;">${error.message}</p>`;
+          
+          albumSection.appendChild(summary);
+          albumSection.appendChild(musicGrid);
+          albumContainer.appendChild(albumSection);
         });
+      }
+
+      // 處理搜尋功能
+      function handleSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        const allCards = document.querySelectorAll('.music-card');
+        const allAlbumSections = document.querySelectorAll('.album-section');
+
+        allCards.forEach(card => {
+          const isVisible = card.dataset.searchText.includes(query);
+          card.classList.toggle('hidden', !isVisible);
+        });
+
+        allAlbumSections.forEach(section => {
+          const hasVisibleCards = section.querySelector('.music-card:not(.hidden)');
+          const albumTitleMatch = section.dataset.albumTitle.includes(query);
+          const isSectionVisible = hasVisibleCards || albumTitleMatch;
+          
+          section.classList.toggle('hidden', !isSectionVisible);
+          if (query && isSectionVisible) {
+            section.open = true; // 在搜尋時自動展開符合條件的區塊
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', handleSearch);
+      initializeApp();
     });
   </script>
 </body>

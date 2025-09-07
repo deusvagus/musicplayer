@@ -1,0 +1,100 @@
+1992141905	须弥 Sumeru
+1992139159	树与花的旋舞 Whirling of Leaves and Petals
+1992139160	清风散林缬 Flickering Shadows of Trees
+1992141906	几初的智愿 For Riddles, for Wonders
+1992139161	常绿的希冀 Evergreen Wish
+1992139162	薄暮的欢叹 Many-Colored Smiles and Tears
+1992139163	香林繁露之夜 Overnight Dew in the Woods
+1992141907	瑶木静意之思 Thoughts and Prayers
+1992141908	眠时光明 Those Lucid Dreams
+1992139164	静谧的星夜 Silent Starry Night
+1992139165	慧光启曙 Fresh Breezes of Dawn
+1992139166	宴语韵悠悠 Halcyon Times
+1992141909	于智境谛思 Return to Trueness
+1992139167	喧繁之港 Hustle and Bustle of Ormos
+1992139168	商港晚憩 End of the Feast
+1992141910	熙攘的街市 Bustling Streets
+1992139169	阑珊夜色 Sleepless Night
+1992141911	葳蕤林野间 Village Surrounded by Green
+1992141912	黛绿的夜话 Enchanting Bedtime Stories
+1992139170	郁灼的前哨 Scorching Outpost
+1992139171	不移的恭默 Unyielding Witness
+1992141913	边沙聚垒障 In Yonder Ribat
+1992141914	戒惕的注视 Vigilant Minders
+1992139172	深林杳杳 Forest in the Light
+1992141915	卉木萋萋 Rustling of Tender Foliage
+1992141916	霁野漫步 A Desultory Stroll
+1992139173	漾影逐波 Chasing the Reflection
+1992139174	碧草柔风 As the Soft Wind Blows
+1992139175	倦慵的片刻 Languid and Quiet Moment
+1992141917	叶丛间的月夜 Moonlit Night in Sumeru
+1992141918	无羁的漫游 Vagrant Wandering
+1992141919	酣睡的郁林 A Drowsy Sensation
+1992141920	绿枝新柔 Ethereal Mildness
+1992139176	若木的沈唱 Resonant Chant in the Woods
+1992141921	盈流慈水 Varuna's Mercy
+1992141922	茂林巡行 Jungle Wanderers
+1992139177	仁柔的烟林 Dissipating Mist
+1992139178	露湿的林莽 Dewy Morn in the Forest
+1992141923	流泉铮淙的夜想 Stream of Twilight Thoughts
+1992141924	林籁暮曲 Hymns of Eventide
+1992139179	泠波汩汩的微语 Over the Tumbling Rivulet
+1992141925	空谷传响 A Shallow Promise
+1992139180	芳林徘徊 Lost in Sweet Gentle Breezes
+1992141926	幽谷冥冥 Into the Valley of Solitude
+1992139181	青藤静掩的愁闷 Speechless Sorrows
+1992139182	残夜余音 Faint Afterglow
+1992141927	凉风暂歇之时 A Puff of Cool Breeze
+1992141928	暮星轻语之刻 A Whisper of Evening Star
+1992139183	远行的思愿 Distant Yearning
+1992141929	邃风的崤谷 Funneled Gorge
+1992343566	白木的追忆 Whitewood Memorabilia
+1992344583	随风而逝的旧梦 Gone With the Wind
+1992343567	莹澈的夜 Transparent Night
+1992344584	凄寥的表记 Tangled Vines
+1992343568	诗绪萦怀 Lingering Memories
+1992344585	荼诃遗旧 Vestige of Dahri
+1992344586	尘封的往事 Dust-Laden Recollections
+1992344587	静夜驰想 Midnight Reflections
+1992344588	孤星的憧憬 Lonely Star's Longing
+1992343569	弢跡匿光 In the Solemn Gloom
+1992344589	遗诫犹在 Faith in the Percept
+1992344590	星月之路 A Luminous Path
+1992344591	流萤明灭 Dance With Fireflies
+1992344592	月辉低吟 Silky Crooning
+1992343570	劫波破执 Beyond Klesha
+1992343571	沃土新芽的曲调 Melody of Bright New Buds
+1992344593	颠倒梦想的曲调 Melody of Sprouting Flowers
+1992344594	晨曦初露的曲调 Melody of Fresh Dewdrops
+1992344595	生命之谷的曲调 Melody of Hidden Seeds
+1992344596	和合大梦的曲调 Melody of Brave Seeds
+1992343572	染绿乡园的曲调 Melody of Dream Home
+1992343573	幼叶绽生的曲调 Melody of Young Leaves
+1992343574	绿野纤绵的曲调 Melody of Distant Green Fields
+1992343575	根子的片语 Chatter Between Roots
+1992343576	失落的歌调 Long-Lost Chapters
+1992344597	昔时遥忆 Nameless Days
+1992343577	细语回萦 Whispers of Immensity
+1992343578	归于遗忘和泥土 Immemorial Land
+1992344598	欲说还休 In a Forgotten Tongue
+1992343579	迷途已远 Walk Through the Silent Path
+1992343580	无获的探索 A Fruitless Search
+1992343581	荒寂旧土 Unbounded Barrenness
+1992344599	无名岁月 Dream of Ageless Time
+1992344600	桑沧遍历 Dust and Tears
+1992344601	行过死荫之地 Descending Into the Dark
+1992344602	空余回响 Hollow Echoes
+1992343582	危惴潜流 A Sense of Furtive Unrest
+1992343583	游光澌泯 Fading Light
+1992343584	哑默的大地 Listless and Numb Ground
+1992343585	于无生处 In Barren Ashes
+1992343586	余烬的顽抗 Struggle of Dying Embers
+1992344603	窒滞之苦 Feelings of Smothering
+1992344604	沉重的恶意 Snare Awaiting
+1992343587	失梦之乡 Dreamless Earth
+1992344605	失色的灾厄 Fatal Confrontation
+1992344606	趁生烛尚未殄熄 Before the Light Fades
+1992343588	洄映的漩流 Swirls of the Stream
+1992343589	堙谷的铙歌 Rhymes of Vales
+1992344607	流金疾驰 Gilded Runner
+1992343590	森芒顷动 Jolts in the Forest

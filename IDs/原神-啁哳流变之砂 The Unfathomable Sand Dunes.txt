@@ -1,0 +1,108 @@
+2041862691	斯露莎的歌 Sorush's Purity
+2041862692	灵光的回响 Resonance of Khvarena
+2041859147	花与树的女儿们 Maidens of Sanctity
+2041862693	女主人的叮咛 The Caress of Three Mothers
+2041862694	神鸟栖居之处 Where Simurgh Rests
+2041862695	万千蕊芯之梦 Fantasy of Ten Thousand Blossoms
+2041862696	生命受祝之所 Dirge of Newborn Life
+2041862697	无忧的眠梦 Undisturbed Tranquility
+2041859148	绿洲的蜃影 Mirage of the Oasis
+2041862698	孤客之旅 Lonesome Road
+2041862699	迷失之叹 Grief of the Lost
+2041859149	分歧的道路 Dividing Paths
+2041862700	沙丘上的曙光 Dawnlight Over Dunes
+2041862701	沙蝎之舞 Dance of Scorpions
+2041862702	荒沙与新月 Golden Crescent
+2041862703	千夜的遗珠 A Pearl Amongst Legends
+2041859150	大漠虫鸣 Hymn of Cicadas
+2041859151	花海之梦 Simurgh's Dream
+2041862704	月光的祝福 Taabak Laylatak
+2041859152	浪客的安歇 Resting Rogues
+2041859153	深秘的险境 Perilous Hollow
+2041859154	荒废的预言 Omen of Desolation
+2041862705	孤独的渊薮 Solitary Breach
+2041859155	荆棘丛生之地 Ghastly Badlands
+2041859156	残迹幽影 Shadow in Ruins
+2041862706	受诅的泽地 Abominable Bog
+2041862707	毒虫伏行之处 Where Vermin Crawl
+2041862708	旧梦腐朽之所 Where Dreams Putrify
+2041862709	葱茏的梦乡 Pairidaeza
+2041862710	她的期许 Her Wishes
+2041862711	空虚的愿景 Oracle of the Void
+2041859157	往昔的乐园 Once-Joyful Dream
+2041862712	扬尘如幕 Kingdom of Dust
+2041859158	黄砂为衾 Empire of Sand
+2041862713	香料之路 Spice Road
+2041862714	失忆的诸国 Realms of Amnesia
+2041862715	镀金的旅途 Gilded Journey
+2041859159	众砾的汪洋 Ocean of Grains
+2041862716	砂海的摇篮曲 Desert Lullaby
+2041862717	褪色的眷恋 The Crescent Moon's Waning
+2041859160	故国的回忆 Memories of Gurabad
+2041862718	归巢的猎鹰 Lo, There Do I See The Falcon
+2041862719	安睡之所 Where She Will Return
+2041859161	蛇蝎无眠 Those Who Dream No Dreams
+2041862720	死寂的殿堂 The Temple Conquered by Death
+2041859162	遗落的哀歌 Lamenting Torrent of Oblivion
+2041862721	赤砂的思慕 Debris of the Beloved
+2041859163	毒虫之穴 Vermin Nest
+2041859164	古城的低语 Gurabad's Whisper
+2041859165	砂下秘辛 Buried Mysteries
+2041859166	诸绿洲中的金杯 Gold Cup of Oases
+2041862722	流沙的缱绻 Lingering Vipers
+2041859167	守护者的思眷 Aspiration of Guardians
+2041859168	宥谧宁息之风 Wind of Tranquility
+2041859169	沙民的庇护所 Settlement for Exiles
+2041862723	镌刻遥梦之铭 Inscription of Dreams
+2041859170	千世传述之愿 Vow of a Thousand Generations
+2041859171	灼燃的残光 Smoldering Glow
+2041862724	余威犹存 Ruins of Scorching Might
+2041862725	抚今惟昔 Now and Then
+2041862726	旧思缅邈 Distant Retrospection
+2041862727	遗甃轸念 Reminiscences of Remnants
+2041862728	深黯之地 Land of Hidden Depths
+2041862729	缄秘的影迹 Shade of Reticent Conundrums
+2041859172	失殒的旧宴 Past Repast
+2041862730	沦没的誓愿 Crumbled Pledge
+2041862731	诸世的阶梯 Stairway of Neterikhet
+2041862732	炽天的辉舟 Millennial Sails
+2041862733	赤沙之眼 Eye of Deshret
+2041859173	空想的落音 Falling Fantasy
+2041862734	消泯的终末 Fading Finality
+2041859174	远逝的回响 Echoes of Distant Past
+2041862735	七荣的陵殿 Steps to Heptas
+2041862736	伏谏之刻 Juncture of Admonition
+2041862737	沙衍绿碧 Emerald in the Desert
+2041862738	遐方乐土 Elusive Elysium
+2041859175	绿松石的夜歌 Serenade of Callais
+2041859176	永世的酣梦 Reverie of Eternity
+2041859177	惘惑漠漠 Dust-Swept Perplexity
+2041862739	望尘行迹 Following the Sands' Trail
+2041862740	往泪尽之地 To the Land of Desperation
+2041859178	炀旱的岩谷 Arid Canyon
+2041859179	荒落的沙径 Deserted Path to Desert
+2041859180	艰厄漫途 Through Predicaments
+2041862741	终至月明 To the Crescent Moon's Shimmer
+2041862742	星霜的余音 Echoes of Ages
+2041859181	遗风逸尘 Obliterated Dust
+2041862743	邃世忧怀 Ancient Anamnesis
+2041862744	迢遥的蜃景 Obscure Mirage
+2041859182	瀚漠冥茫 Nebulous Dunes
+2041859183	炽风苦旅 On the Barren Sands
+2041862745	逾沙轶漠 Across the Aridisols
+2041862746	暮夜茕行 Solitary Night Wanderings
+2041862747	沙与月的弦音 Chords of Sand and Moon
+2041859184	荒夜的阵风 Breeze in the Arid Night
+2041862748	星月寂阒 Hushed Gleam
+2041862749	萦思寥落 Lingering Thoughts
+2041862750	幽壑深渺 Profound Ravines
+2041862751	绝域危途 Perilous Exploration
+2041859185	净念相继 Benevolence Bequeathed
+2041862752	流金的烈怒 Wrathful Streaming Gold
+2041859186	星灭光离 Across Dimming Asterisms
+2041859187	狮尾之舞 Swirls of Shamshir
+2041862753	赭泉酩旋 Swirls of Sachmis
+2041859188	六轮一露狂诗曲 Rhapsodia Roscida
+2041862754	五相常寂 Quintempus Niteastetae
+2041859189	三千娑世御咏歌 Polumnia Omnia
+2041859190	噬神巨蛇的狂舞 God-Devouring Mania
