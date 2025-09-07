@@ -2,16 +2,333 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>音樂播放器</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <h2>2737451799</h2>
-  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86"
-    src="https://music.163.com/outchain/player?type=2&id=2737451799&auto=0&height=66">
-  </iframe>
-  <h2>2699954432</h2>
-  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86"
-    src="https://music.163.com/outchain/player?type=2&id=2699954432&auto=0&height=66">
-  </iframe>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <i class="fas fa-music header-icon"></i>
+        <h1 class="header-title">音樂播放器</h1>
+        <p class="header-subtitle">網易雲內嵌測試</p>
+      </div>
+      <div class="header-bg"></div>
+    </header>
+
+    <main class="main-content">
+      <div class="music-grid">
+        <div class="music-card">
+          <div class="card-header">
+            <div class="music-icon">
+              <i class="fas fa-play-circle"></i>
+            </div>
+            <div class="track-info">
+              <h3 class="track-title">音樂 #1</h3>
+              <p class="track-id">ID: 2737451799</p>
+            </div>
+          </div>
+          <div class="player-wrapper">
+            <iframe 
+              frameborder="0" 
+              border="0" 
+              marginwidth="0" 
+              marginheight="0" 
+              width="100%" 
+              height="86"
+              src="https://music.163.com/outchain/player?type=2&id=2737451799&auto=0&height=66">
+            </iframe>
+          </div>
+        </div>
+
+        <div class="music-card">
+          <div class="card-header">
+            <div class="music-icon">
+              <i class="fas fa-play-circle"></i>
+            </div>
+            <div class="track-info">
+              <h3 class="track-title">音樂 #2</h3>
+              <p class="track-id">ID: 2699954432</p>
+            </div>
+          </div>
+          <div class="player-wrapper">
+            <iframe 
+              frameborder="0" 
+              border="0" 
+              marginwidth="0" 
+              marginheight="0" 
+              width="100%" 
+              height="86"
+              src="https://music.163.com/outchain/player?type=2&id=2699954432&auto=0&height=66">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="music-waves">
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
+      </div>
+      <p>&copy; 2025 音樂播放器. 享受音樂，享受生活.</p>
+    </footer>
+  </div>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Styles */
+    .header {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 3rem 2rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .header-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.08)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.06)"/></svg>');
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .header-icon {
+      font-size: 3rem;
+      color: #fff;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .header-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .header-subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.9);
+      font-weight: 300;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 3rem 2rem;
+    }
+
+    .music-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Music Card Styles */
+    .music-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 
+        0 10px 30px rgba(0,0,0,0.1),
+        0 1px 8px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .music-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 400% 400%;
+      animation: gradient 3s ease infinite;
+    }
+
+    .music-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 20px 40px rgba(0,0,0,0.15),
+        0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .music-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+    }
+
+    .music-icon i {
+      font-size: 1.5rem;
+      color: #fff;
+    }
+
+    .track-info h3 {
+      font-size: 1.3rem;
+      color: #333;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+
+    .track-id {
+      color: #666;
+      font-size: 0.9rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .player-wrapper {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Footer */
+    .footer {
+      background: rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .music-waves {
+      position: absolute;
+      top: -10px;
+      left: 0;
+      right: 0;
+      height: 20px;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .wave {
+      width: 3px;
+      background: linear-gradient(to top, #ff6b6b, #4ecdc4);
+      border-radius: 2px;
+      animation: wave 1.5s ease-in-out infinite;
+    }
+
+    .wave1 { animation-delay: 0s; height: 10px; }
+    .wave2 { animation-delay: 0.2s; height: 15px; }
+    .wave3 { animation-delay: 0.4s; height: 8px; }
+
+    /* Animations */
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(2); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header {
+        padding: 2rem 1rem;
+      }
+      
+      .header-title {
+        font-size: 2rem;
+      }
+      
+      .main-content {
+        padding: 2rem 1rem;
+      }
+      
+      .music-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .music-card {
+        padding: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-title {
+        font-size: 1.8rem;
+      }
+      
+      .header-subtitle {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </body>
 </html>
