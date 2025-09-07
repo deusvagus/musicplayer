@@ -185,12 +185,36 @@ document.addEventListener('DOMContentLoaded', function() {
         sortedRegularKeys.forEach(canonical => {
             if (canonical.match(/track|album|date/i)) return;
             const option = document.createElement('option');
-            const uniqueKeywords = new Set();
-            fieldGroups.get(canonical).forEach(original => {
-                const parts = original.replace(/[\/\(\)]/g, ' ').split(' ').filter(p => p.trim());
-                parts.forEach(p => uniqueKeywords.add(p));
-            });
-            option.value = [...uniqueKeywords].join(' ');
+            
+            // MODIFIED: Generate search terms with correct formatting and quotes
+            const parts = canonical.split(' / ');
+            let chinesePart = parts[0];
+            let englishPart = parts[1];
+
+            // Handle cases where there's only one part
+            if (!englishPart && chinesePart.match(/[a-zA-Z]/)) {
+                englishPart = chinesePart;
+                chinesePart = '';
+            }
+            if (!chinesePart && englishPart && englishPart.match(/[\u4e00-\u9fa5]/)) {
+                chinesePart = englishPart;
+                englishPart = '';
+            }
+
+            let valueString = '';
+            if (chinesePart) {
+                valueString += chinesePart;
+            }
+            if (englishPart) {
+                const quotedEnglishPart = englishPart.includes(' ') ? `"${englishPart}"` : englishPart;
+                if (valueString) {
+                    valueString += ` ${quotedEnglishPart}`;
+                } else {
+                    valueString = quotedEnglishPart;
+                }
+            }
+
+            option.value = valueString.trim();
             option.textContent = canonical;
             shortcutFieldSelect.appendChild(option);
         });
