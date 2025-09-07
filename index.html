@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>音樂資料查詢</title>
-  <!-- 外部資源 -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <!-- 連結到外部 CSS 檔案 -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-theme">
@@ -14,6 +12,9 @@
   <div class="page-container">
     <header class="header">
       <div class="header-left">
+      <button id="tocToggleMobile" class="toc-toggle-mobile" aria-label="開啟專輯目錄">
+        <i class="fas fa-bars"></i>
+      </button>
         <i class="fas fa-music"></i>
         <h1>音樂資料查詢</h1>
       </div>
@@ -45,27 +46,33 @@
         <div class="sidebar-sticky">
           <div class="sidebar-header">
             <h2>專輯目錄</h2>
-            <button id="sortToggle" class="sort-toggle" title="切換專輯排序">
-              <i class="fas fa-sort"></i>
-            </button>
-          </div>
-          <div class="album-search-controls">
-            <div class="input-wrapper">
-              <input type="search" id="searchInput" placeholder="搜尋專輯..." class="search-input">
-              <button class="clear-input-btn" id="clearSearchInput" title="清除搜尋">&times;</button>
-            </div>
-            <div class="quick-search-buttons">
-              <button class="quick-search-btn" data-query="原神">原神</button>
-              <button class="quick-search-btn" data-query="崩坏星穹铁道">崩坏星穹铁道</button>
+            <div class="sidebar-header-right">
+              <button id="sortToggle" class="sort-toggle" title="切換專輯排序">
+                <i class="fas fa-sort"></i>
+              </button>
+              <button id="tocCollapseToggle" class="toc-collapse-toggle" title="收合/展開目錄">
+                <i class="fas fa-chevron-down"></i>
+              </button>
             </div>
           </div>
-          <nav id="toc" class="table-of-contents"></nav>
+          <div id="collapsibleTocContent" class="collapsible-content">
+            <div class="album-search-controls">
+              <div class="input-wrapper">
+                <input type="search" id="searchInput" placeholder="搜尋專輯..." class="search-input">
+                <button class="clear-input-btn" id="clearSearchInput" title="清除搜尋">&times;</button>
+              </div>
+              <div class="quick-search-buttons">
+                <button class="quick-search-btn" data-query="原神">原神</button>
+                <button class="quick-search-btn" data-query="崩坏星穹铁道">崩坏星穹铁道</button>
+              </div>
+            </div>
+            <nav id="toc" class="table-of-contents"></nav>
+          </div>
         </div>
         <div class="resizer" id="left-resizer"></div>
       </aside>
 
       <main class="main-content" id="albumContainer">
-        <!-- 骨架屏載入動畫 -->
         <div id="skeleton-loader">
           <div class="skeleton-summary"></div>
           <div class="music-grid">
@@ -81,7 +88,6 @@
         </div>
       </main>
 
-      <!-- 右側詳細資訊側邊欄 -->
       <aside id="details-sidebar" class="details-sidebar">
         <button id="close-sidebar-btn" class="close-btn">&times;</button>
         <div id="sidebar-content" class="sidebar-content"></div>
@@ -90,14 +96,13 @@
     </div>
   </div>
 
-  <!-- 懸浮播放器 -->
   <div id="sticky-player" class="sticky-player">
     <button id="close-sticky-player-btn" class="close-btn mini-close-btn">&times;</button>
     <div id="sticky-player-content"></div>
   </div>
 
-  <!-- 連結到外部 JavaScript 檔案 -->
+  <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
   <script src="script.js" defer></script>
 </body>
 </html>
-
