@@ -12,17 +12,26 @@
     <header class="header">
       <div class="header-left">
         <i class="fas fa-music"></i>
-        <h1>音樂播放器</h1>
+        <h1>音樂資料查詢</h1>
       </div>
       <div class="search-controls">
-        <input type="search" id="searchInput" placeholder="搜尋曲目、ID 或專輯..." class="search-input">
-        <div class="advanced-search">
+        <div class="input-wrapper">
+          <input type="search" id="searchInput" placeholder="搜尋曲目、ID 或專輯..." class="search-input">
+          <button class="clear-input-btn" id="clearSearchInput" title="清除搜尋">&times;</button>
+        </div>
+        <div class="advanced-search-grid">
           <select id="shortcutField" class="shortcut-select"></select>
-          <input type="search" id="searchField" placeholder="↑ 或手動輸入欄位" class="search-input-adv">
-          <input type="search" id="searchValue" placeholder="輸入搜尋內容 (AND/OR)" class="search-input-adv">
           <select id="shortcutPersonnel" class="shortcut-select">
-            <option value="">— 或快捷選擇人員 —</option>
+            <option value="">快捷輸入人員</option>
           </select>
+          <div class="input-wrapper">
+            <input type="search" id="searchField" placeholder="輸入搜尋欄位" class="search-input-adv">
+            <button class="clear-input-btn" id="clearSearchField" title="清除欄位">&times;</button>
+          </div>
+          <div class="input-wrapper">
+            <input type="search" id="searchValue" placeholder="輸入搜尋內容 (AND/OR)" class="search-input-adv">
+            <button class="clear-input-btn" id="clearSearchValue" title="清除內容">&times;</button>
+          </div>
         </div>
       </div>
       <div class="header-right">
@@ -60,13 +69,13 @@
           </div>
         </div>
       </main>
+
+      <aside id="details-sidebar" class="details-sidebar">
+        <button id="close-sidebar-btn" class="close-btn">&times;</button>
+        <div id="sidebar-content" class="sidebar-content"></div>
+      </aside>
     </div>
   </div>
-
-  <aside id="details-sidebar" class="details-sidebar">
-    <button id="close-sidebar-btn" class="close-btn">&times;</button>
-    <div id="sidebar-content" class="sidebar-content"></div>
-  </aside>
 
   <div id="sticky-player" class="sticky-player">
     <button id="close-sticky-player-btn" class="close-btn mini-close-btn">&times;</button>
@@ -119,6 +128,7 @@
       background: var(--bg-gradient);
       color: var(--text-primary);
       transition: background var(--transition-med), color var(--transition-med);
+      overflow: hidden;
     }
     .page-container { display: flex; flex-direction: column; height: 100vh; }
     .header {
@@ -130,16 +140,23 @@
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
       gap: 1.5rem;
+      z-index: 10;
     }
     .app-body { display: flex; flex: 1; overflow: hidden; }
     .sidebar { width: 280px; flex-shrink: 0; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); padding: 1rem; }
     .sidebar-sticky { display: flex; flex-direction: column; height: 100%; }
-    .main-content { flex: 1; overflow-y: auto; padding: 2rem; }
-
+    .main-content { flex: 1; overflow-y: auto; padding: 2rem; transition: margin-right var(--transition-fast); }
+    
     /* --- HEADER & CONTROLS --- */
     .header-left { display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; white-space: nowrap; }
-    .search-controls { display: flex; flex-grow: 1; align-items: center; gap: 0.5rem; }
-    .advanced-search { display: flex; align-items: center; gap: 0.5rem; border-left: 1px solid var(--border-color); padding-left: 0.75rem; margin-left: 0.25rem;}
+    .search-controls { display: flex; flex-grow: 1; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .advanced-search-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      border-left: 1px solid var(--border-color);
+      padding-left: 1rem;
+    }
     .search-input, .search-input-adv, .shortcut-select {
       background: var(--bg-input);
       border: 1px solid var(--border-color);
@@ -147,9 +164,31 @@
       border-radius: 6px;
       padding: 0.5rem 0.75rem;
       font-size: 0.9rem;
+      width: 100%;
     }
-    .search-input { width: 250px; }
-    .search-input-adv { width: 180px; }
+    .search-input { min-width: 250px; }
+    .search-input-adv { min-width: 180px; }
+    
+    .input-wrapper { position: relative; display: flex; align-items: center; }
+    .input-wrapper .search-input, .input-wrapper .search-input-adv { padding-right: 2rem; }
+    .clear-input-btn {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+      padding: 0.2rem;
+      display: none; /* Hidden by default */
+    }
+    .input-wrapper input:not(:placeholder-shown) + .clear-input-btn {
+      display: block;
+    }
+
     .shortcut-select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239e9e9e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 2rem;}
     .shortcut-select option { background: var(--bg-details-sidebar); color: var(--text-primary); }
     .header-right .theme-toggle { background: none; border: none; color: var(--text-primary); font-size: 1.2rem; cursor: pointer; padding: 0.5rem; }
@@ -166,38 +205,35 @@
     .album-section { margin-bottom: 2rem; }
     .album-summary { font-size: 1.8rem; font-weight: 600; padding: 1rem 0; color: var(--text-primary); }
     .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-    .music-card {
-      background: var(--bg-card);
-      border-radius: 12px;
-      padding: 1.5rem;
-      border: 1px solid var(--border-color);
-      transition: all var(--transition-fast);
-      cursor: pointer;
-      display: flex; align-items: center; gap: 1rem;
-    }
+    .music-card { background: var(--bg-card); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border-color); transition: all var(--transition-fast); cursor: pointer; display: flex; align-items: center; gap: 1rem; }
     .music-card:hover { transform: translateY(-5px); background: var(--bg-card-hover); box-shadow: 0 10px 30px var(--shadow-color); }
     .music-icon { width: 45px; height: 45px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .music-icon i { color: #fff; font-size: 1.4rem; }
     .track-info { min-width: 0; }
     .track-info h3 { font-size: 1.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .track-info p { font-size: 0.9rem; color: var(--text-secondary); }
+    .music-card.no-id { opacity: 0.8; }
+    .music-card.no-id .music-icon { background: var(--text-secondary); }
+    .music-card.no-id:hover { transform: translateY(-5px); background: var(--bg-card-hover); box-shadow: 0 10px 30px var(--shadow-color); }
+    .no-id-message { text-align: center; padding: 1rem; background: var(--bg-input); border-radius: 8px; color: var(--text-secondary); margin-top: 1.5rem; }
     
-    /* --- DETAILS SIDEBAR (RIGHT) --- */
+    /* --- DETAILS SIDEBAR (RIGHT / DOCKED) --- */
     .details-sidebar {
-      position: fixed;
-      top: 0; right: 0;
-      width: 400px;
-      height: 100%;
+      width: 0;
       background: var(--bg-details-sidebar);
-      box-shadow: -10px 0 30px var(--shadow-color);
-      transform: translateX(100%);
-      transition: transform var(--transition-fast);
-      z-index: 1000;
+      flex-shrink: 0;
+      overflow: hidden;
+      transition: width var(--transition-fast), padding var(--transition-fast);
+      height: 100%;
       display: flex;
       flex-direction: column;
+      border-left: 1px solid transparent;
     }
-    .details-sidebar.is-open { transform: translateX(0); }
-    .sidebar-content { padding: 1.5rem; padding-top: 4rem; overflow-y: auto; }
+    .details-sidebar.is-open {
+      width: 400px;
+      border-left: 1px solid var(--border-color);
+    }
+    .sidebar-content { padding: 1.5rem; padding-top: 4rem; overflow-y: auto; min-width: 370px; /* Prevent content squish during animation */ }
     .sidebar-content h2 { font-size: 1.5rem; margin-bottom: 0.25rem; }
     .sidebar-content .track-id { color: var(--text-secondary); margin-bottom: 1.5rem; }
     .sidebar-content .details-list p { margin-bottom: 0.75rem; font-size: 0.95rem; }
@@ -207,53 +243,29 @@
     .close-btn { position: absolute; top: 0.75rem; right: 1rem; background: none; border: none; font-size: 2rem; color: var(--text-secondary); cursor: pointer; }
     
     /* --- STICKY PLAYER --- */
-    .sticky-player {
-      position: fixed;
-      bottom: 1.5rem; right: 1.5rem;
-      width: 350px;
-      background: var(--bg-details-sidebar);
-      border-radius: 12px;
-      box-shadow: 0 10px 30px var(--shadow-color);
-      border: 1px solid var(--border-color);
-      z-index: 1001;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity var(--transition-fast), transform var(--transition-fast);
-      pointer-events: none;
-    }
+    .sticky-player { position: fixed; bottom: 1.5rem; right: 1.5rem; width: 350px; background: var(--bg-details-sidebar); border-radius: 12px; box-shadow: 0 10px 30px var(--shadow-color); border: 1px solid var(--border-color); z-index: 1001; opacity: 0; transform: translateY(20px); transition: opacity var(--transition-fast), transform var(--transition-fast); pointer-events: none; }
     .sticky-player.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .mini-close-btn { top: 0; right: 0.25rem; font-size: 1.5rem; }
 
     /* --- SKELETON LOADER --- */
     @keyframes shimmer { 100% { transform: translateX(100%); } }
     #skeleton-loader .skeleton-summary { width: 40%; height: 3rem; margin-bottom: 1.5rem; background: var(--bg-card); border-radius: 8px; }
-    #skeleton-loader .skeleton-card {
-      background: var(--bg-card);
-      border-radius: 12px;
-      height: 80px;
-      position: relative;
-      overflow: hidden;
-    }
-    #skeleton-loader .skeleton-card::after {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      transform: translateX(-100%);
-      background: linear-gradient(90deg, transparent, var(--border-color), transparent);
-      animation: shimmer 1.5s infinite;
-    }
+    #skeleton-loader .skeleton-card { background: var(--bg-card); border-radius: 12px; height: 80px; position: relative; overflow: hidden; }
+    #skeleton-loader .skeleton-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, var(--border-color), transparent); animation: shimmer 1.5s infinite; }
 
     .hidden { display: none !important; }
 
+    /* --- RESPONSIVE UI OPTIMIZATIONS --- */
     @media (max-width: 1200px) {
-      .advanced-search { flex-direction: column; align-items: stretch; border-left: none; padding-left: 0; margin-left: 0;}
-      .search-controls { flex-wrap: wrap; }
+      .advanced-search-grid { border-left: none; padding-left: 0; }
+      .search-controls { gap: 0.5rem; }
     }
     @media (max-width: 768px) {
       .header { flex-direction: column; align-items: stretch; height: auto; }
       .app-body { flex-direction: column; }
       .sidebar { width: 100%; height: 250px; border-right: none; border-bottom: 1px solid var(--border-color); }
-      .details-sidebar { width: 100%; }
+      .details-sidebar.is-open { width: 100%; height: auto; }
     }
-
   </style>
 
 <script>
@@ -276,7 +288,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // --- STATE MANAGEMENT ---
     let isSortReversed = false;
-    let allAlbumData = [];
     
     // --- THEME MANAGEMENT ---
     function applyTheme(theme) {
@@ -307,41 +318,40 @@ document.addEventListener('DOMContentLoaded', function() {
     sortToggle.addEventListener('click', toggleAlbumSort);
     
     // --- DETAILS SIDEBAR & PLAYER ---
-    function showDetails(music) {
+    function showDetails(track) {
         let detailsListHtml = 'No details available.';
-        if (music.details) {
-            detailsListHtml = Object.entries(music.details)
+        if (track.details) {
+            detailsListHtml = Object.entries(track.details)
                 .filter(([key]) => !['track', 'album', 'date'].includes(key))
                 .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
                 .join('');
         }
         
+        const playerHtml = track.id
+            ? `<button class="load-player-btn" data-id="${track.id}">加載播放器</button>`
+            : `<p class="no-id-message">此曲目沒有可用的播放源</p>`;
+
         sidebarContent.innerHTML = `
-            <h2>${music.title}</h2>
-            <p class="track-id">ID: ${music.id}</p>
+            <h2>${track.fullTitle}</h2>
+            <p class="track-id">ID: ${track.id || 'N/A'}</p>
             <div class="details-list">${detailsListHtml}</div>
-            <div class="player-container">
-                <button class="load-player-btn" data-id="${music.id}">加載播放器</button>
-            </div>
+            <div class="player-container">${playerHtml}</div>
         `;
         detailsSidebar.classList.add('is-open');
     }
 
-    function loadPlayer(id, container) {
+    function loadPlayer(id) {
         const playerHtml = `
             <iframe frameborder="0" border="0" marginwidth="0" marginheight="0" width="100%" height="86"
                 src="https://music.163.com/outchain/player?type=2&id=${id}&auto=1&height=66">
             </iframe>`;
-        container.innerHTML = playerHtml;
-        stickyPlayerContent.innerHTML = playerHtml; // Clone to sticky player
+        stickyPlayerContent.innerHTML = playerHtml;
         stickyPlayer.classList.add('is-visible');
     }
 
     detailsSidebar.addEventListener('click', (e) => {
         if (e.target.classList.contains('load-player-btn')) {
-            const id = e.target.dataset.id;
-            const container = e.target.parentElement;
-            loadPlayer(id, container);
+            loadPlayer(e.target.dataset.id);
         }
     });
     
@@ -353,95 +363,213 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // --- SHORTCUTS & SEARCH SETUP ---
     function setupShortcuts(fieldKeys) {
-        // Field Selector
-        shortcutFieldSelect.innerHTML = '<option value="">快捷選擇欄位</option>';
-        const specialFields = {
-            "作曲": "作曲",
-            "編曲": "编曲 配器 编配 改编"
+        const pinnedFieldConfig = {
+            "作曲": { keywords: ["作曲"], canonical: "作曲 / Composer", originals: new Set(), searchTerms: "作曲 Composer" },
+            "編曲": { keywords: ["编曲", "配器", "编配", "改编", "原编曲", "original"], canonical: "編曲 / Arranger", originals: new Set(), searchTerms: "编曲 配器 改编 Arranger orchestrator Adoption" },
+            "作詞": { keywords: ["作词", "lyric"], canonical: "作詞 / Lyricist", originals: new Set(), searchTerms: "作词 Lyricist" }
         };
-        Object.entries(specialFields).forEach(([name, value]) => {
+        const pinnedOrder = ["作曲", "編曲", "作詞"];
+
+        const fieldGroups = new Map();
+        const chineseToCanonical = new Map();
+        const englishToCanonical = new Map();
+        const capitalize = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+
+        fieldKeys.forEach(key => {
+            if (!key) return;
+            const subFields = key.split('/').map(f => f.trim()).filter(f => f);
+
+            subFields.forEach(field => {
+                const chinesePart = (field.match(/[\u4e00-\u9fa5]+/g) || []).join('');
+                let englishPartRaw = (field.match(/[a-zA-Z0-9][a-zA-Z0-9 -]*/g) || []).join(' ').trim();
+                
+                englishPartRaw = englishPartRaw.split(' ').filter(word => word.length > 1 || !/^[a-zA-Z]$/.test(word)).join(' ');
+                
+                const englishPart = englishPartRaw.toLowerCase();
+                if (!chinesePart && !englishPart) return;
+
+                let isPinned = false;
+                for (const config of Object.values(pinnedFieldConfig)) {
+                    if (config.keywords.some(kw => chinesePart.includes(kw) || englishPart.includes(kw))) {
+                        config.originals.add(field);
+                        isPinned = true;
+                        break;
+                    }
+                }
+                if (isPinned) return;
+
+                let canonical = (chinesePart ? chineseToCanonical.get(chinesePart) : null) || (englishPart ? englishToCanonical.get(englishPart) : null);
+                
+                if (!canonical) {
+                    const enDisplay = capitalize(englishPartRaw.split(' ')[0]);
+                    canonical = [enDisplay, chinesePart].filter(Boolean).join(' / ');
+                }
+
+                if (!fieldGroups.has(canonical)) {
+                    fieldGroups.set(canonical, new Set());
+                }
+                fieldGroups.get(canonical).add(field);
+
+                if (chinesePart) chineseToCanonical.set(chinesePart, canonical);
+                if (englishPart) englishToCanonical.set(englishPart, canonical);
+            });
+        });
+
+        // --- Render Dropdown ---
+        shortcutFieldSelect.innerHTML = '<option value="">快捷輸入欄位</option>';
+
+        pinnedOrder.forEach(key => {
+            const config = pinnedFieldConfig[key];
+            if (config.originals.size > 0) {
+                const option = document.createElement('option');
+                option.value = config.searchTerms;
+                option.textContent = config.canonical;
+                shortcutFieldSelect.appendChild(option);
+            }
+        });
+
+        const sortedRegularKeys = [...fieldGroups.keys()].sort((a, b) => a.localeCompare(b));
+        sortedRegularKeys.forEach(canonical => {
+            if (canonical.match(/track|album|date/i)) return;
             const option = document.createElement('option');
-            option.value = value;
-            option.textContent = name;
+            const uniqueKeywords = new Set();
+            fieldGroups.get(canonical).forEach(original => {
+                const parts = original.replace(/[\/\(\)]/g, ' ').split(' ').filter(p => p.trim());
+                parts.forEach(p => uniqueKeywords.add(p));
+            });
+            option.value = [...uniqueKeywords].join(' ');
+            option.textContent = canonical;
             shortcutFieldSelect.appendChild(option);
         });
-        const otherKeys = fieldKeys.filter(k => !k.match(/作曲|编曲|配器|编配|改编/)).sort();
-        otherKeys.forEach(key => {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = key;
-            shortcutFieldSelect.appendChild(option);
-        });
+        
         shortcutFieldSelect.addEventListener('change', (e) => {
             if (!e.target.value) return;
             searchFieldInput.value = e.target.value;
+            searchFieldInput.dispatchEvent(new Event('input')); // Trigger clear button visibility check
+            e.target.selectedIndex = 0;
             updateFilter();
         });
 
-        // Personnel Selector
         const personnelSelect = document.getElementById('shortcutPersonnel');
         const personnel = ["苑迪萌", "姜以君", "丁谦", "赵鑫", "陈子敏", "尤裴佳", "刘越", "车子玉", "路南", "王予曦", "李洋", "索德尔", "冯琳尧", "罗静怡", "康贞兰", "柯江", "殷照晴", "吴泽熙", "沈梦吟", "月岛", "高欢", "周千朔", "彭龙飞"];
-        personnel.forEach(name => {
-            personnelSelect.appendChild(new Option(name, name));
-        });
+        personnel.forEach(name => personnelSelect.appendChild(new Option(name, name)));
+        
         personnelSelect.addEventListener('change', (e) => {
             if (!e.target.value) return;
             searchValueInput.value = searchValueInput.value.trim() ? `${searchValueInput.value.trim()} ${e.target.value}` : e.target.value;
+            searchValueInput.dispatchEvent(new Event('input')); // Trigger clear button visibility check
             e.target.value = "";
             updateFilter();
+        });
+    }
+
+    function setupClearButtons() {
+        const fields = [
+            { input: searchInput, btn: document.getElementById('clearSearchInput') },
+            { input: searchFieldInput, btn: document.getElementById('clearSearchField') },
+            { input: searchValueInput, btn: document.getElementById('clearSearchValue') },
+        ];
+
+        fields.forEach(({ input, btn }) => {
+            btn.addEventListener('click', () => {
+                input.value = '';
+                input.dispatchEvent(new Event('input')); // Let CSS handle visibility
+                updateFilter();
+                input.focus();
+            });
         });
     }
     
     // --- INITIALIZATION ---
     async function initializeApp() {
         try {
-            const lyricsManifestResponse = await fetch('lyrics/manifest_lyrics.json');
-            const lyricsManifest = await lyricsManifestResponse.json();
-            const detailPromises = lyricsManifest.albums.map(file => fetch(`lyrics/${file}`).then(res => res.json()));
-            const settledDetails = await Promise.allSettled(detailPromises);
-            const trackDetailsMap = new Map();
-            const fieldKeys = new Set();
-            settledDetails.forEach(result => {
+            // Step 1: Build a map of all track IDs (path can be adjusted if needed)
+            const idMap = new Map();
+            const idManifestResponse = await fetch('IDs/manifest.json');
+            const idManifest = await idManifestResponse.json();
+            const idFilePromises = idManifest.albums.map(filename =>
+                fetch(`IDs/${filename}`).then(res => res.text())
+            );
+            const idFiles = await Promise.allSettled(idFilePromises);
+            idFiles.forEach(result => {
                 if (result.status === 'fulfilled') {
-                    result.value.forEach(albumData => {
-                        albumData.tracks.forEach(track => {
-                            trackDetailsMap.set(track.track, track);
-                            Object.keys(track).forEach(key => fieldKeys.add(key));
-                        });
+                    result.value.trim().split('\n').forEach(line => {
+                        const parts = line.split('\t');
+                        if (parts.length >= 2) idMap.set(parts[1].trim(), parts[0].trim());
                     });
                 }
             });
 
-            const manifestResponse = await fetch('IDs/manifest.json');
-            const manifest = await manifestResponse.json();
-            const albumPromises = manifest.albums.map(filename =>
-                fetch(`IDs/${filename}`).then(res => res.text()).then(text => ({ title: filename.replace('.txt', ''), content: text }))
-            );
-            const settledAlbums = await Promise.allSettled(settledAlbums);
-            
-            allAlbumData = settledAlbums
-                .filter(result => result.status === 'fulfilled')
-                .map(result => {
-                    const album = result.value;
-                    const tracks = album.content.trim().split('\n').map(line => {
-                        const parts = line.split('\t');
-                        if (parts.length < 2) return null;
-                        const id = parts[0].trim();
-                        const fullTitle = parts[1].trim();
-                        return { id, fullTitle, details: trackDetailsMap.get(fullTitle) || { track: fullTitle } };
-                    }).filter(Boolean);
-                    return { title: album.title, tracks };
-                });
+            // Step 2: Fetch the main data index
+            const dataIndexResponse = await fetch('data/data.json');
+            const dataIndex = await dataIndexResponse.json();
 
+            // Step 3: Collect all album file paths from the index
+            const allFilePaths = [];
+            for (const game in dataIndex) {
+                if (dataIndex.hasOwnProperty(game)) {
+                    allFilePaths.push(...dataIndex[game]);
+                }
+            }
+
+            // Step 4: Fetch all album JSON files using the collected paths
+            const detailPromises = allFilePaths.map(file => fetch(`data/${file}`).then(res => res.json()));
+            const settledDetails = await Promise.allSettled(detailPromises);
+            
+            // Step 5: Process all fetched data
+            const fieldKeys = new Set();
+            const allAlbumData = settledDetails
+                .filter(result => result.status === 'fulfilled')
+                .flatMap(result => result.value) 
+                .map(albumData => {
+                    const tracks = albumData.tracks.map(trackDetail => {
+                        const fullTitle = trackDetail.track;
+                        Object.keys(trackDetail).forEach(key => fieldKeys.add(key));
+                        return {
+                            id: idMap.get(fullTitle) || null,
+                            fullTitle: fullTitle,
+                            details: trackDetail
+                        };
+                    });
+                    return { title: albumData.album, tracks };
+                });
+            
             renderPage(allAlbumData);
             setupShortcuts(Array.from(fieldKeys));
+            setupClearButtons();
 
         } catch (error) {
             albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;
+            console.error("Initialization Error:", error);
         }
     }
 
-    // --- RENDER PAGE ---
+    // --- RENDER PAGE & CARDS ---
+    function createTrackCard(track) {
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        
+        const [title, ...subtitleParts] = track.fullTitle.split(' ');
+        const subtitle = subtitleParts.join(' ');
+
+        card.innerHTML = `
+            <div class="music-icon"><i class="fas ${track.id ? 'fa-play' : 'fa-file-alt'}"></i></div>
+            <div class="track-info">
+                <h3>${title}</h3>
+                <p>${subtitle || ' '}</p>
+            </div>`;
+
+        card.dataset.searchText = track.fullTitle.toLowerCase();
+        if (track.details) card.dataset.details = JSON.stringify(track.details);
+
+        card.addEventListener('click', () => showDetails(track));
+        
+        if (!track.id) {
+            card.classList.add('no-id');
+        }
+        return card;
+    }
+
     function renderPage(data) {
         albumContainer.innerHTML = '';
         toc.innerHTML = '';
@@ -464,22 +592,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const musicGrid = document.createElement('div');
             musicGrid.className = 'music-grid';
             album.tracks.forEach(track => {
-                const card = document.createElement('div');
-                card.className = 'music-card';
-                card.innerHTML = `
-                    <div class="music-icon"><i class="fas fa-play"></i></div>
-                    <div class="track-info">
-                        <h3>${track.details.track.split(' ')[0]}</h3>
-                        <p>${track.details.track.split(' ').slice(1).join(' ')}</p>
-                    </div>`;
-                card.dataset.searchText = track.fullTitle.toLowerCase();
-                if (track.details) card.dataset.details = JSON.stringify(track.details);
-                card.addEventListener('click', () => showDetails({
-                    id: track.id,
-                    title: track.fullTitle,
-                    details: track.details
-                }));
-                musicGrid.appendChild(card);
+                musicGrid.appendChild(createTrackCard(track));
             });
             
             albumSection.appendChild(summary);
@@ -490,12 +603,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // --- FILTERING LOGIC ---
     function checkAdvancedQuery(details, fieldQuery, valueQuery) {
-        if (!fieldQuery || !valueQuery) return true;
+        if (!fieldQuery) return true;
         if (!details) return false;
+        
         const fields = fieldQuery.toLowerCase().split(' ').filter(f => f);
         const searchCorpus = Object.entries(details)
             .filter(([key]) => fields.some(f => key.toLowerCase().includes(f)))
             .map(([, val]) => String(val).toLowerCase()).join(' ');
+
+        if (valueQuery.trim() === '*') {
+            return searchCorpus.length > 0;
+        }
+        if (!valueQuery) return true;
+
         if (!searchCorpus) return false;
         return valueQuery.toUpperCase().split(' AND ').every(andPart => 
             (andPart.trim().toLowerCase().split(' ').filter(k => k)).some(keyword => searchCorpus.includes(keyword))
@@ -517,7 +637,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 card.classList.toggle('hidden', !isVisible);
                 if (isVisible) hasVisibleCards = true;
             });
-            const albumTitleMatch = section.dataset.albumTitle.includes(generalQuery);
+            const albumTitleMatch = section.dataset.albumTitle.toLowerCase().includes(generalQuery);
             section.classList.toggle('hidden', !hasVisibleCards && !(albumTitleMatch && !fieldQuery && !valueQuery));
         });
     }
