@@ -73,10 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (albumId) {
             const tocLink = toc.querySelector(`a[href="#${albumId}"]`);
             
-            // **FIX**: 手動設定 active link，以防止側邊欄打開導致佈局變化時高亮消失的問題
             toc.querySelectorAll('a').forEach(link => link.classList.remove('active-toc-link'));
             if (tocLink) {
                 tocLink.classList.add('active-toc-link');
+                tocLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
         
@@ -308,6 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setupQuickSearchButtons();
             setupResizers();
             setupScrollSpy();
+            setupTocClickHandler();
 
         } catch (error) {
             albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;
@@ -383,6 +384,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- TOC CLICK HANDLER ---
+    function setupTocClickHandler() {
+        toc.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') {
+                e.preventDefault(); 
+
+                const currentActiveLink = toc.querySelector('.active-toc-link');
+                if (currentActiveLink) {
+                    currentActiveLink.classList.remove('active-toc-link');
+                }
+
+                const clickedLink = e.target;
+                clickedLink.classList.add('active-toc-link');
+
+                const targetId = clickedLink.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView();
+                }
+            }
+        });
+    }
+
     // --- SCROLL SPY ---
     function setupScrollSpy() {
         const sections = document.querySelectorAll('.album-section');
@@ -396,25 +420,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            const allTocLinks = toc.querySelectorAll('a');
-            let firstVisibleLink = null;
+            const firstVisibleLink = Array.from(toc.querySelectorAll('a')).find(link => link.dataset.visible === 'true');
+            const currentActiveLink = toc.querySelector('.active-toc-link');
 
-            allTocLinks.forEach(link => {
-                link.classList.remove('active-toc-link');
-                if (link.dataset.visible === 'true' && !firstVisibleLink) {
-                    firstVisibleLink = link;
+            if (firstVisibleLink && firstVisibleLink !== currentActiveLink) {
+                if (currentActiveLink) {
+                    currentActiveLink.classList.remove('active-toc-link');
                 }
-            });
-
-            if (firstVisibleLink) {
                 firstVisibleLink.classList.add('active-toc-link');
+                
+                firstVisibleLink.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+            } else if (!currentActiveLink && toc.children.length > 0) {
+                const firstTocLink = toc.querySelector('a');
+                if(firstTocLink) {
+                   firstTocLink.classList.add('active-toc-link');
+                }
             }
         };
 
         const observer = new IntersectionObserver(observerCallback, {
             root: albumContainer,
             threshold: 0.1,
-            rootMargin: '0px 0px -50% 0px'
+            // **MODIFIED**: 擴大偵測範圍，從-50%改為-25%，減少盲區
+            rootMargin: '0px 0px -25% 0px' 
         });
 
         sections.forEach(section => observer.observe(section));
@@ -530,4 +558,3 @@ document.addEventListener('DOMContentLoaded', function() {
     
     initializeApp();
 });
-
