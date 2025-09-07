@@ -15,10 +15,6 @@
         <h1>音樂資料查詢</h1>
       </div>
       <div class="search-controls">
-        <div class="input-wrapper">
-          <input type="search" id="searchInput" placeholder="搜尋曲目、ID 或專輯..." class="search-input">
-          <button class="clear-input-btn" id="clearSearchInput" title="清除搜尋">&times;</button>
-        </div>
         <div class="advanced-search-grid">
           <select id="shortcutField" class="shortcut-select"></select>
           <select id="shortcutPersonnel" class="shortcut-select">
@@ -50,8 +46,19 @@
               <i class="fas fa-sort"></i>
             </button>
           </div>
+          <div class="album-search-controls">
+            <div class="input-wrapper">
+              <input type="search" id="searchInput" placeholder="搜尋專輯..." class="search-input">
+              <button class="clear-input-btn" id="clearSearchInput" title="清除搜尋">&times;</button>
+            </div>
+            <div class="quick-search-buttons">
+              <button class="quick-search-btn" data-query="原神">原神</button>
+              <button class="quick-search-btn" data-query="崩坏星穹铁道">崩坏星穹铁道</button>
+            </div>
+          </div>
           <nav id="toc" class="table-of-contents"></nav>
         </div>
+        <div class="resizer" id="left-resizer"></div>
       </aside>
 
       <main class="main-content" id="albumContainer">
@@ -73,6 +80,7 @@
       <aside id="details-sidebar" class="details-sidebar">
         <button id="close-sidebar-btn" class="close-btn">&times;</button>
         <div id="sidebar-content" class="sidebar-content"></div>
+        <div class="resizer" id="right-resizer"></div>
       </aside>
     </div>
   </div>
@@ -143,7 +151,7 @@
       z-index: 10;
     }
     .app-body { display: flex; flex: 1; overflow: hidden; }
-    .sidebar { width: 280px; flex-shrink: 0; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); padding: 1rem; }
+    .sidebar { width: 280px; flex-shrink: 0; background: var(--bg-sidebar); border-right: 1px solid var(--border-color); padding: 1rem; position: relative; }
     .sidebar-sticky { display: flex; flex-direction: column; height: 100%; }
     .main-content { flex: 1; overflow-y: auto; padding: 2rem; transition: margin-right var(--transition-fast); }
     
@@ -166,7 +174,7 @@
       font-size: 0.9rem;
       width: 100%;
     }
-    .search-input { min-width: 250px; }
+    .search-input { min-width: auto; }
     .search-input-adv { min-width: 180px; }
     
     .input-wrapper { position: relative; display: flex; align-items: center; }
@@ -183,7 +191,7 @@
       font-size: 1.2rem;
       line-height: 1;
       padding: 0.2rem;
-      display: none; /* Hidden by default */
+      display: none;
     }
     .input-wrapper input:not(:placeholder-shown) + .clear-input-btn {
       display: block;
@@ -194,9 +202,34 @@
     .header-right .theme-toggle { background: none; border: none; color: var(--text-primary); font-size: 1.2rem; cursor: pointer; padding: 0.5rem; }
 
     /* --- LEFT SIDEBAR --- */
-    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0 0.5rem; }
+    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0 0.5rem; }
     .sidebar-header h2 { font-size: 1.2rem; }
     .sort-toggle { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; }
+    .album-search-controls {
+        padding: 0 0.5rem 1rem 0;
+    }
+    .album-search-controls .input-wrapper {
+        margin-bottom: 0.5rem;
+    }
+    .quick-search-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .quick-search-btn {
+        flex-grow: 1;
+        background: var(--bg-input);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        padding: 0.4rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+    .quick-search-btn:hover {
+        background: var(--border-color);
+        color: var(--text-primary);
+    }
     .table-of-contents { flex: 1; overflow-y: auto; }
     .table-of-contents a { display: block; padding: 0.5rem; text-decoration: none; color: var(--text-secondary); border-radius: 5px; transition: all 0.2s ease; font-size: 0.95rem;}
     .table-of-contents a:hover { background: var(--border-color); color: var(--text-primary); }
@@ -210,8 +243,14 @@
     .music-icon { width: 45px; height: 45px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .music-icon i { color: #fff; font-size: 1.4rem; }
     .track-info { min-width: 0; }
-    .track-info h3 { font-size: 1.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .track-info p { font-size: 0.9rem; color: var(--text-secondary); }
+    .track-info h3 {
+      font-size: 1.1rem; /* Adjusted font size slightly */
+      white-space: normal; /* Allow title to wrap */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+    }
+    .track-info p { font-size: 0.9rem; color: var(--text-secondary); display: none; } /* Hide subtitle p */
     .music-card.no-id { opacity: 0.8; }
     .music-card.no-id .music-icon { background: var(--text-secondary); }
     .music-card.no-id:hover { transform: translateY(-5px); background: var(--bg-card-hover); box-shadow: 0 10px 30px var(--shadow-color); }
@@ -228,19 +267,20 @@
       display: flex;
       flex-direction: column;
       border-left: 1px solid transparent;
+      position: relative;
     }
     .details-sidebar.is-open {
       width: 400px;
       border-left: 1px solid var(--border-color);
     }
-    .sidebar-content { padding: 1.5rem; padding-top: 4rem; overflow-y: auto; min-width: 370px; /* Prevent content squish during animation */ }
+    .sidebar-content { padding: 1.5rem; padding-top: 4rem; overflow-y: auto; min-width: 370px; }
     .sidebar-content h2 { font-size: 1.5rem; margin-bottom: 0.25rem; }
     .sidebar-content .track-id { color: var(--text-secondary); margin-bottom: 1.5rem; }
     .sidebar-content .details-list p { margin-bottom: 0.75rem; font-size: 0.95rem; }
     .sidebar-content .details-list strong { color: var(--primary-accent); }
     .sidebar-content .player-container { margin-top: 1.5rem; }
     .load-player-btn { background: var(--primary-accent); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 1rem; cursor: pointer; width: 100%; }
-    .close-btn { position: absolute; top: 0.75rem; right: 1rem; background: none; border: none; font-size: 2rem; color: var(--text-secondary); cursor: pointer; }
+    .close-btn { position: absolute; top: 0.75rem; right: 1rem; background: none; border: none; font-size: 2rem; color: var(--text-secondary); cursor: pointer; display: block; }
     
     /* --- STICKY PLAYER --- */
     .sticky-player { position: fixed; bottom: 1.5rem; right: 1.5rem; width: 350px; background: var(--bg-details-sidebar); border-radius: 12px; box-shadow: 0 10px 30px var(--shadow-color); border: 1px solid var(--border-color); z-index: 1001; opacity: 0; transform: translateY(20px); transition: opacity var(--transition-fast), transform var(--transition-fast); pointer-events: none; }
@@ -255,6 +295,26 @@
 
     .hidden { display: none !important; }
 
+    /* --- RESIZER STYLES --- */
+    .resizer {
+        position: absolute;
+        top: 0;
+        width: 10px;
+        height: 100%;
+        cursor: ew-resize;
+        z-index: 20;
+    }
+    .sidebar .resizer {
+        right: 0;
+    }
+    .details-sidebar .resizer {
+        left: 0;
+    }
+    .resizer:hover {
+      background-color: var(--primary-accent);
+      opacity: 0.3;
+    }
+
     /* --- RESPONSIVE UI OPTIMIZATIONS --- */
     @media (max-width: 1200px) {
       .advanced-search-grid { border-left: none; padding-left: 0; }
@@ -263,8 +323,9 @@
     @media (max-width: 768px) {
       .header { flex-direction: column; align-items: stretch; height: auto; }
       .app-body { flex-direction: column; }
-      .sidebar { width: 100%; height: 250px; border-right: none; border-bottom: 1px solid var(--border-color); }
+      .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); }
       .details-sidebar.is-open { width: 100%; height: auto; }
+      .sidebar .resizer, .details-sidebar .resizer { display: none; }
     }
   </style>
 
@@ -285,6 +346,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const stickyPlayerContent = document.getElementById('sticky-player-content');
     const closeStickyPlayerBtn = document.getElementById('close-sticky-player-btn');
     const shortcutFieldSelect = document.getElementById('shortcutField');
+    const leftSidebar = document.querySelector('.sidebar');
+    const leftResizer = document.getElementById('left-resizer');
+    const rightResizer = document.getElementById('right-resizer');
     
     // --- STATE MANAGEMENT ---
     let isSortReversed = false;
@@ -318,7 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
     sortToggle.addEventListener('click', toggleAlbumSort);
     
     // --- DETAILS SIDEBAR & PLAYER ---
-    function showDetails(track) {
+    function showDetails(track, albumId) { // Pass albumId for reliable lookup
         let detailsListHtml = 'No details available.';
         if (track.details) {
             detailsListHtml = Object.entries(track.details)
@@ -337,6 +401,15 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="details-list">${detailsListHtml}</div>
             <div class="player-container">${playerHtml}</div>
         `;
+
+        // --- FIXED: Use reliable albumId to find and scroll TOC link ---
+        if (albumId) {
+            const tocLink = toc.querySelector(`a[href="#${albumId}"]`);
+            if (tocLink) {
+                tocLink.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
         detailsSidebar.classList.add('is-open');
     }
 
@@ -415,7 +488,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // --- Render Dropdown ---
         shortcutFieldSelect.innerHTML = '<option value="">快捷輸入欄位</option>';
 
         pinnedOrder.forEach(key => {
@@ -445,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
         shortcutFieldSelect.addEventListener('change', (e) => {
             if (!e.target.value) return;
             searchFieldInput.value = e.target.value;
-            searchFieldInput.dispatchEvent(new Event('input')); // Trigger clear button visibility check
+            searchFieldInput.dispatchEvent(new Event('input'));
             e.target.selectedIndex = 0;
             updateFilter();
         });
@@ -457,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function() {
         personnelSelect.addEventListener('change', (e) => {
             if (!e.target.value) return;
             searchValueInput.value = searchValueInput.value.trim() ? `${searchValueInput.value.trim()} ${e.target.value}` : e.target.value;
-            searchValueInput.dispatchEvent(new Event('input')); // Trigger clear button visibility check
+            searchValueInput.dispatchEvent(new Event('input'));
             e.target.value = "";
             updateFilter();
         });
@@ -473,9 +545,19 @@ document.addEventListener('DOMContentLoaded', function() {
         fields.forEach(({ input, btn }) => {
             btn.addEventListener('click', () => {
                 input.value = '';
-                input.dispatchEvent(new Event('input')); // Let CSS handle visibility
+                input.dispatchEvent(new Event('input'));
                 updateFilter();
                 input.focus();
+            });
+        });
+    }
+
+    function setupQuickSearchButtons() {
+        document.querySelectorAll('.quick-search-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                searchInput.value = e.target.dataset.query;
+                searchInput.dispatchEvent(new Event('input'));
+                updateFilter();
             });
         });
     }
@@ -483,7 +565,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- INITIALIZATION ---
     async function initializeApp() {
         try {
-            // Step 1: Build a map of all track IDs (path can be adjusted if needed)
             const idMap = new Map();
             const idManifestResponse = await fetch('IDs/manifest.json');
             const idManifest = await idManifestResponse.json();
@@ -495,16 +576,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.status === 'fulfilled') {
                     result.value.trim().split('\n').forEach(line => {
                         const parts = line.split('\t');
-                        if (parts.length >= 2) idMap.set(parts[1].trim(), parts[0].trim());
+                        if (parts.length >= 2) {
+                          const normalizedTrackName = parts[1].toLowerCase().replace(/！/g, '!').replace(/，/g, ',').replace(/[.,!'’]/g, '').replace(/\s+/g, ' ').trim();
+                          idMap.set(normalizedTrackName, parts[0].trim());
+                        }
                     });
                 }
             });
 
-            // Step 2: Fetch the main data index
             const dataIndexResponse = await fetch('data/data.json');
             const dataIndex = await dataIndexResponse.json();
 
-            // Step 3: Collect all album file paths from the index
             const allFilePaths = [];
             for (const game in dataIndex) {
                 if (dataIndex.hasOwnProperty(game)) {
@@ -512,11 +594,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Step 4: Fetch all album JSON files using the collected paths
             const detailPromises = allFilePaths.map(file => fetch(`data/${file}`).then(res => res.json()));
             const settledDetails = await Promise.allSettled(detailPromises);
             
-            // Step 5: Process all fetched data
             const fieldKeys = new Set();
             const allAlbumData = settledDetails
                 .filter(result => result.status === 'fulfilled')
@@ -524,9 +604,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 .map(albumData => {
                     const tracks = albumData.tracks.map(trackDetail => {
                         const fullTitle = trackDetail.track;
+                        const normalizedFullTitle = fullTitle.toLowerCase().replace(/！/g, '!').replace(/，/g, ',').replace(/[.,!'’]/g, '').replace(/\s+/g, ' ').trim();
                         Object.keys(trackDetail).forEach(key => fieldKeys.add(key));
                         return {
-                            id: idMap.get(fullTitle) || null,
+                            id: idMap.get(normalizedFullTitle) || null,
                             fullTitle: fullTitle,
                             details: trackDetail
                         };
@@ -537,6 +618,8 @@ document.addEventListener('DOMContentLoaded', function() {
             renderPage(allAlbumData);
             setupShortcuts(Array.from(fieldKeys));
             setupClearButtons();
+            setupQuickSearchButtons();
+            setupResizers();
 
         } catch (error) {
             albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;
@@ -545,24 +628,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- RENDER PAGE & CARDS ---
-    function createTrackCard(track) {
+    function createTrackCard(track, albumId) {
         const card = document.createElement('div');
         card.className = 'music-card';
         
-        const [title, ...subtitleParts] = track.fullTitle.split(' ');
-        const subtitle = subtitleParts.join(' ');
-
+        // --- FIXED: Display full title, do not split ---
         card.innerHTML = `
             <div class="music-icon"><i class="fas ${track.id ? 'fa-play' : 'fa-file-alt'}"></i></div>
             <div class="track-info">
-                <h3>${title}</h3>
-                <p>${subtitle || ' '}</p>
+                <h3>${track.fullTitle}</h3>
+                <p>&nbsp;</p>
             </div>`;
-
-        card.dataset.searchText = track.fullTitle.toLowerCase();
+        
         if (track.details) card.dataset.details = JSON.stringify(track.details);
 
-        card.addEventListener('click', () => showDetails(track));
+        card.addEventListener('click', () => showDetails(track, albumId));
         
         if (!track.id) {
             card.classList.add('no-id');
@@ -592,7 +672,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const musicGrid = document.createElement('div');
             musicGrid.className = 'music-grid';
             album.tracks.forEach(track => {
-                musicGrid.appendChild(createTrackCard(track));
+                musicGrid.appendChild(createTrackCard(track, albumId)); // Pass albumId to card
             });
             
             albumSection.appendChild(summary);
@@ -603,43 +683,108 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // --- FILTERING LOGIC ---
     function checkAdvancedQuery(details, fieldQuery, valueQuery) {
-        if (!fieldQuery) return true;
+        if (!valueQuery.trim()) return true;
         if (!details) return false;
         
-        const fields = fieldQuery.toLowerCase().split(' ').filter(f => f);
-        const searchCorpus = Object.entries(details)
-            .filter(([key]) => fields.some(f => key.toLowerCase().includes(f)))
-            .map(([, val]) => String(val).toLowerCase()).join(' ');
+        const values = Object.values(details).map(v => String(v).toLowerCase());
+        const valueQueryLower = valueQuery.toLowerCase();
+        const valueKeywords = valueQueryLower.split(' and ').map(part => part.trim().split(/\s+/).filter(k => k));
+        
+        const checkValueMatch = (text, keywords) => {
+            return keywords.every(word => text.includes(word));
+        };
+        
+        if (!fieldQuery.trim()) {
+            const entireRecord = values.join(' ');
+            return valueKeywords.some(keywords => checkValueMatch(entireRecord, keywords));
+        } else {
+            const fields = fieldQuery.toLowerCase().split(' ').filter(f => f);
+            const searchCorpus = Object.entries(details)
+                .filter(([key]) => fields.some(f => key.toLowerCase().includes(f)))
+                .map(([, val]) => String(val).toLowerCase()).join(' ');
 
-        if (valueQuery.trim() === '*') {
-            return searchCorpus.length > 0;
+            if (valueQuery.trim() === '*') {
+                return searchCorpus.length > 0;
+            }
+
+            return valueKeywords.some(keywords => checkValueMatch(searchCorpus, keywords));
         }
-        if (!valueQuery) return true;
-
-        if (!searchCorpus) return false;
-        return valueQuery.toUpperCase().split(' AND ').every(andPart => 
-            (andPart.trim().toLowerCase().split(' ').filter(k => k)).some(keyword => searchCorpus.includes(keyword))
-        );
     }
 
     function updateFilter() {
         const generalQuery = searchInput.value.toLowerCase().trim();
         const fieldQuery = searchFieldInput.value.trim();
         const valueQuery = searchValueInput.value.trim();
-        
-        document.querySelectorAll('.album-section').forEach(section => {
-            let hasVisibleCards = false;
-            section.querySelectorAll('.music-card').forEach(card => {
-                const generalMatch = card.dataset.searchText.includes(generalQuery);
-                const details = card.dataset.details ? JSON.parse(card.dataset.details) : null;
-                const advancedMatch = checkAdvancedQuery(details, fieldQuery, valueQuery);
-                const isVisible = generalMatch && advancedMatch;
-                card.classList.toggle('hidden', !isVisible);
-                if (isVisible) hasVisibleCards = true;
-            });
-            const albumTitleMatch = section.dataset.albumTitle.toLowerCase().includes(generalQuery);
-            section.classList.toggle('hidden', !hasVisibleCards && !(albumTitleMatch && !fieldQuery && !valueQuery));
+
+        document.querySelectorAll('#toc a').forEach(link => {
+            const albumTitle = link.textContent.toLowerCase();
+            link.classList.toggle('hidden', !albumTitle.includes(generalQuery));
         });
+
+        document.querySelectorAll('.album-section').forEach(section => {
+            const albumTitle = section.dataset.albumTitle.toLowerCase();
+            const albumMatchesGeneral = albumTitle.includes(generalQuery);
+
+            if (!albumMatchesGeneral) {
+                section.classList.add('hidden');
+                return;
+            }
+
+            let visibleCardCount = 0;
+            section.querySelectorAll('.music-card').forEach(card => {
+                const details = card.dataset.details ? JSON.parse(card.dataset.details) : null;
+                const cardIsVisible = checkAdvancedQuery(details, fieldQuery, valueQuery);
+                
+                card.classList.toggle('hidden', !cardIsVisible);
+                if (cardIsVisible) {
+                    visibleCardCount++;
+                }
+            });
+
+            section.classList.toggle('hidden', visibleCardCount === 0);
+        });
+    }
+    
+    // --- RESIZER LOGIC ---
+    function setupResizers() {
+      let isResizing = false;
+
+      function onMouseDown(e, element, direction) {
+        isResizing = true;
+        document.body.style.userSelect = 'none';
+        document.body.style.cursor = 'ew-resize';
+        
+        function onMouseMove(e) {
+          if (!isResizing) return;
+          const mainContent = document.querySelector('.main-content');
+          const pageContainerWidth = document.querySelector('.page-container').offsetWidth;
+          let newWidth;
+
+          if (direction === 'left') {
+            newWidth = e.clientX;
+            element.style.width = `${newWidth}px`;
+            mainContent.style.flexBasis = `calc(${pageContainerWidth - newWidth - detailsSidebar.offsetWidth}px)`;
+          } else if (direction === 'right') {
+            newWidth = pageContainerWidth - e.clientX;
+            element.style.width = `${newWidth}px`;
+            mainContent.style.flexBasis = `calc(${pageContainerWidth - newWidth - leftSidebar.offsetWidth}px)`;
+          }
+        }
+
+        function onMouseUp() {
+          isResizing = false;
+          document.body.style.userSelect = 'auto';
+          document.body.style.cursor = 'auto';
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      }
+
+      leftResizer.addEventListener('mousedown', (e) => onMouseDown(e, leftSidebar, 'left'));
+      rightResizer.addEventListener('mousedown', (e) => onMouseDown(e, detailsSidebar, 'right'));
     }
 
     [searchInput, searchFieldInput, searchValueInput].forEach(el => el.addEventListener('input', updateFilter));
