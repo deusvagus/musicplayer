@@ -107,9 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- SHORTCUTS & SEARCH SETUP ---
     async function setupShortcuts(fieldKeys) {
         const pinnedFieldConfig = {
-            "作曲": { keywords: ["作曲"], canonical: "作曲 / Composer", originals: new Set(), searchTerms: "作曲 Composer" },
+            "作曲": { keywords: ["作曲", "曲"], canonical: "作曲 / Composer", originals: new Set(), searchTerms: "作曲 Composer" },
             "編曲": { keywords: ["编曲", "配器", "编配", "改编", "原编曲", "original"], canonical: "編曲 / Arranger", originals: new Set(), searchTerms: "编曲 配器 改编 Arranger orchestrator Adoption" },
-            "作詞": { keywords: ["作词", "lyric"], canonical: "作詞 / Lyricist", originals: new Set(), searchTerms: "作词 Lyricist" }
+            "作詞": { keywords: ["作词", "lyric", "词"], canonical: "作詞 / Lyricist", originals: new Set(), searchTerms: "作词 Lyricist" }
         };
         const pinnedOrder = ["作曲", "編曲", "作詞"];
 
@@ -123,9 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const subFields = key.split('/').map(f => f.trim()).filter(f => f);
 
             subFields.forEach(field => {
-                const chinesePart = (field.match(/[\u4e00-\u9fa5]+/g) || []).join('');
-                let englishPartRaw = (field.match(/[a-zA-Z0-9][a-zA-Z0-9 -]*/g) || []).join(' ').trim();
-                
+                const mixedParts = field.match(/([\u4e00-\u9fa5]+|[a-zA-Z0-9 -]+)/g) || [];
+                const chinesePart = mixedParts.filter(p => /[\u4e00-\u9fa5]/.test(p)).join('').trim();
+                let englishPartRaw = mixedParts.filter(p => /[a-zA-Z0-9]/.test(p)).join(' ').trim();
                 englishPartRaw = englishPartRaw.split(' ').filter(word => word.length > 1 || !/^[a-zA-Z]$/.test(word)).join(' ');
                 
                 const englishPart = englishPartRaw.toLowerCase();
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 let isPinned = false;
                 for (const config of Object.values(pinnedFieldConfig)) {
-                    if (config.keywords.some(kw => chinesePart.includes(kw) || englishPart.includes(kw))) {
+                    if (config.keywords.some(kw => kw === field || (chinesePart && kw.includes(chinesePart)) || (englishPart && kw.includes(englishPart)))) {
                         config.originals.add(field);
                         isPinned = true;
                         break;
@@ -142,10 +142,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (isPinned) return;
 
                 let canonical = (chinesePart ? chineseToCanonical.get(chinesePart) : null) || (englishPart ? englishToCanonical.get(englishPart) : null);
-                
+
                 if (!canonical) {
-                    const enDisplay = capitalize(englishPartRaw.split(' ')[0]);
-                    canonical = [enDisplay, chinesePart].filter(Boolean).join(' / ');
+                    const displayParts = [];
+                    if (chinesePart) {
+                        displayParts.push(chinesePart);
+                    }
+                    if (englishPartRaw) {
+                        displayParts.push(englishPartRaw);
+                    }
+                    canonical = displayParts.filter(Boolean).join(' / ');
                 }
 
                 if (!fieldGroups.has(canonical)) {
@@ -170,7 +176,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        const sortedRegularKeys = [...fieldGroups.keys()].sort((a, b) => a.localeCompare(b));
+        const sortedRegularKeys = [...fieldGroups.keys()].sort((a, b) => {
+            const aEnglish = a.split(' / ')[1] || a;
+            const bEnglish = b.split(' / ')[1] || b;
+            return aEnglish.localeCompare(bEnglish);
+        });
+
         sortedRegularKeys.forEach(canonical => {
             if (canonical.match(/track|album|date/i)) return;
             const option = document.createElement('option');
@@ -441,7 +452,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const observer = new IntersectionObserver(observerCallback, {
             root: albumContainer,
             threshold: 0.1,
-            // **MODIFIED**: 擴大偵測範圍，從-50%改為-25%，減少盲區
             rootMargin: '0px 0px -25% 0px' 
         });
 
@@ -455,15 +465,32 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const values = Object.values(details).map(v => String(v).toLowerCase());
         const valueQueryLower = valueQuery.toLowerCase();
-        const valueKeywords = valueQueryLower.split(' and ').map(part => part.trim().split(/\s+/).filter(k => k));
+        
+        const valueKeywords = [];
+        const fullTextRegex = /"([^"]+)"|(\S+)/g;
+        let match;
+
+        while ((match = fullTextRegex.exec(valueQueryLower)) !== null) {
+            if (match[1]) {
+                valueKeywords.push({ type: 'exact', value: match[1] });
+            } else if (match[2]) {
+                valueKeywords.push({ type: 'fuzzy', value: match[2] });
+            }
+        }
         
         const checkValueMatch = (text, keywords) => {
-            return keywords.every(word => text.includes(word));
+            return keywords.every(keyword => {
+                if (keyword.type === 'exact') {
+                    return text.includes(keyword.value);
+                } else {
+                    return text.includes(keyword.value);
+                }
+            });
         };
         
         if (!fieldQuery.trim()) {
             const entireRecord = values.join(' ');
-            return valueKeywords.some(keywords => checkValueMatch(entireRecord, keywords));
+            return checkValueMatch(entireRecord, valueKeywords);
         } else {
             const fields = fieldQuery.toLowerCase().split(' ').filter(f => f);
             const searchCorpus = Object.entries(details)
@@ -473,8 +500,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (valueQuery.trim() === '*') {
                 return searchCorpus.length > 0;
             }
-
-            return valueKeywords.some(keywords => checkValueMatch(searchCorpus, keywords));
+            
+            return checkValueMatch(searchCorpus, valueKeywords);
         }
     }
 
