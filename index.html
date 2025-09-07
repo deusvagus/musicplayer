@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>音樂播放器</title>
-  <link rel="stylesheet" href="style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -19,53 +18,8 @@
     </header>
 
     <main class="main-content">
-      <div class="music-grid">
-        <div class="music-card">
-          <div class="card-header">
-            <div class="music-icon">
-              <i class="fas fa-play-circle"></i>
-            </div>
-            <div class="track-info">
-              <h3 class="track-title">音樂 #1</h3>
-              <p class="track-id">ID: 2737451799</p>
-            </div>
-          </div>
-          <div class="player-wrapper">
-            <iframe 
-              frameborder="0" 
-              border="0" 
-              marginwidth="0" 
-              marginheight="0" 
-              width="100%" 
-              height="86"
-              src="https://music.163.com/outchain/player?type=2&id=2737451799&auto=0&height=66">
-            </iframe>
-          </div>
+      <div class="music-grid" id="musicGrid">
         </div>
-
-        <div class="music-card">
-          <div class="card-header">
-            <div class="music-icon">
-              <i class="fas fa-play-circle"></i>
-            </div>
-            <div class="track-info">
-              <h3 class="track-title">音樂 #2</h3>
-              <p class="track-id">ID: 2699954432</p>
-            </div>
-          </div>
-          <div class="player-wrapper">
-            <iframe 
-              frameborder="0" 
-              border="0" 
-              marginwidth="0" 
-              marginheight="0" 
-              width="100%" 
-              height="86"
-              src="https://music.163.com/outchain/player?type=2&id=2699954432&auto=0&height=66">
-            </iframe>
-          </div>
-        </div>
-      </div>
     </main>
 
     <footer class="footer">
@@ -157,9 +111,9 @@
 
     .music-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       gap: 2rem;
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
@@ -176,6 +130,7 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      cursor: pointer;
     }
 
     .music-card::before {
@@ -197,6 +152,10 @@
         0 5px 15px rgba(0,0,0,0.1);
     }
 
+    .music-card.loaded {
+      cursor: default;
+    }
+
     .card-header {
       display: flex;
       align-items: center;
@@ -215,11 +174,25 @@
       justify-content: center;
       margin-right: 1rem;
       box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+      transition: all 0.3s ease;
     }
 
     .music-icon i {
       font-size: 1.5rem;
       color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .music-card:not(.loaded) .music-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .music-card:not(.loaded) .music-icon:hover i {
+      animation: bounce 0.6s ease;
+    }
+
+    .track-info {
+      flex: 1;
     }
 
     .track-info h3 {
@@ -233,12 +206,64 @@
       color: #666;
       font-size: 0.9rem;
       font-family: 'Courier New', monospace;
+      margin-bottom: 0.5rem;
+    }
+
+    .track-title-en {
+      color: #888;
+      font-size: 0.85rem;
+      font-style: italic;
+      line-height: 1.3;
     }
 
     .player-wrapper {
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-top: 1rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .player-wrapper.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .click-to-load {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+      background: rgba(0,0,0,0.05);
+      border-radius: 10px;
+      border: 2px dashed rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .click-to-load:hover {
+      background: rgba(102,126,234,0.1);
+      border-color: rgba(102,126,234,0.3);
+      color: #667eea;
+    }
+
+    .click-to-load i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #667eea;
+    }
+
+    .loading i {
+      font-size: 2rem;
+      animation: spin 1s linear infinite;
+      margin-bottom: 0.5rem;
+      display: block;
     }
 
     /* Footer */
@@ -297,6 +322,17 @@
       50% { transform: scaleY(2); }
     }
 
+    @keyframes bounce {
+      0%, 20%, 60%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      80% { transform: translateY(-5px); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       .header {
@@ -330,5 +366,126 @@
       }
     }
   </style>
+
+  <script>
+    // 生成音樂卡片
+    function createMusicCard(music, index) {
+      const card = document.createElement('div');
+      card.className = 'music-card';
+      card.dataset.id = music.id;
+      
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="music-icon">
+            <i class="fas fa-play-circle"></i>
+          </div>
+          <div class="track-info">
+            <h3 class="track-title">${music.title}</h3>
+            <p class="track-id">ID: ${music.id}</p>
+            ${music.subtitle ? `<p class="track-title-en">${music.subtitle}</p>` : ''}
+          </div>
+        </div>
+        <div class="click-to-load" onclick="loadPlayer('${music.id}', this)">
+          <i class="fas fa-music"></i>
+          <p>點擊加載播放器</p>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // 加載播放器
+    function loadPlayer(id, element) {
+      const card = element.closest('.music-card');
+      if (card.classList.contains('loaded')) return;
+      
+      // 顯示加載狀態
+      element.innerHTML = `
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <p>正在加載播放器...</p>
+        </div>
+      `;
+      
+      // 模擬加載延遲
+      setTimeout(() => {
+        const playerWrapper = document.createElement('div');
+        playerWrapper.className = 'player-wrapper';
+        playerWrapper.innerHTML = `
+          <iframe 
+            frameborder="0" 
+            border="0" 
+            marginwidth="0" 
+            marginheight="0" 
+            width="100%" 
+            height="86"
+            src="https://music.163.com/outchain/player?type=2&id=${id}&auto=0&height=66">
+          </iframe>
+        `;
+        
+        // 替換點擊區域
+        element.replaceWith(playerWrapper);
+        
+        // 添加顯示動畫
+        setTimeout(() => {
+          playerWrapper.classList.add('show');
+        }, 100);
+        
+        // 標記為已加載
+        card.classList.add('loaded');
+        
+        // 更新圖標
+        const icon = card.querySelector('.music-icon i');
+        icon.className = 'fas fa-stop-circle';
+        
+      }, 800);
+    }
+
+    // 初始化頁面
+    document.addEventListener('DOMContentLoaded', function() {
+      const grid = document.getElementById('musicGrid');
+      
+      // 從 netease_ids.txt 文件讀取數據
+      fetch('netease_ids.txt')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('無法加載文件，請確認 netease_ids.txt 存在於相同目錄下。');
+          }
+          return response.text();
+        })
+        .then(text => {
+          // 解析文本數據
+          const musicData = text.trim().split('\n').map(line => {
+            const parts = line.split('\t');
+            if (parts.length < 2) return null; // 如果行格式不正確則跳過
+
+            const id = parts[0].trim();
+            const fullTitle = parts[1].trim();
+            const titleParts = fullTitle.split('_');
+            
+            const musicObject = {
+              id: id,
+              title: titleParts[0]
+            };
+            
+            if (titleParts.length > 1) {
+              musicObject.subtitle = titleParts.slice(1).join('_');
+            }
+            
+            return musicObject;
+          }).filter(Boolean); // 過濾掉無效的行 (null)
+          
+          // 生成音樂卡片
+          musicData.forEach((music, index) => {
+            const card = createMusicCard(music, index);
+            grid.appendChild(card);
+          });
+        })
+        .catch(error => {
+          console.error('讀取音樂列表時發生錯誤:', error);
+          grid.innerHTML = `<p style="color: white; text-align: center; font-size: 1.2rem;">${error.message}</p>`;
+        });
+    });
+  </script>
 </body>
 </html>
