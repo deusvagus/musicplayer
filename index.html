@@ -130,7 +130,7 @@
         <p><strong>多關鍵字</strong>: 輸入多個詞，會找出<strong>同時包含</strong>所有關鍵字的曲目 (AND 關係)。</p>
         <p class="example" data-field-value="作曲" data-search-value="苑迪萌 姜以君"><em>舉例:</em> 快捷输入「作曲」并在「內容」搜尋 <code>苑迪萌 姜以君</code>，會找到所有由 <code>苑迪萌 姜以君</code> 參與 <code>作曲</code> 的曲目。<button class="apply-example-btn">套用</button></p>
         <p><strong>完整詞組</strong>: 使用 <code>"英文雙引號"</code> 包覆文字，可搜尋完整的詞組。</p>
-        <p class="example" data-field-value='"Budapest Scoring Orchestra"' data-search-value='"Budapest Scoring Orchestra"'><em>舉例:</em> 在「欄位」搜尋 <code>"Budapest Scoring Orchestra"</code>，可精準匹配該欄位。在「內容」搜尋 <code>"Budapest Scoring Orchestra"</code> 則會尋找完整的樂團名稱。<button class="apply-example-btn">套用</button></p>
+        <p class="example" data-field-value='' data-search-value='"Budapest Scoring Orchestra"'><em>舉例:</em> 在「內容」搜尋 <code>"Budapest Scoring Orchestra"</code> 可精確查詢，避免查詢到單獨的 <code>Orchestra</code> 造成結果中出現其他樂團。<button class="apply-example-btn">套用</button></p>
       </div>
       <div class="help-section">
         <h4>2. 正規表示式 (Regex)</h4>
@@ -146,7 +146,7 @@
           <li class="example" data-search-value="\(HOYO-MiX\)$" data-value-regex="true"><em>舉例:</em> 在任意欄位中，於「內容」搜尋 <code>\(HOYO-MiX\)$</code>，會找到所有以 `(HOYO-MiX)` 結尾的資訊 (注意 `()` 需用 `\` 轉義)。<button class="apply-example-btn">套用</button></li>
 
           <li><code>()</code> (分組): 將多個字元組合成一個單元，常用於搭配 `|`。</li>
-          <li class="example" data-field-value="Guitar" data-search-value="(Acoustic|Classical) Guitar" data-value-regex="true"><em>舉例:</em> 在「吉他」相關欄位中，搜尋 <code>(Acoustic|Classical) Guitar</code> 會找到包含 "Acoustic Guitar" **或** "Classical Guitar" 的曲目。<button class="apply-example-btn">套用</button></li>
+          <li class="example" data-field-value="作曲" data-search-value="(陈|车)子(玉|敏)" data-value-regex="true"><em>舉例:</em> 在欄位中選擇「作曲」，搜尋 <code>(陈|车)子(玉|敏)</code> 會找到…陈子敏和车子玉作曲的曲目(doge)。<button class="apply-example-btn">套用</button></li>
           
           <li><code>.</code> (任意單字元): 匹配除換行符外的任意一個字元。</li>
           <li class="example" data-field-value="錄音師" data-search-value="黄. Zach Huang" data-value-regex="true"><em>舉例:</em> 在「錄音師」欄位中，搜尋 <code>黄. Zach Huang</code> 可以匹配到 `黄巍 Zach Huang`。<button class="apply-example-btn">套用</button></li>

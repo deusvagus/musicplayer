@@ -85,7 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchFieldInput.dispatchEvent(new Event('input'));
                 searchValueInput.dispatchEvent(new Event('input'));
                 
-                updatePillState(); // (NEW) Update pill on apply
+                // --- MODIFICATION START ---
+                // Trigger blur on searchFieldInput to invoke keyword replacement logic
+                searchFieldInput.blur();
+                // --- MODIFICATION END ---
+                
                 updateFilter();
                 helpModal.style.display = 'none';
             }
@@ -440,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- SHORTCUTS & SEARCH SETUP ---
     async function setupShortcuts(fieldKeys) {
-        const pinnedFieldConfig = { "作曲": { keywords: ["作曲", "composer"], canonical: "Composer / 作曲", originals: new Set() }, "編曲": { keywords: ["编曲", "配器", "编配", "改编", "arranger", "adoption", "orchestrator", "original"], canonical: "Arranger / 編曲", originals: new Set() }, "作詞": { keywords: ["作词", "lyric", "lyricist"], canonical: "Lyricist / 作詞", originals: new Set() } };
+        const pinnedFieldConfig = { "作曲": { keywords: ["作曲", "composer"], canonical: "Composer / 作曲", originals: new Set(), fixedValue: "作曲 composer" }, "編曲": { keywords: ["编曲", "配器", "编配", "改编", "arranger", "adoption", "orchestrator", "original", "reinterpret"], canonical: "Arranger / 編曲", originals: new Set(), fixedValue: "配器 编曲 编配 改编 Orchestrator Arranger Adoption Reinterpret original" }, "作詞": { keywords: ["作词", "lyric", "lyricist"], canonical: "Lyricist / 作詞", originals: new Set(), fixedValue: "作词 Lyricist" } };
         const pinnedOrder = ["作曲", "編曲", "作詞"];
         const fieldGroups = new Map();
 
@@ -479,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (config.originals.size > 0) {
                     const optionData = {
                         text: config.canonical,
-                        value: [...config.originals].join(' '),
+                        value: config.fixedValue,
                         // (NEW) Data for pill logic
                         simpleText: key,
                         keywords: config.keywords
@@ -805,6 +809,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 updatePillState();
             });
+
+            // --- MODIFICATION START ---
+            // Add keydown listener for Enter key to trigger blur
+            [searchFieldInput, searchValueInput].forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); // Prevent form submission
+                        input.blur(); // Trigger blur to apply changes and update pill
+                    }
+                });
+            });
+            // --- MODIFICATION END ---
 
 
         } catch (error) {

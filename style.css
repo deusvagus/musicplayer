@@ -516,7 +516,7 @@ body {
   border-radius: 12px;
   border: 1px solid var(--border-color);
   width: 90%;
-  max-width: 750px; /* 【優化】加寬面板 */
+  max-width: 1200px; 
   position: relative;
   box-shadow: 0 10px 40px var(--shadow-color);
   max-height: 80vh;
