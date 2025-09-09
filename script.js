@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const searchFieldInput = document.getElementById('searchField');
     const searchValueInput = document.getElementById('searchValue');
+    const fieldRegexToggle = document.getElementById('fieldRegexToggle');
+    const valueRegexToggle = document.getElementById('valueRegexToggle');
     const themeToggle = document.getElementById('themeToggle');
     const sortToggle = document.getElementById('sortToggle');
     const detailsSidebar = document.getElementById('details-sidebar');
@@ -14,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const stickyPlayerContent = document.getElementById('sticky-player-content');
     const closeStickyPlayerBtn = document.getElementById('close-sticky-player-btn');
     const shortcutFieldSelect = document.getElementById('shortcutField');
+    const shortcutPersonnelSelect = document.getElementById('shortcutPersonnel');
     const leftSidebar = document.querySelector('.sidebar');
     const leftResizer = document.getElementById('left-resizer');
     const rightResizer = document.getElementById('right-resizer');
@@ -22,9 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const tocToggleMobile = document.getElementById("tocToggleMobile");
     const sidebarBackdrop = document.getElementById("sidebar-backdrop");
     const detailsBackdrop = document.getElementById("details-backdrop");
+    const searchHelpBtn = document.getElementById('searchHelpBtn');
+    const helpModal = document.getElementById('helpModal');
+    const helpModalClose = document.querySelector('.help-modal-close');
+    const searchFieldPill = document.getElementById('searchFieldPill');
 
     // --- STATE MANAGEMENT ---
     let isSortReversed = false;
+    let shortcutFieldOptions = []; // (NEW) Cache for pill logic
 
     // --- THEME MANAGEMENT ---
     function applyTheme(theme) {
@@ -42,6 +50,48 @@ document.addEventListener('DOMContentLoaded', function() {
         themeToggle.addEventListener('click', toggleTheme);
     }
     applyTheme(localStorage.getItem('theme') || 'dark');
+
+    // --- SEARCH HELP MODAL ---
+    function setupHelpModal() {
+        if (!searchHelpBtn || !helpModal || !helpModalClose) return;
+        searchHelpBtn.addEventListener('click', () => {
+            helpModal.style.display = 'flex';
+        });
+        helpModalClose.addEventListener('click', () => {
+            helpModal.style.display = 'none';
+        });
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) {
+                helpModal.style.display = 'none';
+            }
+        });
+    }
+
+    // --- HELP MODAL EXAMPLES ---
+    function setupHelpModalExamples() {
+        if (!helpModal) return;
+        helpModal.addEventListener('click', (e) => {
+            if (e.target.classList.contains('apply-example-btn')) {
+                const exampleEl = e.target.closest('.example');
+                if (!exampleEl) return;
+
+                const { fieldValue, searchValue, fieldRegex, valueRegex } = exampleEl.dataset;
+                
+                searchFieldInput.value = fieldValue || '';
+                searchValueInput.value = searchValue || '';
+                fieldRegexToggle.checked = fieldRegex === 'true';
+                valueRegexToggle.checked = valueRegex === 'true';
+
+                searchFieldInput.dispatchEvent(new Event('input'));
+                searchValueInput.dispatchEvent(new Event('input'));
+                
+                updatePillState(); // (NEW) Update pill on apply
+                updateFilter();
+                helpModal.style.display = 'none';
+            }
+        });
+    }
+
 
     // --- SORTING ---
     function toggleAlbumSort() {
@@ -62,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- DETAILS SIDEBAR & PLAYER ---
     function showDetails(track, albumId) {
-        // Prevent showing an empty panel
         if (!track || !track.details) {
           return;
         }
@@ -112,13 +161,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function loadPlayer(id) {
         if (!stickyPlayer || !stickyPlayerContent) return;
-        const playerHtml = `
-            <iframe frameborder="0" border="0" marginwidth="0" marginheight="0" width="100%" height="86"
-                src="https://music.163.com/outchain/player?type=2&id=${id}&auto=1&height=66">
-            </iframe>`;
-        stickyPlayerContent.innerHTML = playerHtml;
+        
+        stickyPlayerContent.innerHTML = '';
+        stickyPlayer.classList.add('is-loading');
         stickyPlayer.classList.add('is-visible');
+        
+        const iframe = document.createElement('iframe');
+        iframe.frameBorder = "0";
+        iframe.border = "0";
+        iframe.marginWidth = "0";
+        iframe.marginHeight = "0";
+        iframe.width = "100%";
+        iframe.height = "86";
+        iframe.src = `https://music.163.com/outchain/player?type=2&id=${id}&auto=1&height=66`;
+        
+        iframe.style.opacity = '0';
+        iframe.style.transition = 'opacity 0.3s ease';
+
+        const onDone = () => {
+            stickyPlayer.classList.remove('is-loading');
+        };
+
+        iframe.onload = () => {
+            iframe.style.opacity = '1';
+            onDone();
+        };
+        
+        iframe.onerror = () => {
+            stickyPlayerContent.innerHTML = '<p class="no-id-message">播放器加載失敗</p>';
+            onDone();
+        };
+
+        stickyPlayerContent.appendChild(iframe);
     }
+
 
     if (detailsSidebar) {
         detailsSidebar.addEventListener('click', (e) => {
@@ -155,7 +231,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Ensure both sidebars are closed on initial load
     if (leftSidebar) {
       leftSidebar.classList.remove('is-open');
     }
@@ -163,66 +238,69 @@ document.addEventListener('DOMContentLoaded', function() {
       detailsSidebar.classList.remove('is-open');
     }
 
-
     // --- SEARCH & FILTERING ---
-    function checkAdvancedQuery(details, fieldQuery, valueQuery) {
-        if (valueQuery.trim() === '') {
-            if (!fieldQuery.trim()) return true;
-            if (!details) return false;
+    function checkAdvancedQuery(details, fieldQuery, valueQuery, isFieldRegex, isValueRegex) {
+        if (!details) return null;
 
-            // 修正欄位搜尋邏輯：支援 AND/OR
-            const fieldsQueryLower = fieldQuery.toLowerCase();
-            const isAndSearch = fieldsQueryLower.includes(' and ');
-            const fieldTerms = fieldsQueryLower.split(isAndSearch ? ' and ' : ' ').filter(f => f);
-            const detailKeys = Object.keys(details).map(key => key.toLowerCase());
-
-            const fieldCheck = term => detailKeys.some(dk => dk.includes(term));
-
-            return isAndSearch 
-                ? fieldTerms.every(fieldCheck)
-                : fieldTerms.some(fieldCheck);
+        let fieldRegex, valueRegex;
+        try {
+            if (isFieldRegex && fieldQuery) fieldRegex = new RegExp(fieldQuery, 'i');
+            searchFieldInput.classList.remove('invalid-regex');
+        } catch (e) {
+            searchFieldInput.classList.add('invalid-regex');
+            return null;
         }
-        
-        if (!details) return false;
-        
-        const valueQueryLower = valueQuery.toLowerCase();
-        
-        // 分離出雙引號內的精確搜尋詞
-        const exactMatches = (valueQueryLower.match(/"[^"]+"/g) || []).map(m => m.slice(1, -1));
-        const remainingQuery = valueQueryLower.replace(/"[^"]+"/g, '').trim();
-        const keywords = remainingQuery.split(/\s+/).filter(k => k);
-        const allTerms = [...exactMatches, ...keywords];
-        
-        if (valueQuery.trim() !== '' && allTerms.length === 0) {
-            return false;
+        try {
+            if (isValueRegex && valueQuery) valueRegex = new RegExp(valueQuery, 'i');
+            searchValueInput.classList.remove('invalid-regex');
+        } catch (e) {
+            searchValueInput.classList.add('invalid-regex');
+            return null;
         }
 
-        const checkValueMatch = (text, terms) => {
-            return terms.every(term => text.includes(term));
+        const getKeywordTerms = (query) => {
+            const queryLower = query.toLowerCase();
+            const exacts = (queryLower.match(/"[^"]+"/g) || []).map(m => m.slice(1, -1));
+            const keywords = queryLower.replace(/"[^"]+"/g, '').trim().split(/\s+/).filter(k => k);
+            return [...exacts, ...keywords];
         };
-        
-        if (!fieldQuery.trim()) {
-            const entireRecord = Object.keys(details).map(k => k.toLowerCase())
-                                 .concat(Object.values(details).map(v => String(v).toLowerCase())).join(' ');
-            return checkValueMatch(entireRecord, allTerms);
-        } else {
-            const fields = fieldQuery.toLowerCase().split(' ').filter(f => f);
-            const searchCorpus = Object.entries(details)
-                .filter(([key]) => fields.some(f => key.toLowerCase().includes(f)))
-                .map(([, val]) => String(val).toLowerCase()).join(' ');
 
-            if (valueQuery.trim() === '*') {
-                return searchCorpus.length > 0;
+        const fieldTerms = (isFieldRegex || !fieldQuery) ? [] : getKeywordTerms(fieldQuery);
+        const valueTerms = (isValueRegex || !valueQuery) ? [] : getKeywordTerms(valueQuery);
+
+        const candidateEntries = Object.entries(details).filter(([key]) => {
+            if (!fieldQuery) return true;
+            if (isFieldRegex) return fieldRegex.test(key);
+            const keyLower = key.toLowerCase();
+            return fieldTerms.some(term => keyLower.includes(term));
+        });
+
+        if (candidateEntries.length === 0) return null;
+        if (!valueQuery) return Object.fromEntries(candidateEntries);
+
+        const matchedEntries = candidateEntries.filter(([, value]) => {
+            const valueString = String(value);
+            if (isValueRegex) {
+                return valueRegex.test(valueString);
             }
-
-            return checkValueMatch(searchCorpus, allTerms);
-        }
+            const valueLower = valueString.toLowerCase();
+            return valueTerms.every(term => valueLower.includes(term));
+        });
+        
+        if (matchedEntries.length === 0) return null;
+        return Object.fromEntries(matchedEntries);
     }
+
 
     function updateFilter() {
         const generalQuery = searchInput.value.toLowerCase().trim();
         const fieldQuery = searchFieldInput.value.trim();
         const valueQuery = searchValueInput.value.trim();
+        const isFieldRegex = fieldRegexToggle.checked;
+        const isValueRegex = valueRegexToggle.checked;
+
+        if(!isFieldRegex) searchFieldInput.classList.remove('invalid-regex');
+        if(!isValueRegex) searchValueInput.classList.remove('invalid-regex');
 
         document.querySelectorAll('#toc a').forEach(link => {
             const albumTitle = link.textContent.toLowerCase();
@@ -241,9 +319,30 @@ document.addEventListener('DOMContentLoaded', function() {
             let visibleCardCount = 0;
             section.querySelectorAll('.music-card').forEach(card => {
                 const details = card.dataset.details ? JSON.parse(card.dataset.details) : null;
-                const cardIsVisible = checkAdvancedQuery(details, fieldQuery, valueQuery);
+                const matchedData = checkAdvancedQuery(details, fieldQuery, valueQuery, isFieldRegex, isValueRegex);
                 
+                const cardIsVisible = matchedData !== null;
                 card.classList.toggle('hidden', !cardIsVisible);
+
+                const matchedInfoEl = card.querySelector('.matched-info');
+                if (matchedInfoEl) {
+                    matchedInfoEl.innerHTML = '';
+                    matchedInfoEl.style.display = 'none';
+
+                    if (cardIsVisible && matchedData && Object.keys(matchedData).length > 0 && (fieldQuery || valueQuery)) {
+                        const html = Object.entries(matchedData).map(([key, value]) => {
+                            const safeKey = key.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                            const safeValue = String(value).replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                            return `<p><strong>${safeKey}:</strong> ${safeValue}</p>`;
+                        }).join('');
+                        
+                        if (html) {
+                            matchedInfoEl.innerHTML = html;
+                            matchedInfoEl.style.display = 'block';
+                        }
+                    }
+                }
+
                 if (cardIsVisible) {
                     visibleCardCount++;
                 }
@@ -262,11 +361,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let englishTitle = '';
         const fullTitle = track.fullTitle.trim();
         
-        // 修正：更穩健的標題解析邏輯
-        const regex = /^([\u4e00-\u9fa5]+)\s*([a-zA-Z0-9\s#b]+)$/;
+        const regex = /^([\u4e00-\u9fa5\s，。、]+)([^\u4e00-\u9fa5].*)?$/;
         const match = fullTitle.match(regex);
         
-        if (match) {
+        if (match && match[2]) {
             chineseTitle = match[1].trim();
             englishTitle = match[2].trim();
         } else {
@@ -279,6 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="track-info">
                 <h3>${chineseTitle}</h3>
                 <p>${englishTitle}&nbsp;</p>
+                <div class="matched-info"></div>
             </div>`;
         
         if (track.details) card.dataset.details = JSON.stringify(track.details);
@@ -323,164 +422,130 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- (NEW) PILL-LIKE INPUT MANAGEMENT ---
+    function updatePillState() {
+        const wrapper = searchFieldInput.parentElement;
+        const currentValue = searchFieldInput.value;
+        
+        const matchedOption = shortcutFieldOptions.find(opt => opt.value === currentValue);
+
+        if (matchedOption) {
+            wrapper.classList.add('is-pilled');
+            searchFieldPill.textContent = matchedOption.simpleText;
+        } else {
+            wrapper.classList.remove('is-pilled');
+        }
+    }
+
+
     // --- SHORTCUTS & SEARCH SETUP ---
     async function setupShortcuts(fieldKeys) {
-        const pinnedFieldConfig = {
-            "作曲": { keywords: ["作曲", "composer"], canonical: "Composer / 作曲", originals: new Set() },
-            "編曲": { keywords: ["编曲", "配器", "编配", "改编", "原编曲", "original", "arranger"], canonical: "Arranger / 編曲", originals: new Set() },
-            "作詞": { keywords: ["作词", "lyric", "lyricist"], canonical: "Lyricist / 作詞", originals: new Set() }
-        };
+        const pinnedFieldConfig = { "作曲": { keywords: ["作曲", "composer"], canonical: "Composer / 作曲", originals: new Set() }, "編曲": { keywords: ["编曲", "配器", "编配", "改编", "arranger", "adoption", "orchestrator", "original"], canonical: "Arranger / 編曲", originals: new Set() }, "作詞": { keywords: ["作词", "lyric", "lyricist"], canonical: "Lyricist / 作詞", originals: new Set() } };
         const pinnedOrder = ["作曲", "編曲", "作詞"];
-
         const fieldGroups = new Map();
 
-        // 核心邏輯修正
         fieldKeys.forEach(key => {
             if (!key) return;
-            const subKeys = key.split('/').map(s => s.trim()).filter(s => s);
-            
+            const subKeys = key.split('/').map(s => s.trim()).filter(Boolean);
             subKeys.forEach(subKey => {
-                let chinesePart = '';
-                let englishPart = '';
-                let searchTerms = subKey;
-                
-                // 優先處理「中文字+英文字母」的格式，避免單一英文字母被忽略
-                const chineseFirstMatch = subKey.match(/^([\u4e00-\u9fa5]+)\s*([a-zA-Z0-9\s#b]+)$/);
-                if (chineseFirstMatch) {
-                    chinesePart = chineseFirstMatch[1].trim();
-                    englishPart = chineseFirstMatch[2].trim();
-                } else {
-                    // 處理「英文字母+中文字」以及純中英文的情況
-                    const chineseMatch = subKey.match(/[\u4e00-\u9fa5]+/g);
-                    const englishMatch = subKey.match(/[a-zA-Z0-9][a-zA-Z0-9 -]*/g);
-                    
-                    let foundChinese = chineseMatch ? chineseMatch.join('').trim() : '';
-                    let foundEnglish = englishMatch ? englishMatch.join(' ').trim() : '';
-
-                    if (foundChinese && foundEnglish) {
-                        chinesePart = foundChinese;
-                        englishPart = foundEnglish;
-                    } else if (foundChinese) {
-                        chinesePart = foundChinese;
-                    } else if (foundEnglish) {
-                        chinesePart = foundEnglish; // 這裡將英文視為中文部分，以避免合併
-                        englishPart = '';
-                    } else {
-                        chinesePart = subKey;
-                        englishPart = '';
-                    }
-                }
-                
-                if (chinesePart && englishPart) {
-                    const term1 = chinesePart.includes(' ') ? `"${chinesePart}"` : chinesePart;
-                    const term2 = englishPart.includes(' ') ? `"${englishPart}"` : englishPart;
-                    searchTerms = `${term1} ${term2}`;
-                } else if (chinesePart) {
-                    searchTerms = chinesePart.includes(' ') ? `"${chinesePart}"` : chinesePart;
-                } else {
-                    searchTerms = subKey;
-                }
-
                 let isPinned = false;
                 for (const config of Object.values(pinnedFieldConfig)) {
-                    const lowerChinese = chinesePart.toLowerCase();
-                    if (config.keywords.some(kw => lowerChinese.includes(kw.toLowerCase()))) {
+                    if (config.keywords.some(kw => subKey.toLowerCase().includes(kw))) {
                         config.originals.add(subKey);
                         isPinned = true;
                         break;
                     }
                 }
                 if (isPinned) return;
-
-                // 核心修正：使用原始的 subKey 作為 map 的鍵，以避免合併
-                if (!fieldGroups.has(subKey)) {
-                    fieldGroups.set(subKey, { 
-                        searchTerms: new Set(), 
-                        englishParts: new Set(),
-                        chineseParts: new Set()
-                    });
+                const chinesePart = (subKey.match(/[\u4e00-\u9fa5]+/g) || []).join(' ').trim();
+                const englishPart = subKey.replace(/[\u4e00-\u9fa5]/g, '').replace(/[/\-()]/g, ' ').replace(/\s+/g, ' ').trim();
+                const groupKey = chinesePart || englishPart.toLowerCase();
+                if (!groupKey) return;
+                if (!fieldGroups.has(groupKey)) {
+                    fieldGroups.set(groupKey, { originals: new Set(), englishParts: new Set(), chineseParts: new Set() });
                 }
-                fieldGroups.get(subKey).searchTerms.add(searchTerms);
-                if (englishPart) {
-                    fieldGroups.get(subKey).englishParts.add(englishPart);
-                }
-                if (chinesePart) {
-                    fieldGroups.get(subKey).chineseParts.add(chinesePart);
-                }
+                const group = fieldGroups.get(groupKey);
+                group.originals.add(subKey);
+                if (englishPart) group.englishParts.add(englishPart);
+                if (chinesePart) group.chineseParts.add(chinesePart);
             });
         });
-        
+
         if (shortcutFieldSelect) {
             shortcutFieldSelect.innerHTML = '<option value="">快捷輸入欄位</option>';
-
-            const options = [];
+            const pinnedOptions = [];
             pinnedOrder.forEach(key => {
                 const config = pinnedFieldConfig[key];
                 if (config.originals.size > 0) {
-                    options.push({
+                    const optionData = {
                         text: config.canonical,
-                        value: config.searchTerms
-                    });
+                        value: [...config.originals].join(' '),
+                        // (NEW) Data for pill logic
+                        simpleText: key,
+                        keywords: config.keywords
+                    };
+                    pinnedOptions.push(optionData);
+                    shortcutFieldOptions.push(optionData); // Cache it
                 }
             });
-
-            fieldGroups.forEach((group, key) => {
-                if (key.match(/track|album|date/i)) return;
-                
-                const terms = [...group.searchTerms].join(' ');
-                
+            const regularOptions = [];
+            fieldGroups.forEach(group => {
+                const terms = [...group.originals].map(item => {
+                    const keySignatureRegex = /^[A-G](b|#)?调/;
+                    let chinesePart, englishPart;
+                    if (keySignatureRegex.test(item)) {
+                        const keyAndChinese = item.match(/^[A-G](b|#)?调[\u4e00-\u9fa5]+/);
+                        chinesePart = keyAndChinese ? keyAndChinese[0] : '';
+                        englishPart = item.replace(chinesePart, '').trim();
+                    } else {
+                        chinesePart = (item.match(/[\u4e00-\u9fa5]+/g) || []).join(' ').trim();
+                        englishPart = item.replace(/[\u4e00-\u9fa5]+/g, '').trim().replace(/\s+/g, ' ');
+                    }
+                    const parts = [];
+                    if (chinesePart) parts.push(chinesePart);
+                    if (englishPart) parts.push(englishPart.includes(' ') ? `"${englishPart}"` : englishPart);
+                    return parts.join(' ');
+                }).join(' ');
                 const englishJoined = [...new Set([...group.englishParts])].sort().join(' / ');
                 const chineseJoined = [...new Set([...group.chineseParts])].sort().join(' / ');
-                
-                let canonical;
-                if (englishJoined && chineseJoined) {
-                    canonical = `${englishJoined} / ${chineseJoined}`;
-                } else if (englishJoined) {
-                    canonical = englishJoined;
-                } else {
-                    canonical = chineseJoined;
+                let canonical = englishJoined && chineseJoined ? `${englishJoined} / ${chineseJoined}` : (englishJoined || chineseJoined);
+                if (canonical && !/track|album|date/i.test(canonical)) {
+                    regularOptions.push({ text: canonical, value: terms });
                 }
-                
-                options.push({
-                    text: canonical,
-                    value: terms
-                });
+            });
+            regularOptions.sort((a, b) => a.text.localeCompare(b.text, 'zh-Hans-CN'));
+            [...pinnedOptions, ...regularOptions].forEach(option => {
+                shortcutFieldSelect.appendChild(new Option(option.text, option.value));
             });
 
-            options.sort((a, b) => a.text.localeCompare(b.text));
-            options.forEach(option => {
-                const el = document.createElement('option');
-                el.value = option.value;
-                el.textContent = option.text;
-                shortcutFieldSelect.appendChild(el);
-            });
-            
             shortcutFieldSelect.addEventListener('change', (e) => {
                 if (!e.target.value) return;
                 searchFieldInput.value = e.target.value;
+                fieldRegexToggle.checked = false;
                 searchFieldInput.dispatchEvent(new Event('input'));
                 e.target.selectedIndex = 0;
+                updatePillState(); // (NEW) Update pill on select
                 updateFilter();
             });
         }
 
-        const personnelSelect = document.getElementById('shortcutPersonnel');
-        if (personnelSelect) {
+        if (shortcutPersonnelSelect) {
             try {
                 const response = await fetch('personnel.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP 錯誤！狀態: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP 錯誤！狀態: ${response.status}`);
                 const personnel = await response.json();
-                personnel.forEach(name => personnelSelect.appendChild(new Option(name, name)));
+                personnel.forEach(name => shortcutPersonnelSelect.appendChild(new Option(name, name)));
             } catch (error) {
                 console.error('無法載入或解析 personnel.json:', error);
-                personnelSelect.style.display = 'none';
+                shortcutPersonnelSelect.style.display = 'none';
             }
-            
-            personnelSelect.addEventListener('change', (e) => {
-                if (!e.target.value) return;
-                searchValueInput.value = searchValueInput.value.trim() ? `${searchValueInput.value.trim()} ${e.target.value}` : e.target.value;
+            shortcutPersonnelSelect.addEventListener('change', (e) => {
+                const selectedName = e.target.value;
+                if (!selectedName) return;
+                const currentVal = searchValueInput.value.trim();
+                const newVal = selectedName.includes(' ') ? `"${selectedName}"` : selectedName;
+                searchValueInput.value = currentVal ? `${currentVal} ${newVal}` : newVal;
+                valueRegexToggle.checked = false;
                 searchValueInput.dispatchEvent(new Event('input'));
                 e.target.value = "";
                 updateFilter();
@@ -488,17 +553,90 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function setupClearButtons() {
-        const fields = [
-            { input: searchInput, btn: document.getElementById('clearSearchInput') },
-            { input: searchFieldInput, btn: document.getElementById('clearSearchField') },
-            { input: searchValueInput, btn: document.getElementById('clearSearchValue') },
-        ];
+    // --- AUTOCOMPLETE FEATURE ---
+    function setupAutocomplete() {
+        let fieldOptionsForAutocomplete = [];
+        let personnelOptions = [];
 
+        setTimeout(() => {
+            fieldOptionsForAutocomplete = Array.from(shortcutFieldSelect.options)
+                .filter(opt => opt.value)
+                .map(opt => ({ text: opt.textContent, value: opt.value }));
+            personnelOptions = Array.from(shortcutPersonnelSelect.options)
+                .filter(opt => opt.value)
+                .map(opt => ({ text: opt.textContent, value: opt.textContent }));
+        }, 1000); 
+
+        const createAutocomplete = (inputEl, suggestionsEl, optionsSource) => {
+            let activeIndex = -1;
+            const updateSuggestions = () => {
+                const query = inputEl.value.toLowerCase();
+                suggestionsEl.innerHTML = '';
+                suggestionsEl.style.display = 'none';
+                activeIndex = -1;
+                if (!query) return;
+                const filtered = optionsSource()
+                    .filter(opt => opt.text.toLowerCase().includes(query))
+                    .slice(0, 5);
+                if (filtered.length === 0) return;
+                filtered.forEach((opt, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.textContent = opt.text;
+                    item.dataset.value = opt.value;
+                    item.dataset.index = index;
+                    item.addEventListener('mousedown', () => applySuggestion(opt));
+                    suggestionsEl.appendChild(item);
+                });
+                suggestionsEl.style.display = 'block';
+            };
+            const applySuggestion = (option) => {
+                inputEl.value = option.value;
+                suggestionsEl.innerHTML = '';
+                suggestionsEl.style.display = 'none';
+                if (inputEl === searchFieldInput) updatePillState(); // (NEW) Update pill
+                updateFilter();
+            };
+            const navigateSuggestions = (e) => {
+                const items = suggestionsEl.querySelectorAll('.suggestion-item');
+                if (items.length === 0) return;
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeIndex = (activeIndex + 1) % items.length;
+                    updateActiveItem();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeIndex = (activeIndex - 1 + items.length) % items.length;
+                    updateActiveItem();
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (activeIndex > -1) items[activeIndex].dispatchEvent(new Event('mousedown'));
+                } else if (e.key === 'Escape') {
+                    suggestionsEl.style.display = 'none';
+                }
+            };
+            const updateActiveItem = () => {
+                const items = suggestionsEl.querySelectorAll('.suggestion-item');
+                items.forEach((item, index) => item.classList.toggle('is-active', index === activeIndex));
+            };
+            inputEl.addEventListener('input', updateSuggestions);
+            inputEl.addEventListener('focus', updateSuggestions);
+            inputEl.addEventListener('keydown', navigateSuggestions);
+            document.addEventListener('click', (e) => {
+                if (!inputEl.contains(e.target)) suggestionsEl.style.display = 'none';
+            });
+        };
+        createAutocomplete(searchFieldInput, document.getElementById('field-suggestions'), () => fieldOptionsForAutocomplete);
+        createAutocomplete(searchValueInput, document.getElementById('value-suggestions'), () => personnelOptions);
+    }
+    
+    function setupClearButtons() {
+        const fields = [{ input: searchInput, btn: document.getElementById('clearSearchInput') }, { input: searchFieldInput, btn: document.getElementById('clearSearchField') }, { input: searchValueInput, btn: document.getElementById('clearSearchValue') }, ];
         fields.forEach(({ input, btn }) => {
             if (btn) {
                 btn.addEventListener('click', () => {
                     input.value = '';
+                    if (input === searchFieldInput) updatePillState(); // (NEW) Update pill
                     input.dispatchEvent(new Event('input'));
                     updateFilter();
                     input.focus();
@@ -517,32 +655,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // --- RESIZER LOGIC ---
     function setupResizers() {
         let isResizing = false;
-
         function onMouseDown(e, element, direction) {
             isResizing = true;
             document.body.style.userSelect = 'none';
             document.body.style.cursor = 'ew-resize';
-            
             function onMouseMove(e) {
                 if (!isResizing) return;
-                const mainContent = document.querySelector('.main-content');
-                const pageContainerWidth = document.querySelector('.page-container').offsetWidth;
-                let newWidth;
-
-                if (direction === 'left') {
-                    newWidth = e.clientX;
-                    element.style.width = `${newWidth}px`;
-                    mainContent.style.flexBasis = `calc(${pageContainerWidth - newWidth - detailsSidebar.offsetWidth}px)`;
-                } else if (direction === 'right') {
-                    newWidth = pageContainerWidth - e.clientX;
-                    element.style.width = `${newWidth}px`;
-                    mainContent.style.flexBasis = `calc(${pageContainerWidth - newWidth - leftSidebar.offsetWidth}px)`;
-                }
+                const newWidth = (direction === 'left') ? e.clientX : (document.body.clientWidth - e.clientX);
+                element.style.width = `${newWidth}px`;
             }
-
             function onMouseUp() {
                 isResizing = false;
                 document.body.style.userSelect = 'auto';
@@ -550,90 +673,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
             }
-
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
         }
-
-        if (leftResizer && leftSidebar) {
-            leftResizer.addEventListener('mousedown', (e) => onMouseDown(e, leftSidebar, 'left'));
-        }
-        if (rightResizer && detailsSidebar) {
-            rightResizer.addEventListener('mousedown', (e) => onMouseDown(e, detailsSidebar, 'right'));
-        }
+        if (leftResizer && leftSidebar) leftResizer.addEventListener('mousedown', (e) => onMouseDown(e, leftSidebar, 'left'));
+        if (rightResizer && detailsSidebar) rightResizer.addEventListener('mousedown', (e) => onMouseDown(e, detailsSidebar, 'right'));
     }
     
-    // --- SCROLL SPY ---
     function setupScrollSpy() {
         const sections = document.querySelectorAll('.album-section');
         if (sections.length === 0) return;
-
         const observerCallback = (entries) => {
             entries.forEach(entry => {
                 const link = toc.querySelector(`a[href="#${entry.target.id}"]`);
-                if (link) {
-                    link.dataset.visible = entry.isIntersecting;
-                }
+                if (link) link.dataset.visible = entry.isIntersecting;
             });
-
             const firstVisibleLink = Array.from(toc.querySelectorAll('a')).find(link => link.dataset.visible === 'true');
             const currentActiveLink = toc.querySelector('.active-toc-link');
-
             if (firstVisibleLink && firstVisibleLink !== currentActiveLink) {
-                if (currentActiveLink) {
-                    currentActiveLink.classList.remove('active-toc-link');
-                }
+                if (currentActiveLink) currentActiveLink.classList.remove('active-toc-link');
                 firstVisibleLink.classList.add('active-toc-link');
-                
                 firstVisibleLink.scrollIntoView({ behavior: 'auto', block: 'nearest' });
             } else if (!currentActiveLink && toc.children.length > 0) {
                 const firstTocLink = toc.querySelector('a');
-                if(firstTocLink) {
-                    firstTocLink.classList.add('active-toc-link');
-                }
+                if(firstTocLink) firstTocLink.classList.add('active-toc-link');
             }
         };
-
-        const observer = new IntersectionObserver(observerCallback, {
-            root: albumContainer,
-            threshold: 0.1,
-            rootMargin: '0px 0px -25% 0px'
-        });
-
+        const observer = new IntersectionObserver(observerCallback, { root: albumContainer, threshold: 0.1, rootMargin: '0px 0px -25% 0px' });
         sections.forEach(section => observer.observe(section));
     }
     
-    // --- TOC CLICK HANDLER ---
     function setupTocClickHandler() {
         if (!toc) return;
         toc.addEventListener('click', function(e) {
             if (e.target.tagName === 'A') {
                 e.preventDefault(); 
-
                 const currentActiveLink = toc.querySelector('.active-toc-link');
-                if (currentActiveLink) {
-                    currentActiveLink.classList.remove('active-toc-link');
-                }
-
+                if (currentActiveLink) currentActiveLink.classList.remove('active-toc-link');
                 const clickedLink = e.target;
                 clickedLink.classList.add('active-toc-link');
-
                 const targetId = clickedLink.getAttribute('href');
                 const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView();
-                }
+                if (targetElement) targetElement.scrollIntoView();
             }
         });
     }
 
-    // --- DYNAMIC LAYOUT UPDATE ---
     function updateLayout() {
         const header = document.querySelector('.header');
         if (header) {
             const headerHeight = header.offsetHeight;
             const style = `top: ${headerHeight}px; height: calc(100vh - ${headerHeight}px);`;
-            
             if (window.innerWidth <= 768) {
                 if (leftSidebar) leftSidebar.style = style;
                 if (detailsSidebar) detailsSidebar.style = style;
@@ -643,7 +733,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-
     
     // --- INITIALIZATION ---
     async function initializeApp() {
@@ -651,15 +740,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const idMap = new Map();
             const idManifestResponse = await fetch('IDs/manifest.json');
             const idManifest = await idManifestResponse.json();
-            const idFilePromises = idManifest.albums.map(filename =>
-                fetch(`IDs/${filename}`).then(res => res.text())
-            );
-            
-            const normalizeTitle = (title) => {
-                if (!title) return '';
-                return title.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]/g, '');
-            };
-
+            const idFilePromises = idManifest.albums.map(filename => fetch(`IDs/${filename}`).then(res => res.text()));
+            const normalizeTitle = (title) => title ? title.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]/g, '') : '';
             const idFiles = await Promise.allSettled(idFilePromises);
             idFiles.forEach(result => {
                 if (result.status === 'fulfilled') {
@@ -667,9 +749,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const parts = line.split('\t');
                         if (parts.length >= 2) {
                           const normalizedTrackName = normalizeTitle(parts[1]);
-                          if (normalizedTrackName) {
-                            idMap.set(normalizedTrackName, parts[0].trim());
-                          }
+                          if (normalizedTrackName) idMap.set(normalizedTrackName, parts[0].trim());
                         }
                     });
                 }
@@ -677,14 +757,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const dataIndexResponse = await fetch('data/data.json');
             const dataIndex = await dataIndexResponse.json();
-
-            const allFilePaths = [];
-            for (const game in dataIndex) {
-                if (dataIndex.hasOwnProperty(game)) {
-                    allFilePaths.push(...dataIndex[game]);
-                }
-            }
-
+            const allFilePaths = Object.values(dataIndex).flat();
             const detailPromises = allFilePaths.map(file => fetch(`data/${file}`).then(res => res.json()));
             const settledDetails = await Promise.allSettled(detailPromises);
             
@@ -694,14 +767,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 .flatMap(result => result.value) 
                 .map(albumData => {
                     const tracks = albumData.tracks.map(trackDetail => {
-                        const fullTitle = trackDetail.track;
-                        const normalizedFullTitle = normalizeTitle(fullTitle);
                         Object.keys(trackDetail).forEach(key => fieldKeys.add(key));
-                        return {
-                            id: idMap.get(normalizedFullTitle) || null,
-                            fullTitle: fullTitle,
-                            details: trackDetail
-                        };
+                        const fullTitle = trackDetail.track;
+                        return { id: idMap.get(normalizeTitle(fullTitle)) || null, fullTitle: fullTitle, details: trackDetail };
                     });
                     return { title: albumData.album, tracks };
                 });
@@ -713,20 +781,42 @@ document.addEventListener('DOMContentLoaded', function() {
             setupResizers();
             setupScrollSpy();
             setupTocClickHandler();
-            updateLayout(); // Initial call
-            window.addEventListener('resize', updateLayout); // Update on resize
+            setupHelpModal();
+            setupHelpModalExamples();
+            setupAutocomplete();
+            updateLayout(); 
+            window.addEventListener('resize', updateLayout);
+
+            // (NEW) Add focus/blur listeners for pill UI
+            searchFieldInput.addEventListener('focus', () => {
+                searchFieldInput.parentElement.classList.remove('is-pilled');
+            });
+            searchFieldInput.addEventListener('blur', () => {
+                // Auto-expand simple keywords to full value
+                if (!fieldRegexToggle.checked) {
+                    const term = searchFieldInput.value.trim().toLowerCase();
+                    if (term) {
+                        const matchedOption = shortcutFieldOptions.find(opt => opt.keywords.includes(term));
+                        if (matchedOption) {
+                            searchFieldInput.value = matchedOption.value;
+                            updateFilter();
+                        }
+                    }
+                }
+                updatePillState();
+            });
+
 
         } catch (error) {
-            if (albumContainer) {
-                albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;
-            }
+            if (albumContainer) albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;
             console.error("Initialization Error:", error);
         }
     }
 
-    [searchInput, searchFieldInput, searchValueInput].forEach(el => {
+    [searchInput, searchFieldInput, searchValueInput, fieldRegexToggle, valueRegexToggle].forEach(el => {
         if (el) {
-            el.addEventListener('input', updateFilter);
+            const eventType = el.type === 'checkbox' ? 'change' : 'input';
+            el.addEventListener(eventType, updateFilter);
         }
     });
     

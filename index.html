@@ -12,9 +12,9 @@
   <div class="page-container">
     <header class="header">
       <div class="header-left">
-      <button id="tocToggleMobile" class="toc-toggle-mobile" aria-label="開啟專輯目錄">
-        <i class="fas fa-bars"></i>
-      </button>
+        <button id="tocToggleMobile" class="toc-toggle-mobile" aria-label="開啟專輯目錄">
+          <i class="fas fa-bars"></i>
+        </button>
         <i class="fas fa-music"></i>
         <h1>音樂資料查詢</h1>
       </div>
@@ -24,17 +24,35 @@
           <select id="shortcutPersonnel" class="shortcut-select">
             <option value="">快捷輸入人員</option>
           </select>
-          <div class="input-wrapper">
-            <input type="search" id="searchField" placeholder="輸入搜尋欄位" class="search-input-adv">
-            <button class="clear-input-btn" id="clearSearchField" title="清除欄位">&times;</button>
+          <div class="input-group">
+            <div class="input-wrapper">
+              <input type="search" id="searchField" placeholder="輸入搜尋欄位" class="search-input-adv" autocomplete="off">
+              <span id="searchFieldPill" class="input-pill"></span>
+              <button class="clear-input-btn" id="clearSearchField" title="清除欄位">&times;</button>
+              <div id="field-suggestions" class="suggestions-box"></div>
+            </div>
+            <div class="regex-toggle">
+              <input type="checkbox" id="fieldRegexToggle">
+              <label for="fieldRegexToggle">Regex</label>
+            </div>
           </div>
-          <div class="input-wrapper">
-            <input type="search" id="searchValue" placeholder="輸入搜尋內容 (AND/OR)" class="search-input-adv">
-            <button class="clear-input-btn" id="clearSearchValue" title="清除內容">&times;</button>
+          <div class="input-group">
+            <div class="input-wrapper">
+              <input type="search" id="searchValue" placeholder="輸入搜尋內容" class="search-input-adv" autocomplete="off">
+              <button class="clear-input-btn" id="clearSearchValue" title="清除內容">&times;</button>
+              <div id="value-suggestions" class="suggestions-box"></div>
+            </div>
+            <div class="regex-toggle">
+              <input type="checkbox" id="valueRegexToggle">
+              <label for="valueRegexToggle">Regex</label>
+            </div>
           </div>
         </div>
       </div>
       <div class="header-right">
+        <button id="searchHelpBtn" class="theme-toggle" aria-label="搜尋語法提示">
+          <i class="fas fa-question-circle"></i>
+        </button>
         <button id="themeToggle" class="theme-toggle" aria-label="切換主題">
           <i class="fas fa-sun"></i>
         </button>
@@ -102,6 +120,42 @@
   </div>
 
   <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+  
+  <div id="helpModal" class="help-modal">
+    <div class="help-modal-content">
+      <button class="help-modal-close">&times;</button>
+      <h2>搜尋語法提示</h2>
+      <div class="help-section">
+        <h4>1. 關鍵字搜尋 (預設模式)</h4>
+        <p><strong>多關鍵字</strong>: 輸入多個詞，會找出<strong>同時包含</strong>所有關鍵字的曲目 (AND 關係)。</p>
+        <p class="example" data-field-value="作曲" data-search-value="苑迪萌 姜以君"><em>舉例:</em> 快捷输入「作曲」并在「內容」搜尋 <code>苑迪萌 姜以君</code>，會找到所有由 <code>苑迪萌 姜以君</code> 參與 <code>作曲</code> 的曲目。<button class="apply-example-btn">套用</button></p>
+        <p><strong>完整詞組</strong>: 使用 <code>"英文雙引號"</code> 包覆文字，可搜尋完整的詞組。</p>
+        <p class="example" data-field-value='"Budapest Scoring Orchestra"' data-search-value='"Budapest Scoring Orchestra"'><em>舉例:</em> 在「欄位」搜尋 <code>"Budapest Scoring Orchestra"</code>，可精準匹配該欄位。在「內容」搜尋 <code>"Budapest Scoring Orchestra"</code> 則會尋找完整的樂團名稱。<button class="apply-example-btn">套用</button></p>
+      </div>
+      <div class="help-section">
+        <h4>2. 正規表示式 (Regex)</h4>
+        <p>勾選 "Regex" 後啟用，可用於模糊、複雜的模式匹配。以下為常用規則：</p>
+        <ul class="help-regex-list">
+          <li><code>|</code> (或): 匹配多個項目中的任意一個。</li>
+          <li class="example" data-field-value="作曲" data-search-value="王予曦|車子玉" data-value-regex="true"><em>舉例:</em> 在欄位中選擇「作曲」，並於「內容」搜尋 <code>王予曦|車子玉</code>，會找到王予曦**或**車子玉作曲的所有曲目。<button class="apply-example-btn">套用</button></li>
+
+          <li><code>^</code> (開頭): 匹配文字的開頭。</li>
+          <li class="example" data-field-value="作曲" data-search-value="^王予曦" data-value-regex="true"><em>舉例:</em> 在欄位中選擇「作曲」，並於「內容」搜尋 <code>^王予曦</code>，只會找到作曲家列表**開頭**是王予曦的曲目。<button class="apply-example-btn">套用</button></li>
+          
+          <li><code>$</code> (結尾): 匹配文字的結尾。</li>
+          <li class="example" data-search-value="\(HOYO-MiX\)$" data-value-regex="true"><em>舉例:</em> 在任意欄位中，於「內容」搜尋 <code>\(HOYO-MiX\)$</code>，會找到所有以 `(HOYO-MiX)` 結尾的資訊 (注意 `()` 需用 `\` 轉義)。<button class="apply-example-btn">套用</button></li>
+
+          <li><code>()</code> (分組): 將多個字元組合成一個單元，常用於搭配 `|`。</li>
+          <li class="example" data-field-value="Guitar" data-search-value="(Acoustic|Classical) Guitar" data-value-regex="true"><em>舉例:</em> 在「吉他」相關欄位中，搜尋 <code>(Acoustic|Classical) Guitar</code> 會找到包含 "Acoustic Guitar" **或** "Classical Guitar" 的曲目。<button class="apply-example-btn">套用</button></li>
+          
+          <li><code>.</code> (任意單字元): 匹配除換行符外的任意一個字元。</li>
+          <li class="example" data-field-value="錄音師" data-search-value="黄. Zach Huang" data-value-regex="true"><em>舉例:</em> 在「錄音師」欄位中，搜尋 <code>黄. Zach Huang</code> 可以匹配到 `黄巍 Zach Huang`。<button class="apply-example-btn">套用</button></li>
+        </ul>
+        <p class="help-warning">注意：不合法的 Regex 語法會導致輸入框變紅且搜尋無效。</p>
+      </div>
+    </div>
+  </div>
+
 
   <script src="script.js" defer></script>
 </body>

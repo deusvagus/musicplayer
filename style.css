@@ -107,6 +107,26 @@ body {
   padding-left: 1rem;
   width: 100%;
 }
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.input-group .input-wrapper {
+  flex-grow: 1;
+  position: relative; /* For suggestions box positioning */
+}
+.regex-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.regex-toggle input {
+  cursor: pointer;
+}
 .search-input, .search-input-adv, .shortcut-select {
   background: var(--bg-input);
   border: 1px solid var(--border-color);
@@ -115,6 +135,10 @@ body {
   padding: 0.5rem 0.75rem;
   font-size: 0.9rem;
   width: 100%;
+}
+.search-input-adv.invalid-regex {
+  border-color: #e53935;
+  box-shadow: 0 0 5px rgba(229, 57, 53, 0.5);
 }
 .search-input { min-width: auto; }
 .search-input-adv { min-width: unset; }
@@ -140,6 +164,68 @@ body {
 .shortcut-select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239e9e9e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 2rem;}
 .shortcut-select option { background: var(--bg-details-sidebar); color: var(--text-primary); }
 .header-right .theme-toggle { background: none; border: none; color: var(--text-primary); font-size: 1.2rem; cursor: pointer; padding: 0.5rem; }
+
+
+/* --- (NEW) PILL-LIKE INPUT STYLE --- */
+.input-pill {
+    display: none; /* Hidden by default */
+    align-items: center;
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    bottom: 1px;
+    padding: 0 0.75rem;
+    background-color: var(--primary-accent);
+    color: var(--text-on-accent);
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    max-width: calc(100% - 2.5rem); /* Avoid overlapping clear button */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none; /* Pass clicks through to the input */
+}
+.input-wrapper.is-pilled .search-input-adv {
+    color: transparent;
+    caret-color: var(--text-primary); /* Keep cursor visible */
+}
+.input-wrapper.is-pilled .input-pill {
+    display: inline-flex;
+}
+.input-wrapper.is-pilled .clear-input-btn {
+    z-index: 2; /* Ensure clear button is on top of the pill */
+}
+
+
+/* --- AUTOCOMPLETE SUGGESTIONS --- */
+.suggestions-box {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-details-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 8px 8px;
+  z-index: 1200;
+  box-shadow: 0 8px 16px var(--shadow-color);
+  max-height: calc(5 * (2.2rem + 2px)); /* 5 items * (padding + border) */
+  overflow-y: auto;
+}
+.suggestion-item {
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.suggestion-item:hover, .suggestion-item.is-active {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+}
 
 /* --- LEFT SIDEBAR --- */
 .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; padding: 0 0.5rem; }
@@ -230,6 +316,31 @@ body {
   color: var(--text-secondary);
   margin-top: 1.5rem;
 }
+/* 【優化】為匹配結果區塊增加最大高度和捲軸 */
+.matched-info {
+  display: none; 
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+  line-height: 1.4;
+  max-height: 6.5em; /* 大約顯示 3-4 行，超出則滾動 */
+  overflow-y: auto;
+}
+.matched-info p {
+  margin: 0 0 0.25rem 0;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: normal;
+  word-break: break-all;
+  color: var(--text-primary);
+  padding-right: 0.5rem; /* 避免文字緊貼捲軸 */
+}
+.matched-info strong {
+  color: var(--primary-accent);
+  font-weight: 600;
+  margin-right: 0.5em;
+}
 
 /* --- DETAILS SIDEBAR (RIGHT / DOCKED) --- */
 .details-sidebar {
@@ -274,6 +385,11 @@ body {
 }
 
 /* --- STICKY PLAYER --- */
+#sticky-player-content {
+    position: relative;
+    width: 100%;
+    height: 86px;
+}
 .sticky-player {
   position: fixed;
   bottom: 1.5rem;
@@ -288,13 +404,62 @@ body {
   transform: translateY(20px);
   transition: opacity var(--transition-fast), transform var(--transition-fast);
   pointer-events: none;
+  /* overflow: hidden; 【修復】移除此行，以顯示關閉按鈕 */
 }
+/* (修改) .sticky-player.is-visible */
 .sticky-player.is-visible {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
-.mini-close-btn { top: 0; right: 0.25rem; font-size: 1.5rem; }
+
+/* (修改) .mini-close-btn */
+.mini-close-btn {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 26px;
+  height: 26px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: var(--bg-details-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 2px 5px var(--shadow-color);
+  z-index: 1002;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+.mini-close-btn:hover {
+    transform: scale(1.1);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes loading-border-sweep {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+/* (新增) 播放器加載中的頂部掃光動畫 */
+.sticky-player.is-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
+  animation: loading-border-sweep 1.5s linear infinite;
+  z-index: 1003;
+}
+
 
 /* --- SKELETON LOADER --- */
 @keyframes shimmer { 100% { transform: translateX(100%); } }
@@ -332,6 +497,85 @@ body {
 .resizer:hover {
   background-color: var(--primary-accent);
   opacity: 0.3;
+}
+
+/* --- HELP MODAL STYLES --- */
+.help-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+.help-modal-content {
+  background: var(--bg-details-sidebar);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  width: 90%;
+  max-width: 750px; /* 【優化】加寬面板 */
+  position: relative;
+  box-shadow: 0 10px 40px var(--shadow-color);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.help-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.help-modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--primary-accent);
+}
+.help-section {
+  margin-bottom: 1.5rem;
+}
+.help-section h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+.help-section p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.help-regex-list {
+  list-style-type: none;
+  padding: 0;
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+  line-height: 1.8;
+}
+.help-regex-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.2rem;
+}
+.help-regex-list li code {
+  font-family: Consolas, monaco, monospace;
+  color: var(--primary-accent);
+  background-color: var(--bg-input);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin-right: 1rem;
+  width: 5em;
+  text-align: center;
+  flex-shrink: 0;
+}
+.help-warning {
+  font-size: 0.85rem !important;
+  color: #ffab40 !important; /* Amber color for warning */
+  margin-top: 1rem;
 }
 
 /* --- MOBILE UI --- */
@@ -388,10 +632,7 @@ body {
   .app-body {
     flex-direction: column;
     overflow-y: auto;
-    /* Removed height: calc... to allow browser to manage scroll */
   }
-
-  /* 左側 sidebar (專輯目錄) */
   .sidebar {
     position: fixed;
     top: var(--header-height);
@@ -413,8 +654,6 @@ body {
   .album-search-controls { padding: 0.5rem 0; }
   .table-of-contents { padding-bottom: 0.5rem; }
   .table-of-contents a { padding: 1rem; font-size: 1.1rem; }
-
-  /* 右側 details-sidebar */
   .details-sidebar {
     position: fixed;
     top: var(--header-height);
@@ -436,4 +675,37 @@ body {
       overflow-y: auto;
   }
   .sticky-player { bottom: 1rem; right: 1rem; width: calc(100% - 2rem); }
+}
+
+.help-section p.example, .help-regex-list li.example {
+  font-style: italic;
+  color: var(--text-secondary);
+  background-color: var(--bg-input);
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+  position: relative;
+  padding-right: 4rem; /* Make space for the button */
+}
+.help-section p.example em, .help-regex-list li.example em {
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+
+.apply-example-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--primary-accent);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 5px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.apply-example-btn:hover {
+  opacity: 0.85;
 }
