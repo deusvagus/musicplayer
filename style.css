@@ -59,7 +59,15 @@ body {
   flex-shrink: 0;
   gap: 1.5rem;
   z-index: 1100;
+  /* --- MODIFICATION START --- */
+  transition: transform 0.3s ease; /* For mobile scroll hide animation */
+  /* --- MODIFICATION END --- */
 }
+/* --- MODIFICATION START --- */
+.header.header-hidden {
+    transform: translateY(-100%);
+}
+/* --- MODIFICATION END --- */
 .app-body {
   display: flex;
   flex: 1;
@@ -158,7 +166,7 @@ body {
   padding: 0.2rem;
   display: none;
 }
-.input-wrapper input:not(:placeholder-shown) + .clear-input-btn {
+.input-wrapper input:not(:placeholder-shown) ~ .clear-input-btn {
   display: block;
 }
 .shortcut-select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239e9e9e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 2rem;}
@@ -404,16 +412,21 @@ body {
   transform: translateY(20px);
   transition: opacity var(--transition-fast), transform var(--transition-fast);
   pointer-events: none;
-  /* overflow: hidden; 【修復】移除此行，以顯示關閉按鈕 */
 }
-/* (修改) .sticky-player.is-visible */
 .sticky-player.is-visible {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-/* (修改) .mini-close-btn */
+.sticky-player-inner {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  position: relative;
+}
+
 .mini-close-btn {
   position: absolute;
   top: -12px;
@@ -447,8 +460,7 @@ body {
   to   { transform: translateX(100%); }
 }
 
-/* (新增) 播放器加載中的頂部掃光動畫 */
-.sticky-player.is-loading::before {
+.sticky-player.is-loading .sticky-player-inner::before {
   content: '';
   position: absolute;
   top: 0;
@@ -568,7 +580,7 @@ body {
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
   margin-right: 1rem;
-  width: 5em;
+  /*width: 9em; */
   text-align: center;
   flex-shrink: 0;
 }

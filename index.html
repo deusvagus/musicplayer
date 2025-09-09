@@ -116,8 +116,11 @@
 
   <div id="sticky-player" class="sticky-player">
     <button id="close-sticky-player-btn" class="close-btn mini-close-btn">&times;</button>
-    <div id="sticky-player-content"></div>
-  </div>
+    
+    <div class="sticky-player-inner">
+      <div id="sticky-player-content"></div>
+    </div>
+    </div>
 
   <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
   
@@ -137,10 +140,10 @@
         <p>勾選 "Regex" 後啟用，可用於模糊、複雜的模式匹配。以下為常用規則：</p>
         <ul class="help-regex-list">
           <li><code>|</code> (或): 匹配多個項目中的任意一個。</li>
-          <li class="example" data-field-value="作曲" data-search-value="王予曦|車子玉" data-value-regex="true"><em>舉例:</em> 在欄位中選擇「作曲」，並於「內容」搜尋 <code>王予曦|車子玉</code>，會找到王予曦**或**車子玉作曲的所有曲目。<button class="apply-example-btn">套用</button></li>
+          <li class="example" data-field-value="作曲" data-search-value="丁谦|李洋" data-value-regex="true"><em>舉例:</em> 在欄位中選擇「作曲」，並於「內容」搜尋 <code>丁谦|李洋</code>，會找到丁谦**或**李洋作曲的所有曲目。<button class="apply-example-btn">套用</button></li>
 
           <li><code>^</code> (開頭): 匹配文字的開頭。</li>
-          <li class="example" data-field-value="作曲" data-search-value="^王予曦" data-value-regex="true"><em>舉例:</em> 在欄位中選擇「作曲」，並於「內容」搜尋 <code>^王予曦</code>，只會找到作曲家列表**開頭**是王予曦的曲目。<button class="apply-example-btn">套用</button></li>
+          <li class="example" data-field-value="作曲" data-search-value="^尤裴佳" data-value-regex="true"><em>舉例:</em> 在欄位中選擇「作曲」，並於「內容」搜尋 <code>^尤裴佳</code>，只會找到作曲家列表**開頭**是尤裴佳的曲目。<button class="apply-example-btn">套用</button></li>
           
           <li><code>$</code> (結尾): 匹配文字的結尾。</li>
           <li class="example" data-search-value="\(HOYO-MiX\)$" data-value-regex="true"><em>舉例:</em> 在任意欄位中，於「內容」搜尋 <code>\(HOYO-MiX\)$</code>，會找到所有以 `(HOYO-MiX)` 結尾的資訊 (注意 `()` 需用 `\` 轉義)。<button class="apply-example-btn">套用</button></li>
@@ -149,7 +152,7 @@
           <li class="example" data-field-value="作曲" data-search-value="(陈|车)子(玉|敏)" data-value-regex="true"><em>舉例:</em> 在欄位中選擇「作曲」，搜尋 <code>(陈|车)子(玉|敏)</code> 會找到…陈子敏和车子玉作曲的曲目(doge)。<button class="apply-example-btn">套用</button></li>
           
           <li><code>.</code> (任意單字元): 匹配除換行符外的任意一個字元。</li>
-          <li class="example" data-field-value="錄音師" data-search-value="黄. Zach Huang" data-value-regex="true"><em>舉例:</em> 在「錄音師」欄位中，搜尋 <code>黄. Zach Huang</code> 可以匹配到 `黄巍 Zach Huang`。<button class="apply-example-btn">套用</button></li>
+          <li class="example" data-field-value="作曲" data-search-value=".子." data-value-regex="true"><em>舉例:</em> 在欄位中選擇「作曲」，搜尋 <code>.子.</code> …也會找到陈子敏和车子玉作曲的曲目(doge)。<button class="apply-example-btn">套用</button></li>
         </ul>
         <p class="help-warning">注意：不合法的 Regex 語法會導致輸入框變紅且搜尋無效。</p>
       </div>

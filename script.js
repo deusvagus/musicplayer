@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- STATE MANAGEMENT ---
     let isSortReversed = false;
-    let shortcutFieldOptions = []; // (NEW) Cache for pill logic
+    let shortcutFieldOptions = [];
+    let lastScrollY = 0; // For mobile header scroll
 
     // --- THEME MANAGEMENT ---
     function applyTheme(theme) {
@@ -85,9 +86,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchFieldInput.dispatchEvent(new Event('input'));
                 searchValueInput.dispatchEvent(new Event('input'));
                 
-                // --- MODIFICATION START ---
-                // Trigger blur on searchFieldInput to invoke keyword replacement logic
-                searchFieldInput.blur();
+                // --- MODIFICATION START: Fix keyword replacement for examples ---
+                // Manually execute the keyword replacement logic instead of relying on blur
+                if (!fieldRegexToggle.checked) {
+                    const term = searchFieldInput.value.trim().toLowerCase();
+                    if (term) {
+                        const matchedOption = shortcutFieldOptions.find(opt => opt.keywords.includes(term));
+                        if (matchedOption) {
+                            searchFieldInput.value = matchedOption.value;
+                        }
+                    }
+                }
+                updatePillState(); // Now, update the pill state directly
                 // --- MODIFICATION END ---
                 
                 updateFilter();
@@ -426,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- (NEW) PILL-LIKE INPUT MANAGEMENT ---
+    // --- PILL-LIKE INPUT MANAGEMENT ---
     function updatePillState() {
         const wrapper = searchFieldInput.parentElement;
         const currentValue = searchFieldInput.value;
@@ -484,12 +494,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     const optionData = {
                         text: config.canonical,
                         value: config.fixedValue,
-                        // (NEW) Data for pill logic
                         simpleText: key,
                         keywords: config.keywords
                     };
                     pinnedOptions.push(optionData);
-                    shortcutFieldOptions.push(optionData); // Cache it
+                    shortcutFieldOptions.push(optionData);
                 }
             });
             const regularOptions = [];
@@ -528,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 fieldRegexToggle.checked = false;
                 searchFieldInput.dispatchEvent(new Event('input'));
                 e.target.selectedIndex = 0;
-                updatePillState(); // (NEW) Update pill on select
+                updatePillState();
                 updateFilter();
             });
         }
@@ -598,7 +607,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 inputEl.value = option.value;
                 suggestionsEl.innerHTML = '';
                 suggestionsEl.style.display = 'none';
-                if (inputEl === searchFieldInput) updatePillState(); // (NEW) Update pill
+                if (inputEl === searchFieldInput) updatePillState();
                 updateFilter();
             };
             const navigateSuggestions = (e) => {
@@ -614,7 +623,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateActiveItem();
                 } else if (e.key === 'Enter') {
                     e.preventDefault();
-                    if (activeIndex > -1) items[activeIndex].dispatchEvent(new Event('mousedown'));
+                    if (activeIndex > -1) {
+                        items[activeIndex].dispatchEvent(new Event('mousedown'));
+                    }
                 } else if (e.key === 'Escape') {
                     suggestionsEl.style.display = 'none';
                 }
@@ -640,7 +651,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (btn) {
                 btn.addEventListener('click', () => {
                     input.value = '';
-                    if (input === searchFieldInput) updatePillState(); // (NEW) Update pill
+                    if (input === searchFieldInput) updatePillState();
                     input.dispatchEvent(new Event('input'));
                     updateFilter();
                     input.focus();
@@ -737,6 +748,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+
+    // --- MODIFICATION START: Mobile Header Scroll ---
+    function handleHeaderScroll() {
+        if (window.innerWidth > 768) return; // Only run on mobile
+        const header = document.querySelector('.header');
+        const currentScrollY = albumContainer.scrollTop;
+
+        if (currentScrollY > lastScrollY && currentScrollY > header.offsetHeight) {
+            // Scrolling down
+            header.classList.add('header-hidden');
+        } else {
+            // Scrolling up
+            header.classList.remove('header-hidden');
+        }
+        lastScrollY = currentScrollY;
+    }
+    // --- MODIFICATION END ---
     
     // --- INITIALIZATION ---
     async function initializeApp() {
@@ -791,12 +819,10 @@ document.addEventListener('DOMContentLoaded', function() {
             updateLayout(); 
             window.addEventListener('resize', updateLayout);
 
-            // (NEW) Add focus/blur listeners for pill UI
             searchFieldInput.addEventListener('focus', () => {
                 searchFieldInput.parentElement.classList.remove('is-pilled');
             });
             searchFieldInput.addEventListener('blur', () => {
-                // Auto-expand simple keywords to full value
                 if (!fieldRegexToggle.checked) {
                     const term = searchFieldInput.value.trim().toLowerCase();
                     if (term) {
@@ -810,18 +836,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 updatePillState();
             });
 
-            // --- MODIFICATION START ---
-            // Add keydown listener for Enter key to trigger blur
             [searchFieldInput, searchValueInput].forEach(input => {
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
-                        e.preventDefault(); // Prevent form submission
-                        input.blur(); // Trigger blur to apply changes and update pill
+                        e.preventDefault();
+                        input.blur();
+                        // --- MODIFICATION START: Hide suggestions on Enter ---
+                        document.getElementById('field-suggestions').style.display = 'none';
+                        document.getElementById('value-suggestions').style.display = 'none';
+                        // --- MODIFICATION END ---
                     }
                 });
             });
-            // --- MODIFICATION END ---
 
+            // --- MODIFICATION START: Add scroll listener ---
+            if (albumContainer) {
+                albumContainer.addEventListener('scroll', handleHeaderScroll);
+            }
+            // --- MODIFICATION END ---
 
         } catch (error) {
             if (albumContainer) albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;
