@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const helpModal = document.getElementById('helpModal');
     const helpModalClose = document.querySelector('.help-modal-close');
     const searchFieldPill = document.getElementById('searchFieldPill');
+    const header = document.querySelector('.header'); // Select header globally
 
     // --- STATE MANAGEMENT ---
     let isSortReversed = false;
@@ -86,8 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchFieldInput.dispatchEvent(new Event('input'));
                 searchValueInput.dispatchEvent(new Event('input'));
                 
-                // --- MODIFICATION START: Fix keyword replacement for examples ---
-                // Manually execute the keyword replacement logic instead of relying on blur
                 if (!fieldRegexToggle.checked) {
                     const term = searchFieldInput.value.trim().toLowerCase();
                     if (term) {
@@ -97,8 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 }
-                updatePillState(); // Now, update the pill state directly
-                // --- MODIFICATION END ---
+                updatePillState();
                 
                 updateFilter();
                 helpModal.style.display = 'none';
@@ -128,6 +126,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function showDetails(track, albumId) {
         if (!track || !track.details) {
           return;
+        }
+
+        if (leftSidebar && leftSidebar.classList.contains('is-open')) {
+            leftSidebar.classList.remove('is-open');
+            sidebarBackdrop.classList.remove('is-visible');
         }
 
         if (!detailsSidebar || !sidebarContent) return;
@@ -161,9 +164,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         detailsSidebar.classList.add('is-open');
-        if (detailsBackdrop) {
+        if (detailsBackdrop && window.innerWidth <= 768) {
             detailsBackdrop.classList.add('is-visible');
         }
+        
+        // --- MODIFICATION START: Hide header search when details sidebar opens on mobile ---
+        if (window.innerWidth <= 768 && header) {
+            header.classList.add('search-hidden');
+        }
+        // --- MODIFICATION END ---
     }
 
     function closeDetailsSidebar() {
@@ -236,8 +245,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- MOBILE SIDEBAR TOGGLE ---
     if (tocToggleMobile && leftSidebar && sidebarBackdrop) {
         tocToggleMobile.addEventListener("click", () => {
-            leftSidebar.classList.add("is-open");
-            sidebarBackdrop.classList.add("is-visible");
+            const isAlreadyOpen = leftSidebar.classList.contains('is-open');
+
+            if (isAlreadyOpen) {
+                leftSidebar.classList.remove("is-open");
+                sidebarBackdrop.classList.remove("is-visible");
+            } else {
+                if (detailsSidebar && detailsSidebar.classList.contains('is-open')) {
+                    closeDetailsSidebar();
+                }
+                leftSidebar.classList.add("is-open");
+                sidebarBackdrop.classList.add("is-visible");
+                if (header) {
+                    header.classList.add('search-hidden');
+                }
+            }
         });
         sidebarBackdrop.addEventListener("click", () => {
             leftSidebar.classList.remove("is-open");
@@ -734,37 +756,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- MODIFICATION START: Simplified updateLayout function ---
     function updateLayout() {
-        const header = document.querySelector('.header');
         if (header) {
             const headerHeight = header.offsetHeight;
-            const style = `top: ${headerHeight}px; height: calc(100vh - ${headerHeight}px);`;
-            if (window.innerWidth <= 768) {
-                if (leftSidebar) leftSidebar.style = style;
-                if (detailsSidebar) detailsSidebar.style = style;
-            } else {
+            // Mobile layout is now handled by pure CSS for better performance and simplicity.
+            // This function now only handles desktop layout adjustments.
+            if (window.innerWidth > 768) {
                 if (leftSidebar) leftSidebar.style.height = `calc(100vh - ${headerHeight}px)`;
                 if (detailsSidebar) detailsSidebar.style.height = `calc(100vh - ${headerHeight}px)`;
+            } else {
+                // Clear inline styles when switching to mobile to let CSS take over.
+                if (leftSidebar) leftSidebar.style.height = '';
+                if (detailsSidebar) detailsSidebar.style.height = '';
             }
         }
     }
+    // --- MODIFICATION END ---
 
-    // --- MODIFICATION START: Mobile Header Scroll ---
+
     function handleHeaderScroll() {
         if (window.innerWidth > 768) return; // Only run on mobile
-        const header = document.querySelector('.header');
+        if (!header) return;
         const currentScrollY = albumContainer.scrollTop;
 
-        if (currentScrollY > lastScrollY && currentScrollY > header.offsetHeight) {
-            // Scrolling down
-            header.classList.add('header-hidden');
-        } else {
-            // Scrolling up
-            header.classList.remove('header-hidden');
+        if (currentScrollY > lastScrollY && currentScrollY > 50) {
+            header.classList.add('search-hidden');
+        } else if (currentScrollY < lastScrollY) {
+            header.classList.remove('search-hidden');
         }
-        lastScrollY = currentScrollY;
+        lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY;
     }
-    // --- MODIFICATION END ---
     
     // --- INITIALIZATION ---
     async function initializeApp() {
@@ -841,19 +863,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         input.blur();
-                        // --- MODIFICATION START: Hide suggestions on Enter ---
                         document.getElementById('field-suggestions').style.display = 'none';
                         document.getElementById('value-suggestions').style.display = 'none';
-                        // --- MODIFICATION END ---
                     }
                 });
             });
 
-            // --- MODIFICATION START: Add scroll listener ---
             if (albumContainer) {
                 albumContainer.addEventListener('scroll', handleHeaderScroll);
             }
-            // --- MODIFICATION END ---
 
         } catch (error) {
             if (albumContainer) albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;

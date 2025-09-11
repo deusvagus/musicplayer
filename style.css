@@ -3,7 +3,7 @@
   --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --transition-fast: 0.3s ease;
   --transition-med: 0.4s ease;
-  --header-height: 60px; /* header 高度，手機 sidebar / details 定位用 */
+  --header-height: 60px;
 }
 .dark-theme {
   --bg-gradient: linear-gradient(135deg, #232526 0%, #414345 100%);
@@ -59,15 +59,9 @@ body {
   flex-shrink: 0;
   gap: 1.5rem;
   z-index: 1100;
-  /* --- MODIFICATION START --- */
-  transition: transform 0.3s ease; /* For mobile scroll hide animation */
-  /* --- MODIFICATION END --- */
+  transition: padding-bottom 0.3s ease-out;
 }
-/* --- MODIFICATION START --- */
-.header.header-hidden {
-    transform: translateY(-100%);
-}
-/* --- MODIFICATION END --- */
+
 .app-body {
   display: flex;
   flex: 1;
@@ -122,7 +116,7 @@ body {
 }
 .input-group .input-wrapper {
   flex-grow: 1;
-  position: relative; /* For suggestions box positioning */
+  position: relative;
 }
 .regex-toggle {
   display: flex;
@@ -174,9 +168,9 @@ body {
 .header-right .theme-toggle { background: none; border: none; color: var(--text-primary); font-size: 1.2rem; cursor: pointer; padding: 0.5rem; }
 
 
-/* --- (NEW) PILL-LIKE INPUT STYLE --- */
+/* --- PILL-LIKE INPUT STYLE --- */
 .input-pill {
-    display: none; /* Hidden by default */
+    display: none;
     align-items: center;
     position: absolute;
     left: 1px;
@@ -188,21 +182,21 @@ body {
     border-radius: 5px;
     font-size: 0.85rem;
     font-weight: 500;
-    max-width: calc(100% - 2.5rem); /* Avoid overlapping clear button */
+    max-width: calc(100% - 2.5rem);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    pointer-events: none; /* Pass clicks through to the input */
+    pointer-events: none;
 }
 .input-wrapper.is-pilled .search-input-adv {
     color: transparent;
-    caret-color: var(--text-primary); /* Keep cursor visible */
+    caret-color: var(--text-primary);
 }
 .input-wrapper.is-pilled .input-pill {
     display: inline-flex;
 }
 .input-wrapper.is-pilled .clear-input-btn {
-    z-index: 2; /* Ensure clear button is on top of the pill */
+    z-index: 2;
 }
 
 
@@ -218,7 +212,7 @@ body {
   border-radius: 0 0 8px 8px;
   z-index: 1200;
   box-shadow: 0 8px 16px var(--shadow-color);
-  max-height: calc(5 * (2.2rem + 2px)); /* 5 items * (padding + border) */
+  max-height: calc(5 * (2.2rem + 2px));
   overflow-y: auto;
 }
 .suggestion-item {
@@ -324,7 +318,7 @@ body {
   color: var(--text-secondary);
   margin-top: 1.5rem;
 }
-/* 【優化】為匹配結果區塊增加最大高度和捲軸 */
+
 .matched-info {
   display: none; 
   font-size: 0.8rem;
@@ -332,7 +326,7 @@ body {
   padding-top: 0.5rem;
   border-top: 1px solid var(--border-color);
   line-height: 1.4;
-  max-height: 6.5em; /* 大約顯示 3-4 行，超出則滾動 */
+  max-height: 6.5em;
   overflow-y: auto;
 }
 .matched-info p {
@@ -342,7 +336,7 @@ body {
   white-space: normal;
   word-break: break-all;
   color: var(--text-primary);
-  padding-right: 0.5rem; /* 避免文字緊貼捲軸 */
+  padding-right: 0.5rem;
 }
 .matched-info strong {
   color: var(--primary-accent);
@@ -390,6 +384,7 @@ body {
   color: var(--text-secondary);
   cursor: pointer;
   display: block;
+  z-index: 2;
 }
 
 /* --- STICKY PLAYER --- */
@@ -580,13 +575,12 @@ body {
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
   margin-right: 1rem;
-  /*width: 9em; */
   text-align: center;
   flex-shrink: 0;
 }
 .help-warning {
   font-size: 0.85rem !important;
-  color: #ffab40 !important; /* Amber color for warning */
+  color: #ffab40 !important;
   margin-top: 1rem;
 }
 
@@ -633,6 +627,17 @@ body {
     padding-left: 0;
     order: 1;
     margin-top: 0.5rem;
+    transition: max-height 0.3s ease-out, margin-top 0.3s ease-out, opacity 0.2s ease-out, visibility 0.3s;
+    max-height: 500px;
+    overflow: hidden;
+    opacity: 1;
+    visibility: visible;
+  }
+  .header.search-hidden .search-controls {
+      max-height: 0;
+      margin-top: 0;
+      opacity: 0;
+      visibility: hidden;
   }
   .advanced-search-grid {
       grid-template-columns: 1fr;
@@ -647,7 +652,9 @@ body {
   }
   .sidebar {
     position: fixed;
-    top: var(--header-height);
+    top: 0;
+    height: 100vh;
+    padding-top: 4.5rem;
     left: 0;
     bottom: 0;
     width: min(85vw, 400px);
@@ -655,7 +662,6 @@ body {
     transition: transform var(--transition-fast);
     z-index: 1001;
     border-right: 1px solid var(--border-color);
-    padding: 1rem;
     overflow-y: auto;
   }
   .sidebar.is-open { transform: translateX(0); }
@@ -668,23 +674,30 @@ body {
   .table-of-contents a { padding: 1rem; font-size: 1.1rem; }
   .details-sidebar {
     position: fixed;
-    top: var(--header-height);
+    top: 33vh;
+    height: auto;
     right: 0;
     bottom: 0;
-    width: 100%;
+    width: min(85vw, 400px);
     max-width: 100%;
     transform: translateX(100%);
     transition: transform var(--transition-fast);
     z-index: 1002;
     border-left: 1px solid var(--border-color);
     padding: 0;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+  }
+  .details-sidebar .close-btn {
+    display: none;
   }
   .details-sidebar.is-open { transform: translateX(0); }
   .sidebar-content {
-      padding: 1.5rem 1rem;
-      padding-top: 1.5rem;
+      padding: 1.5rem;
       min-width: unset;
       overflow-y: auto;
+      position: relative;
+      z-index: 1;
   }
   .sticky-player { bottom: 1rem; right: 1rem; width: calc(100% - 2rem); }
 }
@@ -697,7 +710,7 @@ body {
   border-radius: 4px;
   margin-top: 0.25rem;
   position: relative;
-  padding-right: 4rem; /* Make space for the button */
+  padding-right: 4rem;
 }
 .help-section p.example em, .help-regex-list li.example em {
   font-weight: bold;
