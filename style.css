@@ -599,6 +599,27 @@ body {
   color: #ffab40 !important;
   margin-top: 1rem;
 }
+.export-options {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+.export-option-group h4 {
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.export-option-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+.export-option-group input {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
 
 /* --- MOBILE UI --- */
 .toc-toggle-mobile { display: none; }

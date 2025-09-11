@@ -29,7 +29,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const helpModal = document.getElementById('helpModal');
     const helpModalClose = document.querySelector('.help-modal-close');
     const searchFieldPill = document.getElementById('searchFieldPill');
-    const header = document.querySelector('.header'); // Select header globally
+    const header = document.querySelector('.header');
+    const exportBtn = document.getElementById('exportBtn');
+    const exportModal = document.getElementById('exportModal');
+    const exportModalClose = document.getElementById('exportModalClose');
+    const confirmExportBtn = document.getElementById('confirmExportBtn');
 
     // --- NEW ---: Minimized player element
     let minimizedPlayer = null;
@@ -167,8 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         detailsSidebar.classList.add('is-open');
-        // --- MODIFICATION START ---
-        // document.body.classList.add('details-open'); 移除
         if (detailsBackdrop && window.innerWidth <= 768) {
             detailsBackdrop.classList.add('is-visible');
         }
@@ -176,26 +178,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth <= 768 && header) {
             header.classList.add('search-hidden');
         }
-        // --- MODIFICATION END ---
     }
 
     function closeDetailsSidebar() {
         detailsSidebar.classList.remove('is-open');
-        // --- MODIFICATION START ---
-        // document.body.classList.remove('details-open'); 移除
         if (detailsBackdrop) {
             detailsBackdrop.classList.remove('is-visible');
         }
-        // --- MODIFICATION END ---
     }
     
     function loadPlayer(id) {
         if (!stickyPlayer || !stickyPlayerContent) return;
-
-        // --- MODIFICATION START ---
-        // Restore player if it was minimized
         restorePlayer();
-        // --- MODIFICATION END ---
         
         stickyPlayerContent.innerHTML = '';
         stickyPlayer.classList.add('is-loading');
@@ -247,7 +241,6 @@ document.addEventListener('DOMContentLoaded', function() {
         detailsBackdrop.addEventListener('click', closeDetailsSidebar);
     }
     
-    // --- MODIFICATION START: Player minimize/restore logic ---
     if (closeStickyPlayerBtn) {
         closeStickyPlayerBtn.addEventListener('click', minimizePlayer);
     }
@@ -269,7 +262,6 @@ document.addEventListener('DOMContentLoaded', function() {
             minimizedPlayer.classList.remove('is-visible');
         }
     }
-    // --- MODIFICATION END ---
 
 
     // --- MOBILE SIDEBAR TOGGLE ---
@@ -390,6 +382,16 @@ function updateFilter() {
                 const cardIsVisible = matchedData !== null;
                 card.classList.toggle('hidden', !cardIsVisible);
 
+                // --- MODIFICATION START ---
+                // Only store matched details if a specific query was entered.
+                if (cardIsVisible && (fieldQuery || valueQuery)) {
+                    card.dataset.matchedDetails = JSON.stringify(matchedData);
+                } else {
+                    // Otherwise, remove the attribute to ensure 'matched' export is empty.
+                    card.removeAttribute('data-matched-details');
+                }
+                // --- MODIFICATION END ---
+
                 const matchedInfoEl = card.querySelector('.matched-info');
                 if (matchedInfoEl) {
                     matchedInfoEl.innerHTML = '';
@@ -417,8 +419,6 @@ function updateFilter() {
             section.classList.toggle('hidden', visibleCardCount === 0);
         });
 
-        // --- 【新增功能】 ---
-        // 根據專輯區塊的顯示狀態，更新對應目錄連結的樣式
         document.querySelectorAll('.album-section').forEach(section => {
             const tocLink = toc.querySelector(`a[href="#${section.id}"]`);
             if (tocLink) {
@@ -427,6 +427,7 @@ function updateFilter() {
             }
         });
     }
+    
     
     
     // --- RENDER PAGE & CARDS ---
@@ -517,7 +518,6 @@ function updateFilter() {
 
     // --- SHORTCUTS & SEARCH SETUP ---
     async function setupShortcuts(fieldKeys) {
-        // --- 【新增】 獲取多選開關元件 ---
         const multiSelectToggle = document.getElementById('multiSelectToggle');
 
         const pinnedFieldConfig = { "作曲": { keywords: ["作曲", "composer"], canonical: "Composer / 作曲", originals: new Set(), fixedValue: "作曲 composer" }, "編曲": { keywords: ["编曲", "配器", "编配", "改编", "arranger", "adoption", "orchestrator", "original", "reinterpret"], canonical: "Arranger / 編曲", originals: new Set(), fixedValue: "配器 编曲 编配 改编 Orchestrator Arranger Adoption Reinterpret original" }, "作詞": { keywords: ["作词", "lyric", "lyricist"], canonical: "Lyricist / 作詞", originals: new Set(), fixedValue: "作词 Lyricist" } };
@@ -597,17 +597,14 @@ function updateFilter() {
                 shortcutFieldSelect.appendChild(new Option(option.text, option.value));
             });
 
-            // --- 【修改「欄位」快捷輸入的邏輯】 ---
             shortcutFieldSelect.addEventListener('change', (e) => {
                 const selectedValue = e.target.value;
                 if (!selectedValue) return;
 
                 if (multiSelectToggle.checked) {
-                    // 多選模式：累加值
                     const currentVal = searchFieldInput.value.trim();
                     searchFieldInput.value = currentVal ? `${currentVal} ${selectedValue}` : selectedValue;
                 } else {
-                    // 單選模式：覆蓋值
                     searchFieldInput.value = selectedValue;
                 }
 
@@ -630,7 +627,6 @@ function updateFilter() {
                 shortcutPersonnelSelect.style.display = 'none';
             }
 
-            // --- 【修改「人員」快捷輸入的邏輯】 ---
             shortcutPersonnelSelect.addEventListener('change', (e) => {
                 const selectedName = e.target.value;
                 if (!selectedName) return;
@@ -638,11 +634,9 @@ function updateFilter() {
                 const newVal = selectedName.includes(' ') ? `"${selectedName}"` : selectedName;
 
                 if (multiSelectToggle.checked) {
-                    // 多選模式：累加值
                     const currentVal = searchValueInput.value.trim();
                     searchValueInput.value = currentVal ? `${currentVal} ${newVal}` : newVal;
                 } else {
-                    // 單選模式：覆蓋值
                     searchValueInput.value = newVal;
                 }
 
@@ -849,7 +843,6 @@ function updateFilter() {
         lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY;
     }
 
-    // --- NEW: Draggable element logic ---
     function dragElement(elmnt) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         let isDragging = false;
@@ -912,23 +905,14 @@ function updateFilter() {
                 const midPoint = docWidth / 2;
 
                 if ((elLeft + elWidth / 2) < midPoint) {
-                    // 往左吸附：直接設定 left 為 1.5rem
                     elmnt.style.left = "1.5rem";
                     elmnt.style.right = "auto";
                 } else {
-                    // ---【修改處】---
-                    // 往右吸附：計算出對應的 left 值，而不是設定 right
-                    
-                    // 1. 取得根元素的字體大小，用來將 rem 單位換算為 px
                     const remInPx = parseFloat(getComputedStyle(document.documentElement).fontSize);
                     const finalOffset = 1.5 * remInPx;
-                    
-                    // 2. 計算目標 left 值
                     const targetLeft = docWidth - elWidth - finalOffset;
-                    
-                    // 3. 將 left 動畫到目標值
                     elmnt.style.left = `${targetLeft}px`;
-                    elmnt.style.right = "auto"; // 確保 right 屬性不影響定位
+                    elmnt.style.right = "auto";
                 }
             }
             
@@ -946,17 +930,102 @@ function updateFilter() {
         elmnt.ontouchstart = dragMouseDown;
     }
     
+    // --- EXPORT FUNCTIONALITY ---
+    function setupExportModal() {
+        if (!exportBtn || !exportModal || !exportModalClose || !confirmExportBtn) return;
+
+        exportBtn.addEventListener('click', () => {
+            const visibleCards = document.querySelectorAll('.music-card:not(.hidden)');
+            if (visibleCards.length === 0) {
+                alert('沒有可匯出的搜尋結果。');
+                return;
+            }
+            exportModal.style.display = 'flex';
+        });
+
+        const closeModal = () => {
+            exportModal.style.display = 'none';
+        };
+
+        exportModalClose.addEventListener('click', closeModal);
+        exportModal.addEventListener('click', (e) => {
+            if (e.target === exportModal) {
+                closeModal();
+            }
+        });
+
+        confirmExportBtn.addEventListener('click', handleExport);
+    }
+
+function handleExport() {
+        // 獲取使用者選擇要匯出的欄位範圍 ('all' 或 'matched')
+        const fields = document.querySelector('input[name="exportFields"]:checked').value;
+        // 選取所有目前可見的音樂卡片元素
+        const visibleCards = document.querySelectorAll('.album-section:not(.hidden) .music-card:not(.hidden)');
+        const dataToExport = [];
+
+        visibleCards.forEach(card => {
+            // 從卡片的 data-details 屬性解析出完整的曲目資訊
+            const fullDetails = card.dataset.details ? JSON.parse(card.dataset.details) : null;
+            if (!fullDetails) return; // 如果卡片沒有詳細資訊，則跳過
+
+            let trackData;
+
+            if (fields === 'all') {
+                // 如果選擇匯出全部資訊，則直接使用完整的曲目資料
+                trackData = { ...fullDetails };
+            } else { // 'matched'
+                // 如果選擇僅匯出符合篩選的資訊
+                const matchedDetails = card.dataset.matchedDetails ? JSON.parse(card.dataset.matchedDetails) : {};
+                // 建立一個新物件，確保曲目標題 (track) 永遠被包含，然後再合併符合篩選的欄位
+                trackData = {
+                    track: fullDetails.track, 
+                    ...matchedDetails
+                };
+            }
+            dataToExport.push(trackData);
+        });
+
+        if (dataToExport.length === 0) {
+            alert('沒有可匯出的資料。');
+            return;
+        }
+
+        // 準備檔案內容，直接使用 JSON 格式
+        const timestamp = new Date().toISOString().slice(0, 10);
+        const fileContent = JSON.stringify(dataToExport, null, 2);
+        const mimeType = 'application/json';
+
+        // 呼叫下載函式，檔名固定為 .json
+        downloadFile(fileContent, `search_results_${timestamp}.json`, mimeType);
+        
+        // 關閉匯出視窗
+        if (exportModal) {
+            exportModal.style.display = 'none';
+        }
+    }
+
+    function downloadFile(content, fileName, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
     // --- INITIALIZATION ---
     async function initializeApp() {
         try {
-            // --- NEW: Create minimized player ---
             minimizedPlayer = document.createElement('div');
             minimizedPlayer.id = 'minimized-player';
             minimizedPlayer.className = 'minimized-player';
             minimizedPlayer.innerHTML = `<i class="fas fa-play"></i>`;
             document.body.appendChild(minimizedPlayer);
             dragElement(minimizedPlayer);
-
 
             const idMap = new Map();
             const idManifestResponse = await fetch('IDs/manifest.json');
@@ -1004,6 +1073,7 @@ function updateFilter() {
             setupTocClickHandler();
             setupHelpModal();
             setupHelpModalExamples();
+            setupExportModal();
             setupAutocomplete();
             updateLayout(); 
             window.addEventListener('resize', updateLayout);
