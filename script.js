@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchFieldPill = document.getElementById('searchFieldPill');
     const header = document.querySelector('.header'); // Select header globally
 
+    // --- NEW ---: Minimized player element
+    let minimizedPlayer = null;
+
     // --- STATE MANAGEMENT ---
     let isSortReversed = false;
     let shortcutFieldOptions = [];
@@ -164,11 +167,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         detailsSidebar.classList.add('is-open');
+        // --- MODIFICATION START ---
+        // document.body.classList.add('details-open'); 移除
         if (detailsBackdrop && window.innerWidth <= 768) {
             detailsBackdrop.classList.add('is-visible');
         }
         
-        // --- MODIFICATION START: Hide header search when details sidebar opens on mobile ---
         if (window.innerWidth <= 768 && header) {
             header.classList.add('search-hidden');
         }
@@ -177,13 +181,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function closeDetailsSidebar() {
         detailsSidebar.classList.remove('is-open');
+        // --- MODIFICATION START ---
+        // document.body.classList.remove('details-open'); 移除
         if (detailsBackdrop) {
             detailsBackdrop.classList.remove('is-visible');
         }
+        // --- MODIFICATION END ---
     }
     
     function loadPlayer(id) {
         if (!stickyPlayer || !stickyPlayerContent) return;
+
+        // --- MODIFICATION START ---
+        // Restore player if it was minimized
+        restorePlayer();
+        // --- MODIFICATION END ---
         
         stickyPlayerContent.innerHTML = '';
         stickyPlayer.classList.add('is-loading');
@@ -235,12 +247,30 @@ document.addEventListener('DOMContentLoaded', function() {
         detailsBackdrop.addEventListener('click', closeDetailsSidebar);
     }
     
+    // --- MODIFICATION START: Player minimize/restore logic ---
     if (closeStickyPlayerBtn) {
-        closeStickyPlayerBtn.addEventListener('click', () => {
-            stickyPlayer.classList.remove('is-visible');
-            stickyPlayerContent.innerHTML = '';
-        });
+        closeStickyPlayerBtn.addEventListener('click', minimizePlayer);
     }
+
+    function minimizePlayer() {
+        if (stickyPlayer) {
+            stickyPlayer.classList.add('is-minimized');
+        }
+        if (minimizedPlayer) {
+            minimizedPlayer.classList.add('is-visible');
+        }
+    }
+
+    function restorePlayer() {
+        if (stickyPlayer) {
+            stickyPlayer.classList.remove('is-minimized');
+        }
+        if (minimizedPlayer) {
+            minimizedPlayer.classList.remove('is-visible');
+        }
+    }
+    // --- MODIFICATION END ---
+
 
     // --- MOBILE SIDEBAR TOGGLE ---
     if (tocToggleMobile && leftSidebar && sidebarBackdrop) {
@@ -756,23 +786,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- MODIFICATION START: Simplified updateLayout function ---
     function updateLayout() {
         if (header) {
             const headerHeight = header.offsetHeight;
-            // Mobile layout is now handled by pure CSS for better performance and simplicity.
-            // This function now only handles desktop layout adjustments.
             if (window.innerWidth > 768) {
                 if (leftSidebar) leftSidebar.style.height = `calc(100vh - ${headerHeight}px)`;
                 if (detailsSidebar) detailsSidebar.style.height = `calc(100vh - ${headerHeight}px)`;
             } else {
-                // Clear inline styles when switching to mobile to let CSS take over.
                 if (leftSidebar) leftSidebar.style.height = '';
                 if (detailsSidebar) detailsSidebar.style.height = '';
             }
         }
     }
-    // --- MODIFICATION END ---
 
 
     function handleHeaderScroll() {
@@ -787,10 +812,116 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY;
     }
+
+    // --- NEW: Draggable element logic ---
+    function dragElement(elmnt) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        let isDragging = false;
+        
+        const dragMouseDown = (e) => {
+            isDragging = false;
+            e = e || window.event;
+            e.preventDefault();
+
+            elmnt.style.transition = 'none';
+
+            const rect = elmnt.getBoundingClientRect();
+            elmnt.style.top = rect.top + "px";
+            elmnt.style.left = rect.left + "px";
+            elmnt.style.bottom = 'auto';
+            elmnt.style.right = 'auto';
+
+            pos3 = e.clientX || e.touches[0].clientX;
+            pos4 = e.clientY || e.touches[0].clientY;
+            document.onmouseup = closeDragElement;
+            document.ontouchend = closeDragElement;
+            document.onmousemove = elementDrag;
+            document.ontouchmove = elementDrag;
+        }
+
+        const elementDrag = (e) => {
+            isDragging = true;
+            e = e || window.event;
+            const currentX = e.clientX || e.touches[0].clientX;
+            const currentY = e.clientY || e.touches[0].clientY;
+            pos1 = pos3 - currentX;
+            pos2 = pos4 - currentY;
+            pos3 = currentX;
+            pos4 = currentY;
+            
+            let newTop = elmnt.offsetTop - pos2;
+            let newLeft = elmnt.offsetLeft - pos1;
+
+            const docWidth = document.documentElement.clientWidth;
+            const docHeight = document.documentElement.clientHeight;
+            const elWidth = elmnt.offsetWidth;
+            const elHeight = elmnt.offsetHeight;
+            
+            if (newLeft < 0) newLeft = 0;
+            if (newTop < 0) newTop = 0;
+            if (newLeft + elWidth > docWidth) newLeft = docWidth - elWidth;
+            if (newTop + elHeight > docHeight) newTop = docHeight - elHeight;
+            
+            elmnt.style.top = newTop + "px";
+            elmnt.style.left = newLeft + "px";
+        }
+
+        const closeDragElement = (e) => {
+            elmnt.style.transition = ''; 
+
+            if (isDragging) {
+                const docWidth = document.documentElement.clientWidth;
+                const elWidth = elmnt.offsetWidth;
+                const elLeft = elmnt.offsetLeft;
+                const midPoint = docWidth / 2;
+
+                if ((elLeft + elWidth / 2) < midPoint) {
+                    // 往左吸附：直接設定 left 為 1.5rem
+                    elmnt.style.left = "1.5rem";
+                    elmnt.style.right = "auto";
+                } else {
+                    // ---【修改處】---
+                    // 往右吸附：計算出對應的 left 值，而不是設定 right
+                    
+                    // 1. 取得根元素的字體大小，用來將 rem 單位換算為 px
+                    const remInPx = parseFloat(getComputedStyle(document.documentElement).fontSize);
+                    const finalOffset = 1.5 * remInPx;
+                    
+                    // 2. 計算目標 left 值
+                    const targetLeft = docWidth - elWidth - finalOffset;
+                    
+                    // 3. 將 left 動畫到目標值
+                    elmnt.style.left = `${targetLeft}px`;
+                    elmnt.style.right = "auto"; // 確保 right 屬性不影響定位
+                }
+            }
+            
+            document.onmouseup = null;
+            document.onmousemove = null;
+            document.ontouchend = null;
+            document.ontouchmove = null;
+            
+            if (!isDragging) { 
+                restorePlayer();
+            }
+        }
+        
+        elmnt.onmousedown = dragMouseDown;
+        elmnt.ontouchstart = dragMouseDown;
+    }
     
     // --- INITIALIZATION ---
     async function initializeApp() {
         try {
+            // --- NEW: Create minimized player ---
+            minimizedPlayer = document.createElement('div');
+            minimizedPlayer.id = 'minimized-player';
+            minimizedPlayer.className = 'minimized-player';
+            minimizedPlayer.innerHTML = `<i class="fas fa-play"></i>`;
+            document.body.appendChild(minimizedPlayer);
+            dragElement(minimizedPlayer);
+
+
             const idMap = new Map();
             const idManifestResponse = await fetch('IDs/manifest.json');
             const idManifest = await idManifestResponse.json();
