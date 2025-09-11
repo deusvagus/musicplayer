@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    function updateFilter() {
+function updateFilter() {
         const generalQuery = searchInput.value.toLowerCase().trim();
         const fieldQuery = searchFieldInput.value.trim();
         const valueQuery = searchValueInput.value.trim();
@@ -416,8 +416,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
             section.classList.toggle('hidden', visibleCardCount === 0);
         });
-    }
 
+        // --- 【新增功能】 ---
+        // 根據專輯區塊的顯示狀態，更新對應目錄連結的樣式
+        document.querySelectorAll('.album-section').forEach(section => {
+            const tocLink = toc.querySelector(`a[href="#${section.id}"]`);
+            if (tocLink) {
+                const isSectionHidden = section.classList.contains('hidden');
+                tocLink.classList.toggle('is-inactive', isSectionHidden);
+            }
+        });
+    }
+    
+    
     // --- RENDER PAGE & CARDS ---
     function createTrackCard(track, albumId) {
         const card = document.createElement('div');
@@ -506,6 +517,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- SHORTCUTS & SEARCH SETUP ---
     async function setupShortcuts(fieldKeys) {
+        // --- 【新增】 獲取多選開關元件 ---
+        const multiSelectToggle = document.getElementById('multiSelectToggle');
+
         const pinnedFieldConfig = { "作曲": { keywords: ["作曲", "composer"], canonical: "Composer / 作曲", originals: new Set(), fixedValue: "作曲 composer" }, "編曲": { keywords: ["编曲", "配器", "编配", "改编", "arranger", "adoption", "orchestrator", "original", "reinterpret"], canonical: "Arranger / 編曲", originals: new Set(), fixedValue: "配器 编曲 编配 改编 Orchestrator Arranger Adoption Reinterpret original" }, "作詞": { keywords: ["作词", "lyric", "lyricist"], canonical: "Lyricist / 作詞", originals: new Set(), fixedValue: "作词 Lyricist" } };
         const pinnedOrder = ["作曲", "編曲", "作詞"];
         const fieldGroups = new Map();
@@ -583,9 +597,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 shortcutFieldSelect.appendChild(new Option(option.text, option.value));
             });
 
+            // --- 【修改「欄位」快捷輸入的邏輯】 ---
             shortcutFieldSelect.addEventListener('change', (e) => {
-                if (!e.target.value) return;
-                searchFieldInput.value = e.target.value;
+                const selectedValue = e.target.value;
+                if (!selectedValue) return;
+
+                if (multiSelectToggle.checked) {
+                    // 多選模式：累加值
+                    const currentVal = searchFieldInput.value.trim();
+                    searchFieldInput.value = currentVal ? `${currentVal} ${selectedValue}` : selectedValue;
+                } else {
+                    // 單選模式：覆蓋值
+                    searchFieldInput.value = selectedValue;
+                }
+
                 fieldRegexToggle.checked = false;
                 searchFieldInput.dispatchEvent(new Event('input'));
                 e.target.selectedIndex = 0;
@@ -604,12 +629,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('無法載入或解析 personnel.json:', error);
                 shortcutPersonnelSelect.style.display = 'none';
             }
+
+            // --- 【修改「人員」快捷輸入的邏輯】 ---
             shortcutPersonnelSelect.addEventListener('change', (e) => {
                 const selectedName = e.target.value;
                 if (!selectedName) return;
-                const currentVal = searchValueInput.value.trim();
+
                 const newVal = selectedName.includes(' ') ? `"${selectedName}"` : selectedName;
-                searchValueInput.value = currentVal ? `${currentVal} ${newVal}` : newVal;
+
+                if (multiSelectToggle.checked) {
+                    // 多選模式：累加值
+                    const currentVal = searchValueInput.value.trim();
+                    searchValueInput.value = currentVal ? `${currentVal} ${newVal}` : newVal;
+                } else {
+                    // 單選模式：覆蓋值
+                    searchValueInput.value = newVal;
+                }
+
                 valueRegexToggle.checked = false;
                 searchValueInput.dispatchEvent(new Event('input'));
                 e.target.value = "";

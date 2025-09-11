@@ -19,32 +19,42 @@
         <h1>音樂資料查詢</h1>
       </div>
       <div class="search-controls">
-        <div class="advanced-search-grid">
-          <select id="shortcutField" class="shortcut-select"></select>
-          <select id="shortcutPersonnel" class="shortcut-select">
-            <option value="">快捷輸入人員</option>
-          </select>
-          <div class="input-group">
-            <div class="input-wrapper">
-              <input type="search" id="searchField" placeholder="輸入搜尋欄位" class="search-input-adv" autocomplete="off">
-              <span id="searchFieldPill" class="input-pill"></span>
-              <button class="clear-input-btn" id="clearSearchField" title="清除欄位">&times;</button>
-              <div id="field-suggestions" class="suggestions-box"></div>
-            </div>
-            <div class="regex-toggle">
-              <input type="checkbox" id="fieldRegexToggle">
-              <label for="fieldRegexToggle">Regex</label>
+        <div class="search-layout-grid">
+          <div class="search-column">
+            <select id="shortcutField" class="shortcut-select"></select>
+            <div class="input-group">
+              <div class="input-wrapper">
+                <input type="search" id="searchField" placeholder="輸入搜尋欄位" class="search-input-adv" autocomplete="off">
+                <span id="searchFieldPill" class="input-pill"></span>
+                <button class="clear-input-btn" id="clearSearchField" title="清除欄位">&times;</button>
+                <div id="field-suggestions" class="suggestions-box"></div>
+              </div>
+              <div class="regex-toggle">
+                <input type="checkbox" id="fieldRegexToggle">
+                <label for="fieldRegexToggle">Regex</label>
+              </div>
             </div>
           </div>
-          <div class="input-group">
-            <div class="input-wrapper">
-              <input type="search" id="searchValue" placeholder="輸入搜尋內容" class="search-input-adv" autocomplete="off">
-              <button class="clear-input-btn" id="clearSearchValue" title="清除內容">&times;</button>
-              <div id="value-suggestions" class="suggestions-box"></div>
+          <div class="search-column">
+            <select id="shortcutPersonnel" class="shortcut-select">
+              <option value="">快捷輸入人員</option>
+            </select>
+            <div class="input-group">
+              <div class="input-wrapper">
+                <input type="search" id="searchValue" placeholder="輸入搜尋內容" class="search-input-adv" autocomplete="off">
+                <button class="clear-input-btn" id="clearSearchValue" title="清除內容">&times;</button>
+                <div id="value-suggestions" class="suggestions-box"></div>
+              </div>
+              <div class="regex-toggle">
+                <input type="checkbox" id="valueRegexToggle">
+                <label for="valueRegexToggle">Regex</label>
+              </div>
             </div>
+          </div>
+          <div class="search-options">
             <div class="regex-toggle">
-              <input type="checkbox" id="valueRegexToggle">
-              <label for="valueRegexToggle">Regex</label>
+              <input type="checkbox" id="multiSelectToggle">
+              <label for="multiSelectToggle">快捷多選模式</label>
             </div>
           </div>
         </div>
