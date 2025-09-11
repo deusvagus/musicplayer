@@ -104,12 +104,20 @@ body {
 .search-layout-grid {
   display: grid;
   grid-template-columns: 1fr 1fr auto;
-  gap: 1rem;
-  align-items: end;
+  grid-template-rows: auto auto;
+  gap: 0.5rem 1rem; /* 上下間距0.5rem, 左右間距1rem */
+  align-items: center;
   border-left: 1px solid var(--border-color);
   padding-left: 1rem;
   width: 100%;
 }
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .search-column {
   display: flex;
   flex-direction: column;
@@ -175,7 +183,14 @@ body {
 }
 .shortcut-select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239e9e9e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 2rem;}
 .shortcut-select option { background: var(--bg-details-sidebar); color: var(--text-primary); }
-.header-right .theme-toggle { background: none; border: none; color: var(--text-primary); font-size: 1.2rem; cursor: pointer; padding: 0.5rem; }
+.theme-toggle { 
+  background: none; 
+  border: none; 
+  color: var(--text-primary); 
+  font-size: 1.2rem; 
+  cursor: pointer; 
+  padding: 0.5rem; 
+}
 
 
 /* --- PILL-LIKE INPUT STYLE --- */
