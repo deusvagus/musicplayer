@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let minimizedPlayer = null;
 
     // --- STATE MANAGEMENT ---
-    let isSortReversed = false;
+    let isSortReversed = true;
     let shortcutFieldOptions = [];
     let lastScrollY = 0; // For mobile header scroll
 
