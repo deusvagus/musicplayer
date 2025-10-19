@@ -444,30 +444,21 @@ function updateFilter() {
         const hasChinese = /[\u4e00-\u9fa5]/.test(fullTitle);
         
         if (hasChinese) {
-            // 如果包含中文，我們嘗試尋找一個明確的英文部分作為分割點。
-            // 英文部分被定義為「一個空格」後跟「一個拉丁字母 [a-zA-Z]」開始的字串。
-            // 
-            // - ^(.+?)：     (Group 1) 非貪婪模式，匹配開頭的所有字符，作為「中文部分」。
-            // - (\s[a-zA-Z].*)?：(Group 2) 一個可選組，匹配「空格 + 拉丁字母 + 之後的所有內容」，作為「英文部分」。
-            // - $：         匹配字串結尾。
-            // 
-            // 這種方式可以確保 Group 1 會盡可能多地捕獲所有內容（包括中文、全形標點符號如（）、：），
-            // 直到它遇到一個明確的「英文部分」的開頭（例如 " Lullaby..."）。
             const regex = /^(.*?)(\s[a-zA-Z].*)?$/;
             const match = fullTitle.match(regex);
             
-            if (match && match[2]) {
-                // 如果 Group 2 (英文部分) 匹配成功
+            if (match && match[2] && !/[\u4e00-\u9fa5]/.test(match[2])) {
+                // (情況 A) 分割正確
+
                 chineseTitle = match[1].trim();
                 englishTitle = match[2].trim();
             } else {
-                // 如果只包含中文，或者沒有匹配到明確的英文部分（例如 "新月的摇篮曲（其一）"）
+                // (情況 B) 分割錯誤或無需分割
                 chineseTitle = fullTitle;
                 englishTitle = '';
             }
         } else {
-            // 如果標題完全不包含中文字符（例如 "Hello World"）
-            // 將整個標題視為主要標題，英文部分留空。
+            // (情況 C) 標題完全不包含中文
             chineseTitle = fullTitle;
             englishTitle = '';
         }
