@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const valueRegexToggle = document.getElementById('valueRegexToggle');
     const themeToggle = document.getElementById('themeToggle');
     const sortToggle = document.getElementById('sortToggle');
+    const trackSortToggle = document.getElementById('trackSortToggle'); // NEW: global track sort toggle
     const detailsSidebar = document.getElementById('details-sidebar');
     const sidebarContent = document.getElementById('sidebar-content');
     const closeSidebarBtn = document.getElementById('close-sidebar-btn');
@@ -34,12 +35,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const exportModal = document.getElementById('exportModal');
     const exportModalClose = document.getElementById('exportModalClose');
     const confirmExportBtn = document.getElementById('confirmExportBtn');
-
+    const searchSortToggle = document.getElementById('searchSortToggle');
+    let isSearchTrackReversed = false;
     // --- NEW ---: Minimized player element
     let minimizedPlayer = null;
 
     // --- STATE MANAGEMENT ---
     let isSortReversed = false;
+    let isTrackSortReversed = false; // NEW: global track sort state
     let shortcutFieldOptions = [];
     let lastScrollY = 0; // For mobile header scroll
 
@@ -59,7 +62,34 @@ document.addEventListener('DOMContentLoaded', function() {
         themeToggle.addEventListener('click', toggleTheme);
     }
     applyTheme(localStorage.getItem('theme') || 'dark');
+    
+    // 反轉搜尋結果
+    function toggleSearchTrackSort() {
+        isSearchTrackReversed = !isSearchTrackReversed;
 
+        // 找到目前符合搜尋條件且可見的專輯
+        const visibleSections = Array.from(albumContainer.querySelectorAll('.album-section:not(.hidden)'));
+
+        visibleSections.forEach(section => {
+            const musicGrid = section.querySelector('.music-grid');
+            if (!musicGrid) return;
+
+            // 找到目前可見的曲目卡片
+            const visibleCards = Array.from(musicGrid.querySelectorAll('.music-card:not(.hidden)'));
+            
+            // 按照目前設定的反轉狀態切換順序
+            visibleCards.reverse();
+
+            // 清空原來 grid，按新的順序塞回去
+            visibleCards.forEach(card => musicGrid.appendChild(card));
+        });
+
+        searchSortToggle.title = isSearchTrackReversed ? '曲目排序 (反轉)' : '曲目排序 (順序)';
+    }
+
+    if (searchSortToggle) {
+        searchSortToggle.addEventListener('click', toggleSearchTrackSort);
+    }
     // --- SEARCH HELP MODAL ---
     function setupHelpModal() {
         if (!searchHelpBtn || !helpModal || !helpModalClose) return;
@@ -127,6 +157,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (sortToggle) {
         sortToggle.addEventListener('click', toggleAlbumSort);
+    }
+
+    // NEW: Global per-album track sort (reverse order of ALL tracks, ignoring visibility)
+    function toggleTrackSort() {
+        isTrackSortReversed = !isTrackSortReversed;
+
+        const albumSections = Array.from(albumContainer.querySelectorAll('.album-section'));
+        albumSections.forEach(section => {
+            const musicGrid = section.querySelector('.music-grid');
+            if (!musicGrid) return;
+            const cards = Array.from(musicGrid.children);
+            cards.reverse().forEach(card => musicGrid.appendChild(card));
+        });
+
+        if (trackSortToggle) {
+            trackSortToggle.title = isTrackSortReversed ? '曲目排序 (反轉)' : '曲目排序 (正常)';
+        }
+    }
+    if (trackSortToggle) {
+        trackSortToggle.addEventListener('click', toggleTrackSort);
     }
 
     // --- DETAILS SIDEBAR & PLAYER ---
@@ -615,7 +665,8 @@ function updateFilter() {
                 const selectedValue = e.target.value;
                 if (!selectedValue) return;
 
-                if (multiSelectToggle.checked) {
+                const multiSelectToggle = document.getElementById('multiSelectToggle');
+                if (multiSelectToggle && multiSelectToggle.checked) {
                     const currentVal = searchFieldInput.value.trim();
                     searchFieldInput.value = currentVal ? `${currentVal} ${selectedValue}` : selectedValue;
                 } else {
@@ -647,7 +698,8 @@ function updateFilter() {
 
                 const newVal = selectedName.includes(' ') ? `"${selectedName}"` : selectedName;
 
-                if (multiSelectToggle.checked) {
+                const multiSelectToggle = document.getElementById('multiSelectToggle');
+                if (multiSelectToggle && multiSelectToggle.checked) {
                     const currentVal = searchValueInput.value.trim();
                     searchValueInput.value = currentVal ? `${currentVal} ${newVal}` : newVal;
                 } else {
@@ -750,6 +802,10 @@ function updateFilter() {
                     if (input === searchFieldInput) updatePillState();
                     input.dispatchEvent(new Event('input'));
                     updateFilter();
+                    // NEW: persist clearing of album search
+                    if (input === searchInput) {
+                        localStorage.setItem('albumSearchQuery', '');
+                    }
                     input.focus();
                 });
             }
@@ -759,9 +815,12 @@ function updateFilter() {
     function setupQuickSearchButtons() {
         document.querySelectorAll('.quick-search-btn').forEach(button => {
             button.addEventListener('click', (e) => {
-                searchInput.value = e.target.dataset.query;
+                const q = e.target.dataset.query;
+                searchInput.value = q;
                 searchInput.dispatchEvent(new Event('input'));
                 updateFilter();
+                // NEW: persist quick search choice
+                localStorage.setItem('albumSearchQuery', q);
             });
         });
     }
@@ -1092,6 +1151,17 @@ function handleExport() {
             updateLayout(); 
             window.addEventListener('resize', updateLayout);
 
+            // NEW: Restore album search query from localStorage and persist on input
+            if (searchInput) {
+                const savedAlbumQuery = localStorage.getItem('albumSearchQuery') || '';
+                if (savedAlbumQuery) {
+                    searchInput.value = savedAlbumQuery;
+                }
+                searchInput.addEventListener('input', () => {
+                    localStorage.setItem('albumSearchQuery', searchInput.value);
+                });
+            }
+
             searchFieldInput.addEventListener('focus', () => {
                 searchFieldInput.parentElement.classList.remove('is-pilled');
             });
@@ -1123,6 +1193,9 @@ function handleExport() {
             if (albumContainer) {
                 albumContainer.addEventListener('scroll', handleHeaderScroll);
             }
+
+            // NEW: ensure filter runs once on init to apply any restored album query
+            updateFilter();
 
         } catch (error) {
             if (albumContainer) albumContainer.innerHTML = `<p style="color: red; text-align: center;">初始化失敗: ${error.message}</p>`;
