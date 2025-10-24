@@ -1,0 +1,97 @@
+2756019200	挪德卡莱 Nod-Krai
+2756019201	繁沸之港 The Bustling Port Market
+2756019202	银鸥的回旋 Tourdion of Silver Seagulls
+2756018746	船歌优稳 Sea Shanties Resounding
+2756019203	冀求之意 Desire's Intent
+2756018747	飞觥走斝 Terms of Accord
+2756019204	海舶归港 Homecoming to Port
+2756018748	白夜洇润 Unfurling Night
+2756018749	静伫的海峤 The Still Sea-Cliff
+2756019205	飘曳的眠梦 The Swinging Motion of the Hulls
+2756018750	浮槃与蓝穹的秘话 Shetau of Tulaytullah and Pushpavatika
+2756019206	闲饮酣适 A Carefree Cup
+2756019207	锤砧间的音符 Notes From Striking the Anvil
+2756018752	暂刻的时光 A Borrowed Hour
+2756019208	夜阑安暇时 At Ease Near Night's End
+2756019209	向晚的丘甸 Fields After Dusk
+2756019210	初焙的恬脆 Fresh Baked Egg Rolls
+2756019211	诗境所蕴的旧事 Old Tales Inscribed in Verse
+2756019212	湖色映蓝 Lakelight Turquoise
+2756018753	谧宁如镜水 Reflections in a Timeless Calm
+2756019213	鳞光倏烁 Shimmering Water Like Flickering Souls
+2756019214	幽芒驻息 Where the Wandering Ones Rest
+2756019215	新月的摇篮曲（其一）：伴月同眠 Lullaby of the New Moon (I): Somnias a Luna
+2756018754	新月的摇篮曲（其二）：宵晖下的笑颜 Lullaby of the New Moon (II): Lucens ut risus
+2756018755	新月的摇篮曲（其三）：眉间落英 Lullaby of the New Moon (III): Petala ceciderunt
+2756018756	遥月孤清 The Distant Moon Sits Alone
+2756018757	近月赞咏 Hymn to the Moon
+2756019216	皎亮的边野 The Bright Frontier Land
+2756018758	蒙泽的遐裔 Ancient Heirs of Grace
+2756018759	清辉下的参礼 Rite Beneath the Radiance
+2756019217	仰月所昭之路 The Path That the Moon Reveals
+2756019218	曦光所引 Led by Lucent GuIda Elinance
+2756018760	涉行之刻 Wading in Hazy Light
+2756018761	晚祷的铃歌 Dzwony na nieszpory
+2756018762	风中的军垒 The Redoubt Amidst the Frigid Wind
+2756019219	升于陨圮 Raised on Fallen Meteorites
+2756018763	冬霰锐冽 Keen as Winter Hail
+2756019220	戒禁之域 The Forbidding Ground
+2756018764	初霜涓涟 Whimpering Morningfrost
+2756019221	列岛的晓风 Dawn Breeze of Lempoinen
+2756019222	萦思随白帆 Sails Set With Eagerness
+2756019223	寒涌的伫望 Foresighting From the Frigid Shore
+2756018765	岬石与细浪之舞 Hopak of Cape and Wave
+2756018766	滨海拂风 Whirling Out and Over
+2756019224	夕景伴归途 Rising When Night Falls
+2756018767	雨月夜想 Mayskaya Noch'
+2756019225	苔骨的寒籁 Where the Cricket Sings
+2756018768	游步欣愉 Gladsome Ramble
+2756018769	愁绪谧息 Sorrows Calmed
+2756018770	牵梦的别绪 Dreams of Joy Departed
+2756034884	自外而至 From Beyond
+2756034885	荩草之途 Loafing on the Grass
+2756036507	暮雨的沫痕 Vestige of Hurtling Foam
+2756036508	壤土下的安居 Cozy Home Underground
+2756036509	未然的乐土 Half-Finished Heaven
+2756034886	述往心的霜盏 Tells of the Frost-Lamp in One's Heart
+2756036510	白桦与清水之梦 Dream of Birch and Pellucid Water
+2756034887	雾乡哀语 Sariola's Threnody
+2756036511	咏月者的谎言 A Lie of Aila
+2756036512	荒落的祀歌 Vessel for Prayer
+2756036513	绿丘焕然 A Green Hill Remade
+2756034888	风挟的预兆 Omens Brought On the Wind
+2756036514	石下暗涌 Darkness Surges Beneath the Stone
+2756034889	如霞的盐沼 Rosy Marshland
+2756036515	澈夜低徊 Wandering Through the Starry Night
+2756036516	煦寒的惦念 Warm Remembrance
+2756034890	驻息的孤影 The Solitary Silhouette
+2756034891	哀茕如霭 Grief Spreading Like Haze
+2756034892	海蚀的幽廊 Sea-Gnawed Hollow
+2756034893	深岩隐歌 Secrets Cast in a Deep Cave
+2756034894	千湖与月的秘径 Kuunsilta of Thousand Lakes
+2756036517	死荫的黯色 The Perilous Fog
+2756034895	圣仪默示之所 Hint From the Moonshadow
+2756034896	空待的重逢 Votum Awaited in Vain
+2756034897	纤辉之纺 The Gleaming Thread
+2756036518	皎晶澄凝 Dalliance of Crystal Light
+2756034898	惶悚的灼念 Dreadful Darkness Closing In
+2756034899	匿行潜踪 Leaving No Trace
+2756034900	灾焰忽起 Fire and Shadow
+2756034901	瓦砾与喧声 Ruinous Clamor
+2756036519	鼓荡的街镇 The Roiling Streets
+2756034902	柜上的淑女 A Sitting on a Gate
+2756034903	永夜与破晓的誓刃 To Light the Aeon Dark
+2756036520	雪浪驰逐 Straight Through the Snowtide
+2756034904	切心的渴求 A Thirst That Cuts
+2756034905	苍银的圣咒 Syntyloitsut of Koitar
+2756034906	铁铸的洪流 The Iron-Cast Torrent
+2756036521	诡影蛰动 What Sleeps in Shadow Now Wakes
+2756036522	Duckle 'em Down!
+2756034907	未相逢的再遇 A Remeet of First Meetings
+2756036523	深水中的伟业 The Deed That Cleft the Sea
+2756036524	白昼将临 Armor of Light
+2756034908	巨炮铿轰 The Great Cannon Thundering
+2756034909	深黯与幽火 Luchnos en toi Skotei
+2756034910	凶妄的夙念 An Obsession Unriven
+2756034911	淑女的证明，或数秘的交谊舞 La preuve d'une demoiselle, ou le bal de la numerologie
+2756036525	束光似水 Light Shines Through Fingers as a Silver Stream
