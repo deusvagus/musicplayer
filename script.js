@@ -479,6 +479,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
+            // --- MODIFICATION START ---
+            // Hide Disc Separators if their corresponding grid has no visible tracks
+            section.querySelectorAll('.music-grid').forEach(grid => {
+                const visibleTracksInGrid = grid.querySelectorAll('.music-card:not(.hidden)').length;
+                const prevSibling = grid.previousElementSibling;
+                if (prevSibling && prevSibling.classList.contains('disc-separator')) {
+                    prevSibling.style.display = visibleTracksInGrid > 0 ? '' : 'none';
+                }
+            });
+            // --- MODIFICATION END ---
+
             section.classList.toggle('hidden', visibleCardCount === 0);
         });
 
@@ -672,35 +683,56 @@ document.addEventListener('DOMContentLoaded', function () {
     async function setupShortcuts(fieldKeys) {
         const multiSelectToggle = document.getElementById('multiSelectToggle');
 
-        const pinnedFieldConfig = { "作曲": { keywords: ["作曲", "composer"], canonical: "Composer / 作曲", originals: new Set(), fixedValue: "作曲 composer" }, "編曲": { keywords: ["编曲", "配器", "编配", "改编", "arranger", "adoption", "orchestrator", "original", "reinterpret"], canonical: "Arranger / 編曲", originals: new Set(), fixedValue: "配器 编曲 编配 改编 Orchestrator Arranger Adoption Reinterpret original" }, "作詞": { keywords: ["作词", "lyric", "lyricist"], canonical: "Lyricist / 作詞", originals: new Set(), fixedValue: "作词 Lyricist" } };
-        const pinnedOrder = ["作曲", "編曲", "作詞"];
+        const pinnedFieldConfig = {
+            "作曲": { keywords: ["作曲", "composer"], canonical: "Composer / 作曲", originals: new Set(), fixedValue: "作曲 composer" },
+            "編曲": { keywords: ["编曲", "配器", "编配", "改编", "arranger", "adoption", "orchestrator", "original", "reinterpret"], canonical: "Arranger / 編曲", originals: new Set(), fixedValue: "配器 编曲 编配 改编 Orchestrator Arranger Adoption Reinterpret original" },
+            "作詞": { keywords: ["作词", "lyric", "lyricist"], canonical: "Lyricist / 作詞", originals: new Set(), fixedValue: "作词 Lyricist" },
+            "混音": { keywords: ["混音", "mixing", "mix engineer"], canonical: "Mixing Engineer / 混音", originals: new Set(), fixedValue: "混音 Mixing" },
+            "母帶": { keywords: ["母带", "mastering", "stems"], canonical: "Mastering Engineer / 母帶", originals: new Set(), fixedValue: "母带 Mastering Stems" }
+        };
+        const pinnedOrder = ["作曲", "編曲", "作詞", "混音", "母帶"];
         const fieldGroups = new Map();
 
         fieldKeys.forEach(key => {
             if (!key) return;
-            const subKeys = key.split('/').map(s => s.trim()).filter(Boolean);
-            subKeys.forEach(subKey => {
-                let isPinned = false;
-                for (const config of Object.values(pinnedFieldConfig)) {
-                    if (config.keywords.some(kw => subKey.toLowerCase().includes(kw))) {
-                        config.originals.add(subKey);
-                        isPinned = true;
-                        break;
-                    }
+            // --- MODIFICATION START ---
+            // Remove the split('/') logic. Treat the whole key as a unit, but prioritize the English part for grouping.
+            const fullKey = key;
+
+            let isPinned = false;
+            for (const config of Object.values(pinnedFieldConfig)) {
+                if (config.keywords.some(kw => fullKey.toLowerCase().includes(kw))) {
+                    config.originals.add(fullKey);
+                    isPinned = true;
+                    break;
                 }
-                if (isPinned) return;
-                const chinesePart = (subKey.match(/[\u4e00-\u9fa5]+/g) || []).join(' ').trim();
-                const englishPart = subKey.replace(/[\u4e00-\u9fa5]/g, '').replace(/[/\-()]/g, ' ').replace(/\s+/g, ' ').trim();
-                const groupKey = chinesePart || englishPart.toLowerCase();
-                if (!groupKey) return;
-                if (!fieldGroups.has(groupKey)) {
-                    fieldGroups.set(groupKey, { originals: new Set(), englishParts: new Set(), chineseParts: new Set() });
-                }
-                const group = fieldGroups.get(groupKey);
-                group.originals.add(subKey);
-                if (englishPart) group.englishParts.add(englishPart);
-                if (chinesePart) group.chineseParts.add(chinesePart);
+            }
+            if (isPinned) return;
+
+            // Regex to capture "Chinese part", which may include numbers (e.g., "12弦吉他", "1st Violin")
+            // Strategy: Match sequences of Chinese characters, optionally preceded by numbers or 'st'/'nd'/'rd'/'th'
+            const chineseMatches = fullKey.match(/([0-9]+(?:st|nd|rd|th)?\s*)?[\u4e00-\u9fa5]+/g) || [];
+            const chinesePart = chineseMatches.join(' ').trim();
+
+            // To get English part: Remove the exact strings identified as Chinese parts
+            let englishPart = fullKey;
+            chineseMatches.forEach(match => {
+                englishPart = englishPart.replace(match, '');
             });
+            englishPart = englishPart.replace(/[/\-()]/g, ' ').replace(/\s+/g, ' ').trim();
+
+            // Prefer English key for grouping if available, to merge "English / ChineseA" and "English / ChineseB"
+            const groupKey = englishPart.toLowerCase() || chinesePart;
+
+            if (!groupKey) return;
+            if (!fieldGroups.has(groupKey)) {
+                fieldGroups.set(groupKey, { originals: new Set(), englishParts: new Set(), chineseParts: new Set() });
+            }
+            const group = fieldGroups.get(groupKey);
+            group.originals.add(fullKey);
+            if (englishPart) group.englishParts.add(englishPart);
+            if (chinesePart) group.chineseParts.add(chinesePart);
+            // --- MODIFICATION END ---
         });
 
         if (shortcutFieldSelect) {
