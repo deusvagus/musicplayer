@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // --- DOM ELEMENT SELECTION ---
     const albumContainer = document.getElementById('albumContainer');
     const toc = document.getElementById('toc');
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         themeToggle.addEventListener('click', toggleTheme);
     }
     applyTheme(localStorage.getItem('theme') || 'dark');
-    
+
     // 反轉搜尋結果
     function toggleSearchTrackSort() {
         isSearchTrackReversed = !isSearchTrackReversed;
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 找到目前可見的曲目卡片
             const visibleCards = Array.from(musicGrid.querySelectorAll('.music-card:not(.hidden)'));
-            
+
             // 按照目前設定的反轉狀態切換順序
             visibleCards.reverse();
 
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!exampleEl) return;
 
                 const { fieldValue, searchValue, fieldRegex, valueRegex } = exampleEl.dataset;
-                
+
                 searchFieldInput.value = fieldValue || '';
                 searchValueInput.value = searchValue || '';
                 fieldRegexToggle.checked = fieldRegex === 'true';
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 searchFieldInput.dispatchEvent(new Event('input'));
                 searchValueInput.dispatchEvent(new Event('input'));
-                
+
                 if (!fieldRegexToggle.checked) {
                     const term = searchFieldInput.value.trim().toLowerCase();
                     if (term) {
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 updatePillState();
-                
+
                 updateFilter();
                 helpModal.style.display = 'none';
             }
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- DETAILS SIDEBAR & PLAYER ---
     function showDetails(track, albumId) {
         if (!track || !track.details) {
-          return;
+            return;
         }
 
         if (leftSidebar && leftSidebar.classList.contains('is-open')) {
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (detailsBackdrop && window.innerWidth <= 768) {
             detailsBackdrop.classList.add('is-visible');
         }
-        
+
         if (window.innerWidth <= 768 && header) {
             header.classList.add('search-hidden');
         }
@@ -236,15 +236,15 @@ document.addEventListener('DOMContentLoaded', function() {
             detailsBackdrop.classList.remove('is-visible');
         }
     }
-    
+
     function loadPlayer(id) {
         if (!stickyPlayer || !stickyPlayerContent) return;
         restorePlayer();
-        
+
         stickyPlayerContent.innerHTML = '';
         stickyPlayer.classList.add('is-loading');
         stickyPlayer.classList.add('is-visible');
-        
+
         const iframe = document.createElement('iframe');
         iframe.frameBorder = "0";
         iframe.border = "0";
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
         iframe.width = "100%";
         iframe.height = "86";
         iframe.src = `https://music.163.com/outchain/player?type=2&id=${id}&auto=1&height=66`;
-        
+
         iframe.style.opacity = '0';
         iframe.style.transition = 'opacity 0.3s ease';
 
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
             iframe.style.opacity = '1';
             onDone();
         };
-        
+
         iframe.onerror = () => {
             stickyPlayerContent.innerHTML = '<p class="no-id-message">播放器加載失敗</p>';
             onDone();
@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (detailsBackdrop) {
         detailsBackdrop.addEventListener('click', closeDetailsSidebar);
     }
-    
+
     if (closeStickyPlayerBtn) {
         closeStickyPlayerBtn.addEventListener('click', minimizePlayer);
     }
@@ -338,12 +338,12 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebarBackdrop.classList.remove("is-visible");
         });
     }
-    
+
     if (leftSidebar) {
-      leftSidebar.classList.remove('is-open');
+        leftSidebar.classList.remove('is-open');
     }
     if (detailsSidebar) {
-      detailsSidebar.classList.remove('is-open');
+        detailsSidebar.classList.remove('is-open');
     }
 
     // --- SEARCH & FILTERING ---
@@ -394,21 +394,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const valueLower = valueString.toLowerCase();
             return valueTerms.every(term => valueLower.includes(term));
         });
-        
+
         if (matchedEntries.length === 0) return null;
         return Object.fromEntries(matchedEntries);
     }
 
 
-function updateFilter() {
+    function updateFilter() {
         const generalQuery = searchInput.value.toLowerCase().trim();
         const fieldQuery = searchFieldInput.value.trim();
         const valueQuery = searchValueInput.value.trim();
         const isFieldRegex = fieldRegexToggle.checked;
         const isValueRegex = valueRegexToggle.checked;
 
-        if(!isFieldRegex) searchFieldInput.classList.remove('invalid-regex');
-        if(!isValueRegex) searchValueInput.classList.remove('invalid-regex');
+        if (!isFieldRegex) searchFieldInput.classList.remove('invalid-regex');
+        if (!isValueRegex) searchValueInput.classList.remove('invalid-regex');
 
         document.querySelectorAll('#toc a').forEach(link => {
             const albumTitle = link.textContent.toLowerCase();
@@ -428,7 +428,7 @@ function updateFilter() {
             section.querySelectorAll('.music-card').forEach(card => {
                 const details = card.dataset.details ? JSON.parse(card.dataset.details) : null;
                 const matchedData = checkAdvancedQuery(details, fieldQuery, valueQuery, isFieldRegex, isValueRegex);
-                
+
                 const cardIsVisible = matchedData !== null;
                 card.classList.toggle('hidden', !cardIsVisible);
 
@@ -453,7 +453,7 @@ function updateFilter() {
                             const safeValue = String(value).replace(/</g, "&lt;").replace(/>/g, "&gt;");
                             return `<p><strong>${safeKey}:</strong> ${safeValue}</p>`;
                         }).join('');
-                        
+
                         if (html) {
                             matchedInfoEl.innerHTML = html;
                             matchedInfoEl.style.display = 'block';
@@ -477,10 +477,10 @@ function updateFilter() {
             }
         });
     }
-    
-    
-    
-// --- RENDER PAGE & CARDS ---
+
+
+
+    // --- RENDER PAGE & CARDS ---
     function createTrackCard(track, albumId) {
         const card = document.createElement('div');
         card.className = 'music-card';
@@ -488,15 +488,15 @@ function updateFilter() {
         let chineseTitle = '';
         let englishTitle = '';
         const fullTitle = track.fullTitle.trim();
-        
+
         // --- MODIFICATION START ---
         // 檢查標題是否包含至少一個中文字符
         const hasChinese = /[\u4e00-\u9fa5]/.test(fullTitle);
-        
+
         if (hasChinese) {
             const regex = /^(.*?)(\s[a-zA-Z].*)?$/;
             const match = fullTitle.match(regex);
-            
+
             if (match && match[2] && !/[\u4e00-\u9fa5]/.test(match[2])) {
                 // (情況 A) 分割正確
 
@@ -513,7 +513,7 @@ function updateFilter() {
             englishTitle = '';
         }
         // --- MODIFICATION END ---
-        
+
         card.innerHTML = `
             <div class="music-icon"><i class="fas ${track.id ? 'fa-play' : 'fa-file-alt'}"></i></div>
             <div class="track-info">
@@ -521,28 +521,63 @@ function updateFilter() {
                 <p>${englishTitle}&nbsp;</p>
                 <div class="matched-info"></div>
             </div>`;
-        
+
         if (track.details) card.dataset.details = JSON.stringify(track.details);
 
         card.addEventListener('click', () => showDetails(track, albumId));
-        
+
         if (!track.id) {
             card.classList.add('no-id');
         }
         return card;
     }
-    
+
     function renderPage(data) {
         if (!albumContainer || !toc) return;
         albumContainer.innerHTML = '';
         toc.innerHTML = '';
+
         data.forEach((album, index) => {
             const albumId = `album-${index}`;
+            const trackCount = album.tracks.length;
+
+            // Detect if this album has multiple discs from track cd fields
+            const discSet = new Set();
+            album.tracks.forEach(track => {
+                if (track.details && track.details.cd !== undefined) {
+                    discSet.add(track.details.cd);
+                }
+            });
+            const hasMultipleDiscs = discSet.size > 1;
+
+            // --- TOC Link ---
             const tocLink = document.createElement('a');
             tocLink.href = `#${albumId}`;
-            tocLink.textContent = album.title;
+
+            const tocTitleSpan = document.createElement('span');
+            tocTitleSpan.className = 'toc-title-text';
+            tocTitleSpan.textContent = album.title;
+            tocLink.appendChild(tocTitleSpan);
+
+            const tocMeta = document.createElement('span');
+            tocMeta.className = 'toc-meta';
+
+            if (hasMultipleDiscs) {
+                const discBadge = document.createElement('span');
+                discBadge.className = 'disc-badge';
+                discBadge.textContent = `${discSet.size} Discs`;
+                tocMeta.appendChild(discBadge);
+            }
+
+            const countBadge = document.createElement('span');
+            countBadge.className = 'track-count-badge';
+            countBadge.textContent = `${trackCount} 曲`;
+            tocMeta.appendChild(countBadge);
+
+            tocLink.appendChild(tocMeta);
             toc.appendChild(tocLink);
-            
+
+            // --- Album Section ---
             const albumSection = document.createElement('section');
             albumSection.className = 'album-section';
             albumSection.id = albumId;
@@ -550,16 +585,58 @@ function updateFilter() {
 
             const summary = document.createElement('h2');
             summary.className = 'album-summary';
-            summary.textContent = album.title;
-            
-            const musicGrid = document.createElement('div');
-            musicGrid.className = 'music-grid';
-            album.tracks.forEach(track => {
-                musicGrid.appendChild(createTrackCard(track, albumId));
-            });
-            
+
+            const summaryTitle = document.createElement('span');
+            summaryTitle.className = 'album-summary-title';
+            summaryTitle.textContent = album.title;
+            summary.appendChild(summaryTitle);
+
+            const summaryMeta = document.createElement('span');
+            summaryMeta.className = 'album-summary-meta';
+
+            if (hasMultipleDiscs) {
+                const discBadgeSummary = document.createElement('span');
+                discBadgeSummary.className = 'disc-badge disc-badge-large';
+                discBadgeSummary.textContent = `${discSet.size} Discs`;
+                summaryMeta.appendChild(discBadgeSummary);
+            }
+
+            const countBadgeSummary = document.createElement('span');
+            countBadgeSummary.className = 'track-count-badge track-count-badge-large';
+            countBadgeSummary.textContent = `${trackCount} 曲`;
+            summaryMeta.appendChild(countBadgeSummary);
+
+            summary.appendChild(summaryMeta);
+
             albumSection.appendChild(summary);
-            albumSection.appendChild(musicGrid);
+
+            if (hasMultipleDiscs) {
+                // Render tracks grouped by disc with separators
+                let currentDisc = null;
+                let currentGrid = null;
+                album.tracks.forEach(track => {
+                    const trackDisc = (track.details && track.details.cd !== undefined) ? track.details.cd : 1;
+                    if (trackDisc !== currentDisc) {
+                        currentDisc = trackDisc;
+                        const discSeparator = document.createElement('div');
+                        discSeparator.className = 'disc-separator';
+                        discSeparator.innerHTML = `<span class="disc-separator-label"><i class="fas fa-compact-disc"></i> Disc ${currentDisc}</span><span class="disc-separator-line"></span>`;
+                        albumSection.appendChild(discSeparator);
+                        currentGrid = document.createElement('div');
+                        currentGrid.className = 'music-grid';
+                        albumSection.appendChild(currentGrid);
+                    }
+                    currentGrid.appendChild(createTrackCard(track, albumId));
+                });
+            } else {
+                const musicGrid = document.createElement('div');
+                musicGrid.className = 'music-grid';
+                album.tracks.forEach(track => {
+                    musicGrid.appendChild(createTrackCard(track, albumId));
+                });
+                albumSection.appendChild(musicGrid);
+            }
+
             albumContainer.appendChild(albumSection);
         });
     }
@@ -568,7 +645,7 @@ function updateFilter() {
     function updatePillState() {
         const wrapper = searchFieldInput.parentElement;
         const currentValue = searchFieldInput.value;
-        
+
         const matchedOption = shortcutFieldOptions.find(opt => opt.value === currentValue);
 
         if (matchedOption) {
@@ -713,7 +790,7 @@ function updateFilter() {
             });
         }
     }
-    
+
     // --- AUTOCOMPLETE FEATURE ---
     function setupAutocomplete() {
         let fieldOptionsForAutocomplete = [];
@@ -726,7 +803,7 @@ function updateFilter() {
             personnelOptions = Array.from(shortcutPersonnelSelect.options)
                 .filter(opt => opt.value)
                 .map(opt => ({ text: opt.textContent, value: opt.textContent }));
-        }, 1000); 
+        }, 1000);
 
         const createAutocomplete = (inputEl, suggestionsEl, optionsSource) => {
             let activeIndex = -1;
@@ -792,9 +869,9 @@ function updateFilter() {
         createAutocomplete(searchFieldInput, document.getElementById('field-suggestions'), () => fieldOptionsForAutocomplete);
         createAutocomplete(searchValueInput, document.getElementById('value-suggestions'), () => personnelOptions);
     }
-    
+
     function setupClearButtons() {
-        const fields = [{ input: searchInput, btn: document.getElementById('clearSearchInput') }, { input: searchFieldInput, btn: document.getElementById('clearSearchField') }, { input: searchValueInput, btn: document.getElementById('clearSearchValue') }, ];
+        const fields = [{ input: searchInput, btn: document.getElementById('clearSearchInput') }, { input: searchFieldInput, btn: document.getElementById('clearSearchField') }, { input: searchValueInput, btn: document.getElementById('clearSearchValue') },];
         fields.forEach(({ input, btn }) => {
             if (btn) {
                 btn.addEventListener('click', () => {
@@ -824,7 +901,7 @@ function updateFilter() {
             });
         });
     }
-    
+
     function setupResizers() {
         let isResizing = false;
         function onMouseDown(e, element, direction) {
@@ -849,7 +926,7 @@ function updateFilter() {
         if (leftResizer && leftSidebar) leftResizer.addEventListener('mousedown', (e) => onMouseDown(e, leftSidebar, 'left'));
         if (rightResizer && detailsSidebar) rightResizer.addEventListener('mousedown', (e) => onMouseDown(e, detailsSidebar, 'right'));
     }
-    
+
     function setupScrollSpy() {
         const sections = document.querySelectorAll('.album-section');
         if (sections.length === 0) return;
@@ -866,18 +943,18 @@ function updateFilter() {
                 firstVisibleLink.scrollIntoView({ behavior: 'auto', block: 'nearest' });
             } else if (!currentActiveLink && toc.children.length > 0) {
                 const firstTocLink = toc.querySelector('a');
-                if(firstTocLink) firstTocLink.classList.add('active-toc-link');
+                if (firstTocLink) firstTocLink.classList.add('active-toc-link');
             }
         };
         const observer = new IntersectionObserver(observerCallback, { root: albumContainer, threshold: 0.1, rootMargin: '0px 0px -25% 0px' });
         sections.forEach(section => observer.observe(section));
     }
-    
+
     function setupTocClickHandler() {
         if (!toc) return;
-        toc.addEventListener('click', function(e) {
+        toc.addEventListener('click', function (e) {
             if (e.target.tagName === 'A') {
-                e.preventDefault(); 
+                e.preventDefault();
                 const currentActiveLink = toc.querySelector('.active-toc-link');
                 if (currentActiveLink) currentActiveLink.classList.remove('active-toc-link');
                 const clickedLink = e.target;
@@ -919,7 +996,7 @@ function updateFilter() {
     function dragElement(elmnt) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         let isDragging = false;
-        
+
         const dragMouseDown = (e) => {
             isDragging = false;
             e = e || window.event;
@@ -950,7 +1027,7 @@ function updateFilter() {
             pos2 = pos4 - currentY;
             pos3 = currentX;
             pos4 = currentY;
-            
+
             let newTop = elmnt.offsetTop - pos2;
             let newLeft = elmnt.offsetLeft - pos1;
 
@@ -958,18 +1035,18 @@ function updateFilter() {
             const docHeight = document.documentElement.clientHeight;
             const elWidth = elmnt.offsetWidth;
             const elHeight = elmnt.offsetHeight;
-            
+
             if (newLeft < 0) newLeft = 0;
             if (newTop < 0) newTop = 0;
             if (newLeft + elWidth > docWidth) newLeft = docWidth - elWidth;
             if (newTop + elHeight > docHeight) newTop = docHeight - elHeight;
-            
+
             elmnt.style.top = newTop + "px";
             elmnt.style.left = newLeft + "px";
         }
 
         const closeDragElement = (e) => {
-            elmnt.style.transition = ''; 
+            elmnt.style.transition = '';
 
             if (isDragging) {
                 const docWidth = document.documentElement.clientWidth;
@@ -988,21 +1065,21 @@ function updateFilter() {
                     elmnt.style.right = "auto";
                 }
             }
-            
+
             document.onmouseup = null;
             document.onmousemove = null;
             document.ontouchend = null;
             document.ontouchmove = null;
-            
-            if (!isDragging) { 
+
+            if (!isDragging) {
                 restorePlayer();
             }
         }
-        
+
         elmnt.onmousedown = dragMouseDown;
         elmnt.ontouchstart = dragMouseDown;
     }
-    
+
     // --- EXPORT FUNCTIONALITY ---
     function setupExportModal() {
         if (!exportBtn || !exportModal || !exportModalClose || !confirmExportBtn) return;
@@ -1030,7 +1107,7 @@ function updateFilter() {
         confirmExportBtn.addEventListener('click', handleExport);
     }
 
-function handleExport() {
+    function handleExport() {
         // 獲取使用者選擇要匯出的欄位範圍 ('all' 或 'matched')
         const fields = document.querySelector('input[name="exportFields"]:checked').value;
         // 選取所有目前可見的音樂卡片元素
@@ -1052,7 +1129,7 @@ function handleExport() {
                 const matchedDetails = card.dataset.matchedDetails ? JSON.parse(card.dataset.matchedDetails) : {};
                 // 建立一個新物件，確保曲目標題 (track) 永遠被包含，然後再合併符合篩選的欄位
                 trackData = {
-                    track: fullDetails.track, 
+                    track: fullDetails.track,
                     ...matchedDetails
                 };
             }
@@ -1071,7 +1148,7 @@ function handleExport() {
 
         // 呼叫下載函式，檔名固定為 .json
         downloadFile(fileContent, `search_results_${timestamp}.json`, mimeType);
-        
+
         // 關閉匯出視窗
         if (exportModal) {
             exportModal.style.display = 'none';
@@ -1111,8 +1188,8 @@ function handleExport() {
                     result.value.trim().split('\n').forEach(line => {
                         const parts = line.split('\t');
                         if (parts.length >= 2) {
-                          const normalizedTrackName = normalizeTitle(parts[1]);
-                          if (normalizedTrackName) idMap.set(normalizedTrackName, parts[0].trim());
+                            const normalizedTrackName = normalizeTitle(parts[1]);
+                            if (normalizedTrackName) idMap.set(normalizedTrackName, parts[0].trim());
                         }
                     });
                 }
@@ -1123,11 +1200,11 @@ function handleExport() {
             const allFilePaths = Object.values(dataIndex).flat();
             const detailPromises = allFilePaths.map(file => fetch(`data/${file}`).then(res => res.json()));
             const settledDetails = await Promise.allSettled(detailPromises);
-            
+
             const fieldKeys = new Set();
             const allAlbumData = settledDetails
                 .filter(result => result.status === 'fulfilled')
-                .flatMap(result => result.value) 
+                .flatMap(result => result.value)
                 .map(albumData => {
                     const tracks = albumData.tracks.map(trackDetail => {
                         Object.keys(trackDetail).forEach(key => fieldKeys.add(key));
@@ -1136,7 +1213,7 @@ function handleExport() {
                     });
                     return { title: albumData.album, tracks };
                 });
-            
+
             renderPage(allAlbumData);
             await setupShortcuts(Array.from(fieldKeys));
             setupClearButtons();
@@ -1148,7 +1225,7 @@ function handleExport() {
             setupHelpModalExamples();
             setupExportModal();
             setupAutocomplete();
-            updateLayout(); 
+            updateLayout();
             window.addEventListener('resize', updateLayout);
 
             // NEW: Restore album search query from localStorage and persist on input
@@ -1209,6 +1286,6 @@ function handleExport() {
             el.addEventListener(eventType, updateFilter);
         }
     });
-    
+
     initializeApp();
 });
