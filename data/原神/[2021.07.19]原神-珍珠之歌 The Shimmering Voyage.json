@@ -1,0 +1,691 @@
+[
+  {
+    "album": "原神-珍珠之歌 The Shimmering Voyage",
+    "date": "2021-07-19",
+    "tracks": [
+      {
+        "track": "希望的航程 What a Hopeful Voyage",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "广袤的晴空 Vast and Blue",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "微波轻摇 Mesmerizing Waves",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "远航入梦 Journey into Sweet Dreams",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "海风细语 Whispering Seabreeze",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "小憩沙滩 Sunshine Beach",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "尼龙弦吉他 Nylon Guitar": "范晔 Ye Fan",
+        "录音棚 Recording Studio": "上海广播大厦 Shanghai Media Group",
+        "录音师 Recording Engineer": "莫家伟 Jiawei Mo",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "海岛精灵 Ariel's Footprints",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "水母之歌 Melody of Jellyfish",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "混音师 Mixing Engineer": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "难得的静谧 Comforting Quietude",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "混音师 Mixing Engineer": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "海螺中的回音 Old Tales Preserved",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢弦吉他 Steel Guitar": "曹思义 Siyi Cao",
+        "尼龙弦吉他 Nylon Guitar": "范晔 Ye Fan",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "上海广播大厦 Shanghai Media Group、金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "莫家伟 Jiawei Mo、王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "谨慎的探索 Cautious Explorers",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "光彩渐逝的故事 In Stories of Fading Light",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "混音师 Mixing Engineer": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "闲适的陪伴 Cozy Company",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "往昔的诉说 Reminiscence of the Old Days",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "遥远的嘱托 Faraway Solicitude",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "烈风的序章 Overture of Storms",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "电吉他 Electric Guitar": "苑迪萌 Dimeng Yuan(HOYO-MiX)",
+        "合唱 Choir": "上海朱梓溶艺术工作室 Shanghai Zhu Zirong Art Studio",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "火花的初遇 A Sparky Clash",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "无虑无猜的岁月 Innocent Age",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "欢愉的源泉 Whence the Flow Cometh",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "美食寻踪 Hunt for Delicacy",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "小小恶作剧 Sneaky & Mischievous",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "微醺的回忆 Mellow Memories",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "尼龙弦吉他 Nylon Guitar": "范晔 Ye Fan",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "上海广播大厦 Shanghai Media Group、金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "莫家伟 Jiawei Mo、王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "狼般的少年 The Wolf Boy",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "秣马厉兵 Battle Preparation",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "候汝久时 The Astrologist Awaiting",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "星知晓的旧梦 The Starlit Past",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "炉边小憩 Fireside Rest",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "凶险的密谋 A Wicked Plot",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "吟游诗人的把戏 A Cunning Trick",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "女士驾临 L'arrivo Della Signora",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "合唱 Choir": "上海朱梓溶艺术工作室 Shanghai Zhu Zirong Art Studio",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "希望的和风 A Yearning Breeze",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "白日梦的涟漪 Ripples of Daydream",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "重归青天的歌 Welcome Back, My Companion",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "岩主的骤崩 The Sudden Collapse",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "何迦德 Jiade He",
+        "笛子 Dizi": "屠化冰 Huabing Tu",
+        "琵琶 Pipa": "施文卿 Wenqing Shi",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "天权为尊 The Lunar-Eclipsing Palace",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "意料之外的救星 Unexpected Savior",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "异乡的归书 A Letter from Afar",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "指挥 Conductor": "张洁敏 Jiemin Zhang",
+        "乐队 Orchestra": "上海交响乐团 Shanghai Symphony Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "上海交响乐团音乐厅 Shanghai Symphony Hall",
+        "音乐监制 Music Supervisor": "安栋 Dong An",
+        "录音师 Recording Engineer": "陆晓幸 Xiaoxing Lu",
+        "声音工程师 Sound Engineer": "房大磊 Dalei Fang",
+        "混音师 Mixing Engineer": "Nick Wollage",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "蒲苇如丝 Lovers' Oath",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "不冻的激浪 All-Conquering Tide",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "永无谢幕的演出 Never-Ending Performance",
+        "作曲 Composer": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "哨笛 Tin whistle": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "斩破风暴的魔鲸 Wrath of Monoceros Caeli",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "人声 Voice": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "同漩涡共舞 Dance with the Great Vortex",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "天遒歌 Ode to Azhdaha",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "作词": "孙宇 Yu Sun",
+        "合唱 Choir": "上海朱梓溶艺术工作室 Shanghai Zhu Zirong Art Studio",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "上海广播大厦 Shanghai Media Group、金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "莫家伟 Jiawei Mo、王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "岩壑之崩 Rage Beneath the Mountains",
+        "作曲": "Yu-Peng Chen 陈致逸(HOYO-MiX)",
+        "作词": "孙宇 Yu Sun",
+        "制作人": "HOYO-MiX",
+        "管弦乐配器 Orchestrator": "何迦德 Jiade He",
+        "电声乐队编配 Band Arranger": "苑迪萌 Dimeng Yuan(HOYO-MiX)",
+        "笛子 Dizi": "顾剑楠 Jiannan Gu",
+        "二胡 Erhu": "马稼骏 Jiajun Ma",
+        "电吉他 Electric Guitar": "葛金桥 Jinqiao Ge",
+        "电贝司 Electric Bass": "张栗 Li Zhang",
+        "合唱 Choir": "上海朱梓溶艺术工作室 Shanghai Zhu Zirong Art Studio",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "上海广播大厦 Shanghai Media Group、金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "莫家伟 Jiawei Mo、王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "珍珠之歌 Hymn of the Pearl",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "陨落之星 Overture of Falling Stars",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "乐队配器 Orchestrator": "何迦德 Jiade He",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "浮浪人的心机 Ominous Fandango",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "混音师 Mixing Engineer": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "直面纷争的狂喜 Rapture of the Chaos",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "魔王武装 Foul Legacy",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "黄金沉眠之处 Golden Dreams",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "刘俊杰 Junjie Liu",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "玉影徘徊 Palace of Jadeite",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "混音师 Mixing Engineer": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "掩月之阁 Moon-Eclipsing Chamber",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "刘俊杰 Junjie Liu",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "凯歌的前奏 The Imminent Triumph",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "乐队配器 Orchestrator": "何迦德 Jiade He",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "刘俊杰 Junjie Liu",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "高贵的诀别 A Noble Sacrifice",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "刘俊杰 Junjie Liu",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "柔情留忆 Lingering Bitterness",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "寒寂中盛放 Frostbiting Bloom",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "何迦德 Jiade He",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "夜叉的回叙 Tale of the Yakshas",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "何迦德 Jiade He、苑迪萌 Dimeng Yuan (HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "风花的邀约 Invitation of Windblume",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "灾厄的一击 An Inauspicious Blow",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "何迦德 Jiade He",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "深渊下的离别 Fateful Departing",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "王斯迈 Simai Wang",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "游击骑士 Reconnaissance Captain",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "磐峦的恶意 Ominous Monolith",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "创龙点睛 Through the Eyes of a Dragon",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      },
+      {
+        "track": "特瓦林，抵达! Dvalin Is Landing!",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "何迦德 Jiade He",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "盛夏乐园 Summertime Wonderland",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "何迦德 Jiade He",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "夏日新冒险! A New Summer Adventure!",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)",
+        "乐队配器 Orchestrator": "何迦德 Jiade He",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "山巅雪国的记忆 Tales from the Snow Mountain",
+        "作曲": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "合唱指挥 Choir Conductor": "齐放 Fang Qi",
+        "乐队配器 Orchestrator": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "合唱 Choir": "Sfuture艺术团@Shanghai Sfuture Art Group",
+        "钢琴 Piano": "陈致逸 Yu-Peng Chen(HOYO-MiX)",
+        "弦乐 Strings": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "上海广播大厦 Shanghai Media Group、金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "莫家伟 Jiawei Mo、王小四 Xiaosi Wang",
+        "混音师 Mixing Engineer": "黄巍 Zach Huang",
+        "母带制作 Mastering Engineer": "黄巍 Zach Huang",
+        "出品 Produced by": "HOYO-MiX"
+      },
+      {
+        "track": "命定的离别 Destined Parting",
+        "作曲": "陈致逸 Yu-Peng Chen (HOYO-MiX)"
+      }
+    ]
+  }
+]
