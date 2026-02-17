@@ -1270,7 +1270,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-            allAlbumData.reverse();
+            allAlbumData.sort((a, b) => {
+                if (a.date < b.date) return 1;
+                if (a.date > b.date) return -1;
+                return 0;
+            });
             isSortReversed = true;
             renderPage(allAlbumData);
             await setupShortcuts(Array.from(fieldKeys));
