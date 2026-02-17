@@ -131,18 +131,6 @@ def process_album_folder(folder_path):
                 track_files.append((discnumber, tracknumber, file_path))
     track_files.sort(key=lambda x: (x[0], x[1]))
 
-    # Determine which albums have multiple discs
-    album_disc_counts = {}
-    for discnumber, tracknumber, file_path in track_files:
-        if file_path.lower().endswith('.flac'):
-            audio = FLAC(file_path)
-        else:
-            audio = MP3(file_path, ID3=EasyID3)
-        album_name = audio.get("album", ["Unknown Album"])[0]
-        if album_name not in album_disc_counts:
-            album_disc_counts[album_name] = set()
-        album_disc_counts[album_name].add(discnumber)
-
     for discnumber, tracknumber, file_path in track_files:
         if file_path.lower().endswith('.flac'):
             track_info = process_flac_file(file_path)
@@ -156,13 +144,27 @@ def process_album_folder(folder_path):
                 albums[album_name] = {
                     "album": album_name,
                     "date": audio.get("date", ["Unknown Date"])[0],
-                    "tracks": []
+                    "_disc_tracks": {}
                 }
-            # Include disc number only if the album has multiple discs
-            if len(album_disc_counts.get(album_name, set())) > 1:
-                track_info["cd"] = discnumber
-            albums[album_name]["tracks"].append(track_info)
-    return list(albums.values())
+            disc_tracks = albums[album_name]["_disc_tracks"]
+            if discnumber not in disc_tracks:
+                disc_tracks[discnumber] = []
+            disc_tracks[discnumber].append(track_info)
+
+    # Post-process: multi-disc → discs array, single-disc → flat tracks
+    result = []
+    for album_data in albums.values():
+        disc_tracks = album_data.pop("_disc_tracks")
+        sorted_discs = sorted(disc_tracks.keys())
+        if len(sorted_discs) > 1:
+            album_data["discs"] = [
+                {"disc": d, "tracks": disc_tracks[d]}
+                for d in sorted_discs
+            ]
+        else:
+            album_data["tracks"] = disc_tracks[sorted_discs[0]]
+        result.append(album_data)
+    return result
 
 def build_data_index(base_data_dir, root_folders):
     index = {}

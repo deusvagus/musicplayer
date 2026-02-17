@@ -541,14 +541,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const albumId = `album-${index}`;
             const trackCount = album.tracks.length;
 
-            // Detect if this album has multiple discs from track cd fields
-            const discSet = new Set();
-            album.tracks.forEach(track => {
-                if (track.details && track.details.cd !== undefined) {
-                    discSet.add(track.details.cd);
-                }
-            });
-            const hasMultipleDiscs = discSet.size > 1;
+            // Check if this album has disc info
+            const hasMultipleDiscs = album.discs && album.discs.length > 1;
 
             // --- TOC Link ---
             const tocLink = document.createElement('a');
@@ -565,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (hasMultipleDiscs) {
                 const discBadge = document.createElement('span');
                 discBadge.className = 'disc-badge';
-                discBadge.textContent = `${discSet.size} Discs`;
+                discBadge.textContent = `${album.discs.length} Discs`;
                 tocMeta.appendChild(discBadge);
             }
 
@@ -597,7 +591,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (hasMultipleDiscs) {
                 const discBadgeSummary = document.createElement('span');
                 discBadgeSummary.className = 'disc-badge disc-badge-large';
-                discBadgeSummary.textContent = `${discSet.size} Discs`;
+                discBadgeSummary.textContent = `${album.discs.length} Discs`;
                 summaryMeta.appendChild(discBadgeSummary);
             }
 
@@ -612,21 +606,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (hasMultipleDiscs) {
                 // Render tracks grouped by disc with separators
-                let currentDisc = null;
-                let currentGrid = null;
-                album.tracks.forEach(track => {
-                    const trackDisc = (track.details && track.details.cd !== undefined) ? track.details.cd : 1;
-                    if (trackDisc !== currentDisc) {
-                        currentDisc = trackDisc;
-                        const discSeparator = document.createElement('div');
-                        discSeparator.className = 'disc-separator';
-                        discSeparator.innerHTML = `<span class="disc-separator-label"><i class="fas fa-compact-disc"></i> Disc ${currentDisc}</span><span class="disc-separator-line"></span>`;
-                        albumSection.appendChild(discSeparator);
-                        currentGrid = document.createElement('div');
-                        currentGrid.className = 'music-grid';
-                        albumSection.appendChild(currentGrid);
+                let trackOffset = 0;
+                album.discs.forEach(discInfo => {
+                    const discSeparator = document.createElement('div');
+                    discSeparator.className = 'disc-separator';
+                    discSeparator.innerHTML = `<span class="disc-separator-label"><i class="fas fa-compact-disc"></i> Disc ${discInfo.disc}</span><span class="disc-separator-line"></span>`;
+                    albumSection.appendChild(discSeparator);
+                    const grid = document.createElement('div');
+                    grid.className = 'music-grid';
+                    for (let i = trackOffset; i < trackOffset + discInfo.count; i++) {
+                        if (album.tracks[i]) {
+                            grid.appendChild(createTrackCard(album.tracks[i], albumId));
+                        }
                     }
-                    currentGrid.appendChild(createTrackCard(track, albumId));
+                    albumSection.appendChild(grid);
+                    trackOffset += discInfo.count;
                 });
             } else {
                 const musicGrid = document.createElement('div');
@@ -1206,12 +1200,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 .filter(result => result.status === 'fulfilled')
                 .flatMap(result => result.value)
                 .map(albumData => {
-                    const tracks = albumData.tracks.map(trackDetail => {
+                    const mapTrack = (trackDetail) => {
                         Object.keys(trackDetail).forEach(key => fieldKeys.add(key));
                         const fullTitle = trackDetail.track;
                         return { id: idMap.get(normalizeTitle(fullTitle)) || null, fullTitle: fullTitle, details: trackDetail };
-                    });
-                    return { title: albumData.album, tracks };
+                    };
+
+                    if (albumData.discs) {
+                        // Multi-disc album: flatten tracks, preserve disc metadata
+                        const allTracks = [];
+                        const discs = albumData.discs.map(disc => {
+                            const mappedTracks = disc.tracks.map(mapTrack);
+                            allTracks.push(...mappedTracks);
+                            return { disc: disc.disc, count: mappedTracks.length };
+                        });
+                        return { title: albumData.album, tracks: allTracks, discs };
+                    } else {
+                        const tracks = albumData.tracks.map(mapTrack);
+                        return { title: albumData.album, tracks };
+                    }
                 });
 
             renderPage(allAlbumData);
