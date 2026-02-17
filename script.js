@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- DETAILS SIDEBAR & PLAYER ---
-    function showDetails(track, albumId) {
+    function showDetails(track, albumId, trackMeta) {
         if (!track || !track.details) {
             return;
         }
@@ -200,6 +200,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 .join('');
         }
 
+        // Build track position info (disc + track number)
+        let trackPositionHtml = '';
+        if (trackMeta) {
+            const parts = [];
+            if (trackMeta.albumDate) parts.push(trackMeta.albumDate);
+            if (trackMeta.discNum) parts.push(`Disc ${trackMeta.discNum}`);
+            if (trackMeta.trackNum) parts.push(`#${trackMeta.trackNum}`);
+            if (parts.length > 0) {
+                trackPositionHtml = `<p class="track-position">${parts.join(' · ')}</p>`;
+            }
+        }
+
         const playerHtml = track.id
             ? `<button class="load-player-btn" data-id="${track.id}">加載播放器</button>`
             : `<p class="no-id-message">此曲目沒有可用的播放源</p>`;
@@ -207,6 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
         sidebarContent.innerHTML = `
             <h2>${track.fullTitle}</h2>
             <p class="track-id">ID: ${track.id || 'N/A'}</p>
+            ${trackPositionHtml}
             <div class="details-list">${detailsListHtml}</div>
             <div class="player-container">${playerHtml}</div>
         `;
@@ -481,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // --- RENDER PAGE & CARDS ---
-    function createTrackCard(track, albumId) {
+    function createTrackCard(track, albumId, trackMeta) {
         const card = document.createElement('div');
         card.className = 'music-card';
 
@@ -524,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (track.details) card.dataset.details = JSON.stringify(track.details);
 
-        card.addEventListener('click', () => showDetails(track, albumId));
+        card.addEventListener('click', () => showDetails(track, albumId, trackMeta));
 
         if (!track.id) {
             card.classList.add('no-id');
@@ -556,16 +569,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const tocMeta = document.createElement('span');
             tocMeta.className = 'toc-meta';
 
-            if (hasMultipleDiscs) {
-                const discBadge = document.createElement('span');
-                discBadge.className = 'disc-badge';
-                discBadge.textContent = `${album.discs.length} Discs`;
-                tocMeta.appendChild(discBadge);
-            }
+
 
             const countBadge = document.createElement('span');
             countBadge.className = 'track-count-badge';
-            countBadge.textContent = `${trackCount} 曲`;
+            countBadge.textContent = `${trackCount}`;
             tocMeta.appendChild(countBadge);
 
             tocLink.appendChild(tocMeta);
@@ -597,11 +605,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const countBadgeSummary = document.createElement('span');
             countBadgeSummary.className = 'track-count-badge track-count-badge-large';
-            countBadgeSummary.textContent = `${trackCount} 曲`;
+            countBadgeSummary.textContent = `${trackCount} tracks`;
             summaryMeta.appendChild(countBadgeSummary);
 
-            summary.appendChild(summaryMeta);
+            if (album.date) {
+                const dateBadge = document.createElement('span');
+                dateBadge.className = 'album-date';
+                dateBadge.textContent = album.date;
+                summaryMeta.appendChild(dateBadge);
+            }
 
+            summary.appendChild(summaryMeta);
             albumSection.appendChild(summary);
 
             if (hasMultipleDiscs) {
@@ -616,7 +630,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     grid.className = 'music-grid';
                     for (let i = trackOffset; i < trackOffset + discInfo.count; i++) {
                         if (album.tracks[i]) {
-                            grid.appendChild(createTrackCard(album.tracks[i], albumId));
+                            const trackNum = i - trackOffset + 1;
+                            const meta = { discNum: discInfo.disc, trackNum, albumDate: album.date };
+                            grid.appendChild(createTrackCard(album.tracks[i], albumId, meta));
                         }
                     }
                     albumSection.appendChild(grid);
@@ -625,8 +641,9 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 const musicGrid = document.createElement('div');
                 musicGrid.className = 'music-grid';
-                album.tracks.forEach(track => {
-                    musicGrid.appendChild(createTrackCard(track, albumId));
+                album.tracks.forEach((track, trackIdx) => {
+                    const meta = { trackNum: trackIdx + 1, albumDate: album.date };
+                    musicGrid.appendChild(createTrackCard(track, albumId, meta));
                 });
                 albumSection.appendChild(musicGrid);
             }
@@ -1214,13 +1231,15 @@ document.addEventListener('DOMContentLoaded', function () {
                             allTracks.push(...mappedTracks);
                             return { disc: disc.disc, count: mappedTracks.length };
                         });
-                        return { title: albumData.album, tracks: allTracks, discs };
+                        return { title: albumData.album, date: albumData.date, tracks: allTracks, discs };
                     } else {
                         const tracks = albumData.tracks.map(mapTrack);
-                        return { title: albumData.album, tracks };
+                        return { title: albumData.album, date: albumData.date, tracks };
                     }
                 });
 
+            allAlbumData.reverse();
+            isSortReversed = true;
             renderPage(allAlbumData);
             await setupShortcuts(Array.from(fieldKeys));
             setupClearButtons();
