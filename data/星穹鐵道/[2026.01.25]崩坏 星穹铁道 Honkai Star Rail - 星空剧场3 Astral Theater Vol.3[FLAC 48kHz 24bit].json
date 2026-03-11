@@ -4,79 +4,271 @@
     "date": "2026-01-25",
     "tracks": [
       {
-        "track": "阳光与汗水 Sweat and Sunshine"
+        "track": "阳光与汗水 Sweat and Sunshine",
+        "作曲 Composer": "刘政 Zheng.L (HOYO-MiX)",
+        "编曲 Arranger": "刘政 Zheng.L (HOYO-MiX)",
+        "制谱 Music Copyist": "沈梦吟 Sherry.S (HOYO-MiX)",
+        "民族管乐 Ethnic Wind Instruments": "Sandro Friedrich",
+        "里拉琴 Lyre": "Giorgos Tabakis",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "九紫天诚录音棚 SKY FIRE STUDIO录音棚",
+        "录音师 Recording Engineer": "黄浩",
+        "混音师 Mixing Engineer": "李敬浩Hao (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "千面英雄 Protean Hero"
+        "track": "千面英雄 Protean Hero",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "制谱 Music Copyist": "吴泽熙 Jersey Wu (HOYO-MiX)",
+        "人声 Vocal": "谢一溦",
+        "录音棚 Recording Studio": "升赫录音棚Soundhub Studio",
+        "录音师 Recording Engineer": "吴身宝 Bob Wu@Soundhub Studios",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "重力失控 Weightless Chaos"
+        "track": "重力失控 Weightless Chaos",
+        "作曲 Composer": "刘政 Zheng.L (HOYO-MiX)",
+        "编曲 Arranger": "刘政 Zheng.L (HOYO-MiX)",
+        "制谱 Music Copyist": "刘乃齐 Ruri (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "民族管乐 Ethnic Wind Instruments": "Sandro Friedrich",
+        "里拉琴 Lyre": "Giorgos Tabakis",
+        "录音棚 Recording Studio": "九紫天诚录音棚 SKY FIRE STUDIO录音棚",
+        "录音师 Recording Engineer": "黄浩",
+        "混音师 Mixing Engineer": "李敬浩Hao (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "万花宇宙 Universal Kaleidoscope"
+        "track": "万花宇宙 Universal Kaleidoscope",
+        "作曲 Composer": "刘政 Zheng.L (HOYO-MiX)",
+        "编曲 Arranger": "刘政 Zheng.L (HOYO-MiX)",
+        "混音师 Mixing Engineer": "刘政 Zheng.L (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "弹射起步 Catapult Launch"
+        "track": "弹射起步 Catapult Launch",
+        "作曲 Composer": "刘政 Zheng.L (HOYO-MiX)",
+        "编曲 Arranger": "刘政 Zheng.L (HOYO-MiX)",
+        "混音师 Mixing Engineer": "刘政 Zheng.L (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "正义的伙伴 Hero of Justice"
+        "track": "正义的伙伴 Hero of Justice",
+        "作曲 Composer": "刘政 Zheng.L (HOYO-MiX)",
+        "编曲 Arranger": "刘政 Zheng.L (HOYO-MiX)",
+        "混音师 Mixing Engineer": "刘政 Zheng.L (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "圣杯之夜 Night of the Holy Grail"
+        "track": "圣杯之夜 Night of the Holy Grail",
+        "作曲 Composer": "刘政 Zheng.L (HOYO-MiX)",
+        "编曲 Arranger": "汪玉珏Yj.W (HOYO-MiX)/刘政 Zheng.L (HOYO-MiX)",
+        "制谱 Music Copyist": "刘乃齐 Ruri (HOYO-MiX)",
+        "乐队 Orchestra": "龙之艺交响乐团 Art of Loong Orchestra",
+        "小提琴 Violin": "张一英",
+        "大提琴 Cello": "陈小龙",
+        "录音棚 Recording Studio": "Largo Studio",
+        "录音师 Recording Engineer": "谭云杰@LargoStudio",
+        "混音师 Mixing Engineer": "林一凡Fan (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "理想乡 Utopia"
+        "track": "理想乡 Utopia",
+        "作曲 Composer": "汪玉珏Yj.W (HOYO-MiX)",
+        "编曲 Arranger": "汪玉珏Yj.W (HOYO-MiX)",
+        "制谱 Music Copyist": "刘乃齐 Ruri (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "Largo Studio",
+        "录音师 Recording Engineer": "谭云杰@LargoStudio",
+        "混音师 Mixing Engineer": "汪玉珏Yj.W (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "唯有胜利 Victory Above All"
+        "track": "唯有胜利 Victory Above All",
+        "作曲 Composer": "刘政 Zheng.L (HOYO-MiX)",
+        "编曲 Arranger": "刘政 Zheng.L (HOYO-MiX)",
+        "制谱 Music Copyist": "吴泽熙 Jersey Wu (HOYO-MiX)",
+        "乐队 Orchestra": "龙之艺交响乐团 Art of Loong Orchestra/国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "小提琴 Violin": "张一英",
+        "录音棚 Recording Studio": "Largo Studio/九紫天诚录音棚 SKY FIRE STUDIO录音棚",
+        "录音师 Recording Engineer": "谭云杰@LargoStudio/董方昱/陈鑫光",
+        "混音师 Mixing Engineer": "汪玉珏Yj.W (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "刺破黑暗 Pierce the Darkness"
+        "track": "刺破黑暗 Pierce the Darkness",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "制谱 Music Copyist": "吴泽熙 Jersey Wu (HOYO-MiX)",
+        "乐队 Orchestra": "龙之艺交响乐团 Art of Loong Orchestra/国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "电吉他 Electric Guitar": "吴泽熙 Jersey Wu (HOYO-MiX)",
+        "录音棚 Recording Studio": "Largo Studio/九紫天诚录音棚 SKY FIRE STUDIO录音棚",
+        "录音师 Recording Engineer": "谭云杰@LargoStudio/董方昱/陈鑫光",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "愿风与你相伴 The Wind Be With You"
+        "track": "愿风与你相伴 The Wind Be With You",
+        "作曲 Composer": "汪玉珏Yj.W (HOYO-MiX)",
+        "编曲 Arranger": "汪玉珏Yj.W (HOYO-MiX)",
+        "混音师 Mixing Engineer": "汪玉珏Yj.W (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "振翅 Wingflap"
+        "track": "振翅 Wingflap",
+        "作曲 Composer": "聂婉迪 Wandy.N (HOYO-MiX)",
+        "编曲 Arranger": "聂婉迪 Wandy.N (HOYO-MiX)",
+        "混音师 Mixing Engineer": "聂婉迪 Wandy.N (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "美梦秘境 Dreamjoy Realm"
+        "track": "美梦秘境 Dreamjoy Realm",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "制谱 Music Copyist": "刘乃齐 Ruri (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "民族管乐 Ethnic Wind Instruments": "Sandro Friedrich",
+        "里拉琴 Lyre": "Giorgos Tabakis",
+        "录音棚 Recording Studio": "九紫天诚录音棚 SKY FIRE STUDIO录音棚",
+        "录音师 Recording Engineer": "董方昱",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "大地的温柔 The Gentle Earth"
+        "track": "大地的温柔 The Gentle Earth",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "制谱 Music Copyist": "刘乃齐 Ruri (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "九紫天诚录音棚 SKY FIRE STUDIO录音棚",
+        "录音师 Recording Engineer": "董方昱",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "神圣裁决 Divine Judgment"
+        "track": "神圣裁决 Divine Judgment",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "赛前热身 Warm Up"
+        "track": "赛前热身 Warm Up",
+        "作曲 Composer": "王可鑫 Eli.W (HOYO-MiX)",
+        "编曲 Arranger": "王可鑫 Eli.W (HOYO-MiX)",
+        "混音师 Mixing Engineer": "王可鑫 Eli.W (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "你追我赶 Neck-And-Neck"
+        "track": "你追我赶 Neck-And-Neck",
+        "作曲 Composer": "王可鑫 Eli.W (HOYO-MiX)",
+        "编曲 Arranger": "王可鑫 Eli.W (HOYO-MiX)",
+        "混音师 Mixing Engineer": "王可鑫 Eli.W (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "名与利 Fame and Fortune"
+        "track": "名与利 Fame and Fortune",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "无形之手 Invisible Hand"
+        "track": "无形之手 Invisible Hand",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "制谱 Music Copyist": "刘乃齐 Ruri (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "九紫天诚录音棚 SKY FIRE STUDIO录音棚",
+        "录音师 Recording Engineer": "董方昱/陈鑫光",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "嘻戏时刻 Playful Moments"
+        "track": "嘻戏时刻 Playful Moments",
+        "作曲 Composer": "陈永辉Yonghui.C (HOYO-MiX)",
+        "编曲 Arranger": "陈永辉Yonghui.C (HOYO-MiX)",
+        "制谱 Music Copyist": "(HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "小提琴 Violin": "张琴",
+        "民族管乐 Ethnic Wind Instruments": "Sandro Friedrich",
+        "布祖基琴 Bouzouki": "Dimitris Papageorgiou",
+        "手风琴 Accordion": "许笑男",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio/Res录音棚",
+        "录音师 Recording Engineer": "王小四/张梦涵",
+        "混音师 Mixing Engineer": "陈永辉Yonghui.C (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "忆梦浮廊 Corridor of Memorial Dreams"
+        "track": "忆梦浮廊 Corridor of Memorial Dreams",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "神降 Theophany"
+        "track": "神降 Theophany",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "鸣蛀之梦 Dream of Gnawing"
+        "track": "鸣蛀之梦 Dream of Gnawing",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "制谱 Music Copyist": "(HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "合唱 Choir": "Honkai Choir",
+        "录音棚 Recording Studio": "99 Studio/升赫录音棚Soundhub Studio",
+        "录音师 Recording Engineer": "张凯博/吴身宝 Bob Wu@Soundhub Studios/李仁珏@Soundhub Studios",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "虚空漫步 Void Walk"
+        "track": "虚空漫步 Void Walk",
+        "作曲 Composer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "编曲 Arranger": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "制谱 Music Copyist": "吴泽熙 Jersey Wu (HOYO-MiX)",
+        "乐队 Orchestra": "国际首席爱乐乐团 International Master Philharmonic Orchestra",
+        "录音棚 Recording Studio": "金田录音棚 Jintian Recording Studio",
+        "录音师 Recording Engineer": "王小四",
+        "混音师 Mixing Engineer": "黄奥林 Aolin.Huang (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       },
       {
-        "track": "深魇噩兆 Nightmarish Omen"
+        "track": "深魇噩兆 Nightmarish Omen",
+        "作曲 Composer": "蒋少寒 Han.J (HOYO-MiX)",
+        "编曲 Arranger": "蒋少寒 Han.J (HOYO-MiX)",
+        "混音师 Mixing Engineer": "蒋少寒 Han.J (HOYO-MiX)",
+        "母带制作 Mastering Engineer": "李敬浩Hao (HOYO-MiX)",
+        "出品 Produced by": "HOYO-MiX"
       }
     ]
   }
